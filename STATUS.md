@@ -1,6 +1,6 @@
 # Status
 
-Phase: MUSEUM baseline frozen → M1-A build/reuse preparation
+Phase: MUSEUM baseline frozen → M1-A/M1-B evidence and implementation preparation
 
 Device: Samsung Galaxy Y GT-S5360 (totoro)
 
@@ -18,68 +18,92 @@ Device: Samsung Galaxy Y GT-S5360 (totoro)
 
 ## Current modernization state
 
-The broad archaeology phase is now sufficiently complete to start implementation.
+The archaeology phase has produced enough evidence to move directly toward a controlled Totoro boot experiment.
 
-The practical route is:
+The shortest reliable route is:
 
-    Samsung kernel
+    Samsung/known Totoro kernel
          ↓
-    known Totoro boot/ramdisk material
+    verified Totoro boot geometry
          ↓
-    controlled Linux boot
+    Watson Gingerbread ramdisk
          ↓
-    minimal Linux computer
+    kernel-only substitution
          ↓
-    Alpine / postmarketOS userspace
+    offline verification
          ↓
-    useful lightweight system
+    controlled boot
          ↓
-    mainline audit
+    minimal Linux userspace
+         ↓
+    Modern Totoro
 
-The primary target is M3 — Modern Totoro. Mainline Linux is optional.
+The primary target remains M3 — Modern Totoro. Mainline Linux is optional.
 
-## M1-A finding
+## M1-B evidence lock
 
-Samsung's published BCM21553 source contains:
+CM9 Totoro BoardConfig.mk independently records:
 
-- gt-s5360_gb_opensource
-- bcm21553_totoro_05_defconfig
-- Totoro board support
+- BOARD_KERNEL_BASE = 0x81600000
+- BOARD_KERNEL_PAGESIZE = 4096
+- BOARD_PAGE_SIZE = 0x1000
+- BOARD_KERNEL_CMDLINE = empty
+- BOARD_BOOTIMAGE_PARTITION_SIZE = 5242880
 
-Historical Android prebuilt material contains ARM EABI 4.4.3 toolchains for Darwin and Linux hosts.
+This agrees with Samsung and Watson kernel evidence for the Totoro SDRAM base.
 
-The Darwin toolchain is Mach-O i386, so current macOS cannot execute it. The next step is to run the Linux-hosted historical toolchain inside a contained Linux environment.
+Watson GB provides a real Totoro Gingerbread ramdisk and a real unpack/repack workflow. Its Git repository does not contain the referenced boot.img because image files are ignored.
 
-Phone: not required for M1-A through M1-C.
+The preserved JPLC1 HOME firmware package contains no boot.img.
 
-## Community reuse finding
+Therefore the project will not waste time trying to recover the missing stock boot.img from the JPLC1 package.
 
-Existing Totoro projects provide reusable historical evidence for:
+Remaining M1-B unknowns:
 
-- custom kernels
-- ramdisks
-- boot-image packaging
-- recovery
-- device trees
-- vendor integration
-- later AndroidARMv6 hardware support
+- kernel offset
+- ramdisk offset
+- tags offset
+- exact historical mkbootimg invocation
+- complete compatible boot header
+
+These must be recovered from historical build metadata or an actual compatible Totoro image. They must not be guessed.
+
+## M1-A build environment
+
+Historical Linux ARM EABI 4.4.3 material is available.
+
+Preferred path:
+
+1. contained Linux execution of the historical toolchain;
+2. modern reproducible ARM cross-build if the historical host becomes the bottleneck;
+3. source changes only for demonstrated compatibility failures.
+
+Phone is not required for M1-A through M1-C.
+
+## Reuse findings
+
+Existing Totoro projects are treated as a parts library:
+
+- Samsung OSS → baseline kernel
+- Watson → Gingerbread ramdisk and boot packaging
+- CM9 Totoro → concrete device/boot configuration
+- AndroidARMv6/CM11 → later hardware/userspace evidence
+- other historical Totoro kernels → alternative implementation evidence
 
 See:
 
-- 10_RESEARCH/totoro-reuse-map.md
 - 08_MODERNIZATION/plan.md
 - 08_MODERNIZATION/M1-boot-experiment.md
-
-The old community work is a parts library, not a requirement to reproduce old Android ROMs.
+- 10_RESEARCH/totoro-reuse-map.md
 
 ## Next actions
 
-1. Execute historical Linux ARM EABI 4.4.3 in a contained Linux environment.
-2. Build Samsung's kernel unchanged.
-3. Record zImage size/hash and build provenance.
-4. Inspect known Totoro boot/ramdisk material.
-5. Verify boot-image construction without touching the phone.
-6. Only then prepare the first controlled boot experiment.
+1. Recover complete boot-image parameters from historical Totoro build metadata or an actual compatible image.
+2. Build Samsung's kernel with the simplest reproducible toolchain path.
+3. Reconstruct and unpack a compatible Totoro boot image offline.
+4. Substitute only the reproducible kernel.
+5. Verify the resulting image structurally.
+6. Only then prepare the controlled phone boot.
 
 ## Safety boundary
 
@@ -93,4 +117,4 @@ The Museum baseline remains frozen.
 
 ## Known firmware lineage
 
-The observed PDA/CSC correspond to the JPLC1/OJPLC1 Middle East/Arabic stock family. The historically matching package uses modem S5360XXLC1; the specimen currently reports S5360XXLK3. The reason for that combination is not yet established.
+The observed PDA/CSC correspond to the JPLC1/OJPLC1 Middle East/Arabic stock family. The historically matching package uses modem S5360XXLC1; the specimen currently reports S5360XXLK3. The reason for that combination is not established and is not required for the current M1 path.
