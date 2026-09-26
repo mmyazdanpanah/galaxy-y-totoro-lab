@@ -2,43 +2,56 @@
 
 Technical and historical research supporting the Totoro laboratory.
 
-## Current research tracks
+## Current tracks
 
-- modernization-history.md — historical map of mobile Linux/Android modernization and the implementation lessons relevant to Totoro.
+- modernization-history.md — broader mobile Linux/Android modernization history.
+- totoro-reuse-map.md — concrete reusable Totoro projects and what each contributes.
 - ../08_MODERNIZATION/plan.md — current engineering roadmap.
 
-## Research rule
+## Evidence classes
 
-Separate:
+Keep separate:
 
-1. Observed specimen evidence
-2. Historical evidence
-3. Community/project evidence
-4. Engineering inference
-5. Unverified hypotheses
+1. observed specimen evidence
+2. historical evidence
+3. community/project evidence
+4. engineering inference
+5. unverified hypothesis
 
-Never promote a web-sourced claim into specimen evidence without provenance comparison.
+Never promote web-sourced material into specimen evidence without provenance comparison.
 
-## Current architectural conclusion
+## Current conclusion
 
-For this 2011-era device, the fastest reliable route is:
+The existing Totoro ecosystem is large enough that new implementation should begin only after extracting reusable pieces.
 
-    existing Totoro hardware support
-            ↓
+    Samsung source
+          +
+    community kernel/ramdisk work
+          ↓
+    reproducible kernel
+          ↓
+    known boot path
+          ↓
     minimal Linux
-            ↓
-    Alpine / postmarketOS
-            ↓
-    lightweight usable system
-            ↓
-    mainline feasibility audit
-            ↓
-    selective upstreaming
+          ↓
+    Alpine / postmarketOS userspace
+          ↓
+    useful system
 
-This is a working hypothesis, not a completed hardware audit.
+Mainline work comes only after a useful downstream-based system exists.
 
-## Next research question
+## Research stopping rule
 
-What exact kernel, board support, boot parameters, drivers, and historical Totoro Linux work can be reused with the least new code?
+Do not expand archaeology unless it answers a concrete implementation question.
 
-That question should be answered before substantial modernization code is written.
+For each blocker:
+
+    existing solution?
+        ↓ yes → reuse
+        ↓ no
+    small fix?
+        ↓ yes → fix
+        ↓ no
+    proven alternative?
+        ↓ yes → adapt
+        ↓ no → new implementation

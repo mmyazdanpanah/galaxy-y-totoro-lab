@@ -2,111 +2,123 @@
 
 ## Objective
 
-Modernize the Samsung Galaxy Y GT-S5360 (totoro) into a useful, reproducible Linux-based system while preserving the original specimen and avoiding unnecessary reinvention.
+Turn the Samsung Galaxy Y GT-S5360 (totoro) into a useful, reproducible lightweight Linux system while preserving the original specimen.
 
-The target is not "make a 2011 phone behave like a modern Android phone." The target is a small, maintainable Linux computer/phone built around hardware that still works.
+Primary success target: M3 — Modern Totoro.
 
-## Core strategy
+The rule is:
 
-Reuse the existing hardware layer → isolate it → replace the generic userspace → progressively replace hardware-specific pieces only when useful.
+    reuse → adapt → small reversible fix → new code
 
-For Totoro, the fastest reliable route is:
+Do not modernize the phone by replacing working parts unnecessarily.
 
-    GT-S5360 / Totoro
-        ↓
-    existing/proven boot path
-        ↓
-    existing Totoro downstream kernel
-        ↓
-    existing hardware drivers
-        ↓
-    minimal Linux userspace
-        ↓
-    Alpine / postmarketOS
-        ↓
-    lightweight interface + SSH/network tools
-        ↓
-    selective mainline work, only where justified
+## Route
 
-Do not make a fully mainline kernel the first milestone.
+    preserved GT-S5360
+          ↓
+    reproduce Samsung kernel
+          ↓
+    reuse proven Totoro boot/ramdisk work
+          ↓
+    controlled Linux boot
+          ↓
+    minimal Linux computer
+          ↓
+    Alpine / postmarketOS-style userspace
+          ↓
+    useful hardware + lightweight interface
+          ↓
+    mainline audit
+          ↓
+    selective upstreaming, only if useful
 
-## Phase 0 — Preserve the Museum baseline
+A fully mainline kernel is an optional later research goal, not the first target.
+
+## M0 — Preserve
 
 Status: complete.
 
-The read-only preservation pass is frozen. The observed stock environment, Download Mode state, live PIT, partition metadata, and provenance are documented.
+The stock specimen, Download Mode, PIT, partition evidence, firmware identity, and preservation boundary are frozen.
 
-The baseline must remain untouched while modernization is researched.
+No firmware, bootloader, recovery, repartitioning, or EFS operation has been performed.
 
-See STATUS.md, 01_PRESERVATION/, and 03_PARTITIONS/partition-map.md.
+## M1 — Reproduce and boot
 
-## Phase 1 — Totoro archaeology
+Status: M1-A preparation / build environment. Phone not required yet.
 
-Status: next.
+### M1-A — Reproduce the Samsung kernel
 
-Determine exactly how much existing work can be reused before writing new code.
+Use:
 
-Audit:
+- Samsung OSS android_kernel_samsung_bcm21553
+- branch gt-s5360_gb_opensource
+- bcm21553_totoro_05_defconfig
+- historical ARM EABI 4.4.3 / CodeSourcery-compatible environment
 
-- GT-S5360 / Galaxy Y / totoro
-- BCM21553 / bcm21553
-- ARM11 / ARMv6 constraints
-- Samsung kernel source and historical releases
-- community Totoro kernels
-- device trees / board files
-- boot image layout and kernel command line
-- recovery and boot-chain constraints
-- framebuffer/display support
-- touchscreen/input drivers
-- USB
-- storage / OneNAND
-- Wi-Fi / Bluetooth
-- audio
-- battery / charging / suspend
-- modem and camera
-- historical CyanogenMod / LineageOS work
-- Replicant
-- Halium / Ubuntu Touch
-- postmarketOS / Alpine
-- any existing upstream Linux / mainline BCM21553 work
+The exact historical Android prebuilt repository contains Darwin and Linux ARM EABI 4.4.3 toolchains. The Darwin compiler is i386 and cannot execute on current macOS; use a contained Linux environment for the Linux-hosted toolchain rather than modifying the kernel to fit a modern compiler.
 
-The output should be an evidence-backed Totoro hardware and kernel reuse map, not a speculative design.
+Success:
 
-## Phase 2 — Prove the smallest Linux boot
+    arch/arm/boot/zImage
+    ARM architecture
+    reproducible build record + hash
+
+### M1-B — Reconstruct a known Totoro boot image
+
+Do not invent the first boot format.
+
+Reuse historical Totoro material, especially:
+
+- known working ramdisks
+- Watson kernel/ramdisk material
+- existing boot-image tools and documentation
+- independent Totoro kernel/recovery projects
+
+Verify the actual header, offsets, ramdisk, command line and any checksum/MD5 requirements before constructing an image.
+
+The previously assumed zImage + ramdisk.gz + base + kernelMD5 recipe is historical evidence, not yet a fully verified project recipe.
+
+No phone.
+
+### M1-C — Kernel-only substitution
+
+Start with a known-compatible Totoro ramdisk and replace only the kernel.
 
 Goal:
 
-    bootloader → Totoro kernel → init → shell
+    known ramdisk + reproducible zImage → test boot.img
 
-Use the existing/proven Totoro kernel first.
+Do not introduce Alpine, new drivers, repartitioning, or other variables simultaneously.
 
-Build the smallest reproducible test image possible:
+No phone.
 
-- kernel
-- initramfs
-- BusyBox
-- shell
-- basic diagnostics
+### M1-D — Controlled boot
 
-Do not add a graphical stack yet.
+Phone required.
 
-Success criterion: a repeatable Linux boot with enough console/debug access to diagnose hardware.
+Only after:
 
-## Phase 3 — Replace the prototype userspace with Alpine/postmarketOS
+1. original boot image is preserved,
+2. rollback is prepared,
+3. boot-image construction is verified,
+4. the test image changes only what is necessary.
 
-Once the minimal Linux boot is proven:
+M1 safety boundary:
 
-- use Alpine Linux as the lightweight base
-- use postmarketOS infrastructure where it reduces device-specific work
-- preserve the existing Totoro kernel and drivers initially
-- add OpenSSH and standard Linux tooling
-- make the root filesystem reproducible
+- no PIT write
+- no repartition
+- no EFS
+- no modem
+- no system
+- no userdata
 
-This is the first real modernization target.
+First proof:
 
-## Phase 4 — Bring up hardware in dependency order
+    bootloader → kernel → init → diagnostics/shell
 
-Priority:
+## M2 — Linux computer
+
+Once the kernel boots, bring up only what is needed for a useful computer:
 
 1. CPU / RAM
 2. storage
@@ -122,158 +134,82 @@ Priority:
 12. camera
 13. modem
 
-The ordering intentionally prioritizes a useful Linux computer over telephony completeness.
+Camera and modem are optional for M2.
 
-Camera and modem work are not prerequisites for an interesting Linux system.
+Use existing Samsung/community drivers before writing new ones.
 
-## Phase 5 — Lightweight interface
+## M3 — Modern Totoro
 
-The hardware is extremely constrained by modern standards.
+Replace the prototype userspace with a small maintainable Linux userspace:
 
-Avoid:
+- Alpine Linux as the lightweight base
+- postmarketOS infrastructure where it reduces device-specific work
+- existing Totoro kernel/drivers initially
+- BusyBox and standard Linux tools
+- SSH/network tools
+- lightweight framebuffer-oriented interface
 
-- modern desktop environments
-- large graphical stacks
-- unnecessary background services
-- heavyweight browsers
+Avoid modern desktop environments, heavy browsers, large background services, and unnecessary graphics stacks.
 
-Prefer a framebuffer-oriented or otherwise minimal interface.
+M3 is the primary project success condition.
 
-The interface should be treated as part of the hardware constraint, not as an attempt to reproduce a contemporary smartphone UI.
+## M4 — Mainline audit
 
-## Phase 6 — Mainline feasibility audit
+Only after M3 works, compare each subsystem with upstream Linux.
 
-Only after a working downstream Linux system exists, compare each subsystem against upstream Linux.
+Ask:
 
-Create a matrix:
+- what already works upstream?
+- what is missing?
+- can an existing Totoro/BCM21553 driver be adapted?
+- is the upstream route simpler to maintain?
+- does it provide a real capability or maintenance benefit?
 
-| Subsystem | Existing Totoro support | Mainline support | Reuse cost | Mainline cost | Decision |
-|---|---|---|---|---|---|
-| CPU / SoC | TBD | TBD | TBD | TBD | TBD |
-| storage | TBD | TBD | TBD | TBD | TBD |
-| USB | TBD | TBD | TBD | TBD | TBD |
-| GPIO | TBD | TBD | TBD | TBD | TBD |
-| display | TBD | TBD | TBD | TBD | TBD |
-| touchscreen | TBD | TBD | TBD | TBD | TBD |
-| Wi-Fi | TBD | TBD | TBD | TBD | TBD |
-| audio | TBD | TBD | TBD | TBD | TBD |
-| power | TBD | TBD | TBD | TBD | TBD |
-| Bluetooth | TBD | TBD | TBD | TBD | TBD |
-| camera | TBD | TBD | TBD | TBD | TBD |
-| modem | TBD | TBD | TBD | TBD | TBD |
+A hybrid kernel is a valid result.
 
-This prevents "mainline" from becoming an ideological requirement.
+## Reuse-first evidence map
 
-## Phase 7 — Selective upstreaming
+The historical Totoro ecosystem is now treated as a parts library:
 
-If individual mainline drivers are mature and useful, replace downstream components one at a time.
+- Samsung OSS kernel → baseline and build reference
+- Watson kernel → boot/ramdisk and packaging reference
+- Eve kernel → alternative kernel lineage and toolchain reference
+- CM9/Android device trees → board/device configuration reference
+- AndroidARMv6/CM11 → later hardware/userspace evidence
+- Samsung/community vendor trees → hardware integration reference
+- XDA/YouTube → procedural and historical evidence, not authoritative source code
 
-A hybrid result is valid:
+See 10_RESEARCH/totoro-reuse-map.md.
 
-    mostly mainline
-    + a small compatibility layer
-    + a few unavoidable legacy components
-
-There is no benefit in rewriting working hardware support merely to reach a nominal 100% mainline state.
-
-## Phase 8 — Pure mainline, only if justified
-
-A fully upstream Totoro kernel becomes a separate research goal.
-
-Only pursue it if the Phase 6 audit shows that the missing pieces are tractable and the result provides a real maintenance or capability benefit.
-
-The first pure-mainline milestone is simply:
-
-    mainline kernel → boots on Totoro
-
-Then:
-
-    storage → USB → display → touch → networking
-
-Everything beyond that is optional.
-
-## Milestones
-
-### M0 — Evidence
-
-Exact hardware, boot chain, kernel lineage, partition layout, and reusable historical work are known.
-
-### M1 — Linux boot
-
-A reproducible Totoro kernel + minimal userspace boots.
-
-### M2 — Linux computer
-
-Storage + USB + display + input + networking work.
-
-### M3 — Modern Totoro
-
-Alpine/postmarketOS userspace, lightweight interface, reproducible build, documented experiments.
-
-M3 is the primary success condition.
-
-### M4 — Upstream Totoro
-
-Mainline Linux supports enough of the device to replace the downstream kernel.
-
-M4 is optional.
-
-## Decision rule
-
-    Can the existing Totoro kernel boot?
-             │
-        ┌────┴────┐
-        │         │
-       NO        YES
-        │         │
-     repair     minimal Linux
-     kernel        │
-                   ↓
-             Alpine / pmOS
-                   │
-             useful system?
-               │       │
-              NO      YES
-               │       │
-            diagnose  modernize
-                       │
-                       ↓
-               mainline audit
-                  │       │
-               feasible  expensive
-                  │       │
-               mainline  keep proven
-                 POC     downstream
-                  │       │
-                  └───┬───┘
-                      ↓
-                   compare
-
-## Explicitly out of scope for the first implementation
+## Explicitly out of scope initially
 
 - Treble / GSI / DSU
 - GKI
-- forcing a modern Android release onto the device
+- forcing a modern Android release
 - modern LineageOS as the first route
-- replacing the bootloader without a demonstrated need
+- bootloader replacement without demonstrated need
 - repartitioning
 - camera-first development
 - modem-first development
 - rewriting the entire kernel
 - large experimental patch stacks
 
-These techniques were important in later mobile Linux/Android history, but the Galaxy Y predates the hardware/software architecture they were designed around.
+## Decision rule
 
-## Working principle
+    Existing working Totoro solution?
+             ↓ yes
+          reuse it
+             ↓ no
+       small reversible fix?
+          ↓ yes       ↓ no
+         fix      proven alternative
+                       ↓
+                    new code
 
-Simple fix first. Alternative second. Reinvention last.
+At every step:
 
-Every proposed change should answer:
-
-1. What existing work can we reuse?
-2. Is the required fix small and reversible?
-3. If not, is there a proven alternative?
-4. What new capability does the change buy us?
-5. Can the experiment be reproduced and rolled back?
-
-The project should move forward by evidence, not by ambition.
+1. reuse existing work;
+2. make the smallest reversible change;
+3. test;
+4. record the result;
+5. only then expand scope.

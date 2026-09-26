@@ -1,32 +1,49 @@
 # Modernization
 
-Modernize the Galaxy Y without pretending it is a modern smartphone.
+Modernize the Galaxy Y by reusing the large body of existing Totoro work before writing new code.
 
-## Strategy
+## Current route
 
-The current engineering strategy is documented in [plan.md](plan.md):
+    Samsung kernel
+         ↓
+    proven Totoro boot/ramdisk
+         ↓
+    controlled Linux boot
+         ↓
+    minimal Linux computer
+         ↓
+    Alpine / postmarketOS userspace
+         ↓
+    useful lightweight system
+         ↓
+    mainline audit
 
-1. freeze and preserve the specimen
-2. audit existing Totoro kernel/hardware work
-3. prove a minimal Linux boot
-4. move to Alpine/postmarketOS userspace
-5. bring up useful hardware in dependency order
-6. audit mainline feasibility
-7. upstream individual components only when useful
-8. pursue a fully mainline kernel only if justified
+## Primary target
 
-## Success target
+M3 — Modern Totoro: a reproducible, lightweight Linux system with useful hardware support and a maintainable userspace.
 
-**M3 — Modern Totoro:** a reproducible Alpine/postmarketOS-based Linux system with a lightweight usable interface and documented hardware support.
+A fully mainline kernel is optional.
 
-M4 — Upstream Totoro is optional.
+## Current phase
 
-## Current research priorities
+M1-A — reproduce the Samsung kernel.
 
-- exact historical Totoro kernel lineage
-- BCM21553 support
-- boot image and kernel command line
-- reusable community kernels and device trees
-- existing postmarketOS/Totoro work
-- existing upstream/mainline BCM21553 work
-- minimum kernel + initramfs + BusyBox boot
+The source, Totoro defconfig, and historical ARM EABI 4.4.3 toolchain family have been identified. The remaining host issue is execution of the old i386 compiler, so the next step is a contained Linux build environment.
+
+Phone: not required yet.
+
+## New reuse strategy
+
+Before implementing anything, consult:
+
+- 10_RESEARCH/totoro-reuse-map.md
+- Samsung BCM21553 source
+- historical Totoro kernel/ramdisk projects
+- device trees and vendor trees
+- historical AndroidARMv6 work
+
+The first boot image should reuse a known Totoro ramdisk rather than inventing a new one.
+
+## Working rule
+
+Simple fix first. Alternative second. Reinvention last.
