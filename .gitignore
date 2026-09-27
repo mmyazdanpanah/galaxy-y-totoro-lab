@@ -1,0 +1,5 @@
+.DS_Store
+
+02_FIRMWARE/stock/*/source/*.zip
+02_FIRMWARE/stock/*/source/*.tar
+02_FIRMWARE/stock/*/source/*.tar.md5
