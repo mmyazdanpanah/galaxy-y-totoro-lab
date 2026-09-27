@@ -1,235 +1,199 @@
 # Galaxy Y Modernization Plan
 
-## Objective
+## Goal
 
-Turn the Samsung Galaxy Y GT-S5360 (totoro) into a useful, reproducible lightweight Linux system while preserving the original specimen.
+Turn the Samsung Galaxy Y GT-S5360 (totoro) into a useful, lightweight Linux system while preserving a known-good recovery path.
 
-Primary success target: M3 — Modern Totoro.
+Keep the project simple:
 
-Working rule:
+    BACKUP → IMPLEMENTATION → FIX → DONE / RESTORE BACKUP
 
-    reuse → verify → adapt → small reversible fix → new code
+Do not create complexity before the phone requires it.
 
-Optimize for the shortest reliable path. Do not spend time reconstructing obsolete infrastructure when a documented, compatible Totoro path already exists.
-
-## Route
-
-    preserved GT-S5360
-          ↓
-    reproduce/use proven Totoro kernel
-          ↓
-    reuse proven Totoro boot + ramdisk structure
-          ↓
-    controlled Linux boot
-          ↓
-    minimal Linux userspace
-          ↓
-    hardware bring-up
-          ↓
-    Modern Totoro
-          ↓
-    optional mainline audit
-
-Mainline Linux is an optional later research goal, not the first implementation target.
-
-## M0 — Preserve
-
-Status: complete.
-
-The stock specimen, Download Mode, PIT, partition evidence, firmware identity, and preservation boundary are frozen.
-
-No firmware, bootloader, recovery, repartitioning, or EFS operation has been performed.
-
-## M1 — Reproduce and boot
+## 1. BACKUP
 
 Status: active.
 
-Phone is not required until M1-D.
+First make the physical phone safely recoverable.
 
-### M1-A — Reproduce the Samsung kernel
+Already preserved:
 
-Primary source:
+- stock device identity and firmware state
+- Download Mode
+- live PIT
+- JPLC1 firmware source archive
+- historical Totoro boot-image specimen
+- kernel/ramdisk evidence
+- stock Recovery Mode
 
-- Samsung-OSS-Kernels/android_kernel_samsung_bcm21553
-- branch gt-s5360_gb_opensource
+Stock Recovery is confirmed working and can:
+
+- browse the SD card
+- open folders
+- select with the physical Home button
+- expose an "apply update from sdcard" path
+
+The SD update mechanism is a possible recovery/experiment path, but we do not need to explore it further unless it helps the backup or implementation.
+
+Backup priority:
+
+1. obtain the simplest reliable backup of the phone's original boot/recovery state;
+2. preserve the backup with hashes and provenance;
+3. verify that the rollback path is usable;
+4. stop backup work once we have a sufficient recovery path.
+
+Do not modify the phone during backup.
+
+No repartition.
+No PIT write.
+No EFS.
+No modem.
+No system.
+No userdata wipe.
+
+## 2. IMPLEMENTATION
+
+After backup is sufficient, make the smallest useful change.
+
+First implementation target:
+
+    Samsung/Totoro boot chain
+          ↓
+    reproducible Totoro kernel
+          ↓
+    known-compatible boot structure
+          ↓
+    controlled boot
+          ↓
+    diagnostics
+
+Current technical evidence already gives us:
+
+- Samsung BCM21553 Totoro kernel source
 - bcm21553_totoro_05_defconfig
+- kernel address 0x81608000
+- base 0x81600000
+- page size 4096
+- verified historical Totoro boot image
+- verified raw-LZMA → newc CPIO ramdisk
+- working historical Totoro ramdisk material
 
-Build with the historical ARM EABI 4.4.3-compatible environment.
+Use existing working material first.
 
-Preferred execution order:
+Do not rebuild obsolete infrastructure just because it is interesting.
 
-1. contained Linux environment with the historical Linux-hosted toolchain;
-2. if that becomes disproportionately difficult, test a reproducible modern ARM cross-toolchain build;
-3. patch source only when a concrete build error requires it.
+Do not begin with Alpine, postmarketOS, mainline Linux, new drivers, repartitioning, modem work, or a large patch stack.
 
-Do not spend the project budget on reproducing the exact 2009 host environment if a simpler reproducible build produces a functionally equivalent kernel.
+The first implementation should change as little as possible.
 
-Success:
+## 3. FIX
 
-    arch/arm/boot/zImage
-    ARM architecture
-    recorded toolchain + source commit + config + hash
+If the implementation does not boot or something is broken:
 
-### M1-B — Reconstruct a known Totoro boot image
+    observe
+      ↓
+    identify the actual failure
+      ↓
+    make the smallest reversible fix
+      ↓
+    test again
 
-Do not guess Android boot parameters.
+One variable at a time where practical.
 
-Current evidence converges on:
+Prefer:
 
-    BOARD_KERNEL_BASE   = 0x81600000
-    BOARD_KERNEL_PAGESIZE = 4096
-    BOARD_PAGE_SIZE     = 0x1000
-    board                = totoro
-    kernel cmdline       = empty in the CM9 BoardConfig
+    reuse → small fix → proven alternative → new code
 
-Independent evidence:
+Do not invent a larger architecture to solve a small failure.
 
-- Samsung kernel source: SDRAM base 0x81600000
-- Watson kernel source: zreladdr = SDRAM base + 0x8000
-- CM9 Totoro BoardConfig: base 0x81600000 and 4096-byte pages
-- Watson GB: real Totoro boot-image unpack/repack workflow and Gingerbread ramdisk
+If the problem cannot be fixed simply, stop and choose the next proven alternative deliberately.
 
-The remaining boot-header offsets must come from an actual compatible image or a historical build invocation. Do not substitute generic Android defaults merely because they are common.
+## 4. DONE / RESTORE
 
-Fastest reliable evidence path:
+If the implementation works:
 
-1. inspect historical Totoro build configuration;
-2. locate an actual compatible Totoro boot image if one is publicly recoverable;
-3. extract its header/offsets with Watson AIK;
-4. otherwise construct the image from the documented CM9 parameters and verify the result structurally before any device use.
+- verify it
+- record the working image/config/hash
+- preserve the result
+- move to the next small capability
 
-The JPLC1 Samsung HOME package is not a boot-image source: the preserved package contains no boot.img. Do not spend further time searching that package for one.
+If it fails and cannot be fixed safely:
 
-No phone.
+- restore the known-good backup
+- verify the phone returns to baseline
+- stop there or choose a new implementation path
 
-### M1-C — Kernel-only substitution
+A failed experiment is acceptable if the backup works.
 
-Use a known-compatible Totoro Gingerbread ramdisk, preferably Watson GB material, and replace only the kernel.
+## First useful milestone
 
-Goal:
+The first meaningful success is not "modern Linux desktop".
 
-    known Totoro ramdisk + reproducible zImage
+It is:
+
+    kernel boots
         ↓
-    test boot.img
+    init starts
+        ↓
+    /proc /sys /dev
+        ↓
+    shell / diagnostics
 
-Keep every other boot-image parameter unchanged from the verified reference.
+Then add hardware and userspace incrementally.
 
-No Alpine, new drivers, repartitioning, modem work, or unrelated kernel changes.
+## Later, only after the basic loop works
 
-No phone.
+M2 — make it a useful Linux computer:
 
-### M1-D — Controlled boot
+- storage
+- display/framebuffer
+- touchscreen/buttons
+- USB
+- Wi-Fi/networking
+- audio
+- battery/charging
+- suspend/resume
+- Bluetooth
+- camera
+- modem
 
-Phone required.
+Camera and modem remain optional.
 
-Only after:
+M3 — make the userspace maintainable and useful.
 
-1. original boot material is preserved or independently recoverable;
-2. boot-image construction is verified;
-3. rollback/recovery is prepared;
-4. the test image differs only in the intended kernel variable.
+M4 — optional mainline Linux audit.
 
-First proof:
+These are outcomes, not separate projects.
 
-    bootloader → kernel → init → diagnostics
+## Safety boundary
 
-M1 safety boundary:
+Never use:
 
-- no PIT write
-- no repartition
-- no EFS
-- no modem
-- no system
-- no userdata
+    --repartition
 
-## M2 — Minimal Linux computer
+Do not write:
 
-Once the kernel boots, bring up hardware in dependency order:
+    PIT
+    EFS
+    modem
 
-1. CPU / RAM
-2. init / proc / sys / dev
-3. storage
-4. framebuffer / display
-5. touchscreen / buttons
-6. USB
-7. Wi-Fi / networking
-8. audio
-9. battery / charging
-10. suspend / resume
-11. Bluetooth
-12. camera
-13. modem
+Do not wipe:
 
-Camera and modem are optional.
+    system
+    userdata
 
-Reuse existing Samsung/Watson/AndroidARMv6 drivers before writing new ones.
+unless a later experiment explicitly requires it and the backup/recovery path has already been verified.
 
-## M3 — Modern Totoro
+## Working rule
 
-Replace the Android userspace with a small maintainable Linux userspace.
+At every step ask:
 
-Initial direction:
-
-- BusyBox
-- standard Linux tools
-- SSH/network tools
-- lightweight framebuffer-oriented interface
-- Alpine userspace components where compatible
-- postmarketOS ideas/infrastructure only where they reduce device-specific work
-
-Do not make postmarketOS itself a hard dependency: the official Totoro port is not a booting solution and the old ARMv6 target is outside current postmarketOS support.
-
-Avoid heavy desktop environments, large browsers, and unnecessary background services.
-
-## M4 — Mainline audit
-
-Only after M3 works, audit each subsystem against upstream Linux.
-
-A hybrid kernel is a valid result. Mainline is valuable only when it provides a real maintenance or hardware benefit.
-
-## Reuse-first evidence map
-
-- Samsung OSS kernel → baseline and build reference
-- Watson → proven Totoro GB boot/ramdisk and packaging workflow
-- CM9 Totoro device tree → concrete historical boot configuration
-- AndroidARMv6/CM11 → later hardware/userspace evidence
-- other Totoro kernels/vendor trees → alternative implementation evidence
-- XDA/YouTube → procedural/historical evidence only
-
-See 10_RESEARCH/totoro-reuse-map.md.
-
-## Explicitly out of scope initially
-
-- Treble / GSI / DSU
-- GKI
-- forcing a modern Android release
-- modern LineageOS as the first route
-- bootloader replacement without demonstrated need
-- repartitioning
-- camera-first development
-- modem-first development
-- rewriting the entire kernel
-- large experimental patch stacks
-- reconstructing the original stock boot.img when a compatible historical Totoro boot path is sufficient
-
-## Decision rule
-
-    Existing working Totoro solution?
-             ↓ yes
-           reuse
-             ↓ no
-    small reversible fix?
-        ↓ yes       ↓ no
-       fix      proven alternative
-                     ↓
-                  adapt
-                     ↓
-                new code
-
-At every step:
-
-1. use the strongest existing evidence;
-2. choose the simplest compatible path;
-3. test one variable at a time;
-4. record the result;
-5. only then expand scope.
+    Can we do this simply?
+        ↓ yes
+      do it
+        ↓ no
+    Is there a proven alternative?
+        ↓ yes
+      use it
+        ↓ no
+    only then invent something new
