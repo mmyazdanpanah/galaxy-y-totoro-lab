@@ -195,6 +195,16 @@ Still not claimed from the sources:
 - an exact stock Samsung board field
 - the exact source lineage of the recovered community kernel
 
+### Broader research cross-check
+
+A separate research pass independently points to the same reusable Totoro ecosystem: Samsung BCM21553 kernel sources, Watson packaging work, CM9/CM11 device trees, and AndroidARMv6 hardware support.
+
+These sources are useful as research leads for M2/M3, but they remain secondary to evidence reproduced in this project.
+
+The research also reinforces the current strategy of treating postmarketOS/other modern userspaces as later alternatives rather than assuming an existing ready-made Totoro Linux port.
+
+For M2, preserve hardware/driver leads as a source inventory first; do not promote unverified hardware claims into project facts until they are tied to source code, device-tree/config evidence, or direct testing.
+
 ### Watson reuse path
 
 Watson GB contains:
