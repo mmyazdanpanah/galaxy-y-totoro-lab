@@ -3,3 +3,5 @@
 02_FIRMWARE/stock/*/source/*.zip
 02_FIRMWARE/stock/*/source/*.tar
 02_FIRMWARE/stock/*/source/*.tar.md5
+
+02_FIRMWARE/stock/*/inspection/
