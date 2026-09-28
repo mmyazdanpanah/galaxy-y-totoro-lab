@@ -51,6 +51,23 @@ No modem.
 No system.
 No userdata wipe.
 
+## 1.5. RESEARCH / RECONNAISSANCE
+
+Status: source audit complete; implementation preparation continues.
+
+The 2026-09-29 deep source audit independently corroborated the existing Totoro boot geometry and LZMA path and added a concrete historical BCM21553 driver inventory. It also established that current postmarketOS no longer provides ARMv6/armhf package and cross-compiler infrastructure.
+
+Before the first phone boot, perform a Totoro-specific low-risk UART/SBL reconnaissance where physically and electrically safe. The purpose is diagnostic visibility, not bootloader replacement. Use the historical Samsung Broadcom workflow as methodology only: identify UART, capture early output, determine whether boot interruption/environment access exists, and map the kernel-loading path.
+
+Keep the following historical alternatives documented but inactive unless the primary boot path requires them:
+
+- Watson MTD kernel support for Gingerbread.
+- Merruk Totoro build/compression tooling.
+- Historical Totoro device-tree material.
+- BCM21553 GPU/video driver archaeology (`v3d`, `hx170dec`, `h6270enc`).
+
+Do not infer that any later Samsung Broadcom bootloader technique is directly compatible with Totoro.
+
 ## 2. IMPLEMENTATION
 
 After backup is sufficient, make the smallest useful change.
@@ -71,11 +88,12 @@ Current technical evidence already gives us:
 
 - Samsung BCM21553 Totoro kernel source
 - bcm21553_totoro_05_defconfig
-- kernel address 0x81608000
+- kernel address 0x81608000 (independently corroborated by historical physical-device research)
 - base 0x81600000
 - page size 4096
 - verified historical Totoro boot image
 - verified raw-LZMA → newc CPIO ramdisk
+- independent historical confirmation that the BCM21553/Totoro kernel uses the Linux LZMA decompressor path
 - working historical Totoro ramdisk material
 
 Use existing working material first.
@@ -160,6 +178,8 @@ M2 — make it a useful Linux computer:
 Camera and modem remain optional.
 
 M3 — make the userspace maintainable and useful.
+
+Userspace note: current postmarketOS has dropped ARMv6/armhf package and cross-compiler support. Do not plan M3 around current postmarketOS binaries. Prefer a reproducible ARMv6-capable userspace assembled and maintained specifically for this project, or another historically compatible Linux userspace.
 
 M4 — optional mainline Linux audit.
 
