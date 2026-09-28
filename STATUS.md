@@ -2,7 +2,7 @@
 
 Phase: M1-B evidence reconstruction → M1-C implementation preparation
 
-Latest research pass: 2026-09-29 external-source audit completed; see 10_RESEARCH/external-source-audit-2026-09-29.md.
+Latest research pass: 2026-09-29 external-source audit and Samsung OSS Totoro source-baseline extraction completed; see `10_RESEARCH/external-source-audit-2026-09-29.md` and `10_RESEARCH/samsung-oss-totoro-source-baseline-2026-09-29.md`.
 
 Device: Samsung Galaxy Y GT-S5360 (totoro)
 
@@ -62,6 +62,18 @@ A deep audit of all supplied online sources independently corroborated several e
 
 Source-access limitations and provenance are recorded explicitly in the external-source audit; inaccessible or incorrectly resolving URLs are not treated as verified evidence.
 
+## Samsung OSS Totoro source checkpoint
+
+A first-party Samsung OSS kernel tree for GT-S5360 has now been verified at branch `gt-s5360_gb_opensource`, HEAD `179772dd` (`Initial import from Samsung opensource package`). The tree explicitly contains five Totoro defconfigs (`02B0`, `02B1`, `03`, `04`, `05`), `board-totoro.c`, `cpu-bcm21553.c`, `cpufreq_bcm21553.c`, and `cpuidle_bcm21553.c`.
+
+The Samsung README explicitly gives `make bcm21553_totoro_05_defconfig` followed by `make`, producing `arch/arm/boot/zImage`. The board source directly documents SDHC1/SDHC2/SDHC3 roles, the OneNAND/eMMC pin-mux constraint, BCM4325 WLAN/BT power/reset handling, and Totoro-specific input/display configuration. The CPU source documents BCM21553 AP/CP shared-memory, interrupt/GPIO, cache, and communications-processor initialization.
+
+The `05` defconfig also enables historical Broadcom display/multimedia paths including `CONFIG_FB_BCM`, `CONFIG_FB_BCM_215XX`, `CONFIG_BCM_DSS`, `CONFIG_BCM215XX_DSS`, and `CONFIG_BRCM_V3D`. This confirms historical Samsung V3D integration; it does not imply modern mainline V3D support.
+
+The source-level CPUFreq implementation now provides a direct primary-source track for reconciling the preserved six-entry binary operating-point structure. The `1124` field remains unresolved and must not be interpreted as MHz until the source conversion logic is mapped.
+
+The nested Samsung source checkout remains external research material and is intentionally not vendored into the main repository.
+
 ## Boot-chain evidence
 
 Independent evidence converges on the Totoro boot geometry:
@@ -103,7 +115,7 @@ The first phone experiment should not yet attempt overclocking, AVS modification
 1. Recover/confirm the exact historical boot packaging path sufficiently for a safe test image.
 2. Establish a Totoro-specific UART/SBL reconnaissance plan and determine whether existing hardware access can expose early boot diagnostics safely.
 3. Rebuild the Samsung Totoro kernel reproducibly and compare its zImage against preserved evidence.
-4. Finish the CPUFreq/AVS code-level reconstruction, especially the exact state-structure layout and `1124` semantics.
+4. Reconcile `cpufreq_bcm21553.c` with the preserved six-entry binary structure, especially the exact state-structure layout and `1124` semantics.
 5. Construct the first offline test boot image.
 6. Unpack/repack/check the result and record hashes.
 7. Verify rollback/recovery procedure.
