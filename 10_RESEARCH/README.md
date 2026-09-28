@@ -6,6 +6,7 @@ Technical and historical research supporting the Totoro laboratory.
 
 - modernization-history.md — broader mobile Linux/Android modernization history.
 - totoro-reuse-map.md — concrete reusable Totoro projects and what each contributes.
+- kernel-artifact-provenance.md — verified zImage artifact facts and explicit source/config/compiler provenance limits.
 - ../08_MODERNIZATION/plan.md — current engineering roadmap.
 
 ## Evidence classes
