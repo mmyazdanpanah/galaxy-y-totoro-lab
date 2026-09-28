@@ -49,7 +49,7 @@ Their exact labels remain unresolved.
 
 ## Exact five-defconfig comparison
 
-All five Samsung OSS Totoro defconfigs were parsed directly. Exact adjacent symbol-difference counts are: 02B0→02B1 = 156, 02B1→03 = 6, 03→04 = 12, 04→05 = 8. The meaningful progression is B0/B0-V3D-hack → B1/L2-EVCT → touchscreen/LCD variants → V3D/BE​MEM/Wi-Fi-reserved-memory → late Totoro F760/sensor/backlight/ILI9341 selections. Full details are in `10_RESEARCH/cpufreq-defconfig-reconciliation-2026-09-29.md`.
+All five Samsung OSS Totoro defconfigs were parsed directly. Exact adjacent symbol-difference counts are: 02B0→02B1 = 156, 02B1→03 = 6, 03→04 = 12, 04→05 = 8. The meaningful progression is B0/B0-V3D-hack → B1/L2-EVCT → touchscreen/LCD variants → V3D/BMEM/Wi-Fi-reserved-memory → late Totoro F760/sensor/backlight/ILI9341 selections. Full details are in `10_RESEARCH/cpufreq-defconfig-reconciliation-2026-09-29.md`.
 
 ## External-source convergence
 
