@@ -2,7 +2,7 @@
 
 Phase: M1-B evidence reconstruction → M1-C implementation preparation
 
-Latest research pass: 2026-09-29 external-source audit and Samsung OSS Totoro source-baseline extraction completed; see `10_RESEARCH/external-source-audit-2026-09-29.md` and `10_RESEARCH/samsung-oss-totoro-source-baseline-2026-09-29.md`.
+Latest research pass: 2026-09-29 external-source audit, Samsung OSS Totoro source-baseline extraction, source-to-binary CPUFreq reconciliation, and exact five-defconfig comparison completed.
 
 Device: Samsung Galaxy Y GT-S5360 (totoro)
 
@@ -35,11 +35,9 @@ The relevant object begins at virtual address `0xc0813e08`. It contains hardware
 
 The preceding object field `0xc0813f80 = 6` matches the number of entries.
 
-The same object contains `0xc0813f24 = 0xc005e3a8`, the address of `cpufreq_bcm_list_states()`, while `cpufreq_bcm_list_states()` itself loads the object address `0xc0813e08`. This is strong evidence that the structure is directly involved in the stock Broadcom CPUFreq implementation.
+The same object is still strongly implicated in CPUFreq by the previously recorded function-pointer/reference analysis. However, the public Samsung OSS source now establishes an important correction: its `struct bcm_freq_tbl` is an 8-byte `{cpu_freq, cpu_voltage}` record, but `device.c` contains only two states, 312 MHz/1.20 V and 832 MHz/1.36 V. AVS changes voltages for those two states; it does not add frequency states.
 
-The complete six-pair sequence occurs exactly once in the decompressed kernel. Absolute references to the first entry occur at `0xc0638cd4` and `0xc08153c0`; the individual interior entries are not referenced as standalone absolute pointers. This is consistent with the table being consumed through its enclosing structure rather than by independent pointers.
-
-The semantic interpretation is now substantially stronger than the earlier "candidate table" classification, but the exact C field layout and the question of whether all six entries are exposed by the runtime cpufreq policy still require code-level confirmation. In particular, `1124` must still be explained: it may be an exposed operating frequency or an internal PLL/divider representation.
+Therefore the preserved six-entry object is structurally compatible with the Samsung record shape but is not the table present in the public Samsung OSS branch. Its provenance must be established by a reproducible zImage comparison. The `1124` field remains unresolved and must not be interpreted as a stock MHz value.
 
 The earlier AVS voltage triplets remain present:
 
@@ -48,6 +46,10 @@ The earlier AVS voltage triplets remain present:
 - 1320 / 1220 / 1180 mV
 
 Their exact labels remain unresolved.
+
+## Exact five-defconfig comparison
+
+All five Samsung OSS Totoro defconfigs were parsed directly. Exact adjacent symbol-difference counts are: 02B0→02B1 = 156, 02B1→03 = 6, 03→04 = 12, 04→05 = 8. The meaningful progression is B0/B0-V3D-hack → B1/L2-EVCT → touchscreen/LCD variants → V3D/BBMEM/Wi-Fi-reserved-memory → late Totoro F760/sensor/backlight/ILI9341 selections. Full details are in `10_RESEARCH/cpufreq-defconfig-reconciliation-2026-09-29.md`.
 
 ## External-source convergence
 
@@ -112,10 +114,10 @@ The first phone experiment should not yet attempt overclocking, AVS modification
 
 ## Remaining M1 gates
 
-1. Recover/confirm the exact historical boot packaging path sufficiently for a safe test image.
-2. Establish a Totoro-specific UART/SBL reconnaissance plan and determine whether existing hardware access can expose early boot diagnostics safely.
-3. Rebuild the Samsung Totoro kernel reproducibly and compare its zImage against preserved evidence.
-4. Reconcile `cpufreq_bcm21553.c` with the preserved six-entry binary structure, especially the exact state-structure layout and `1124` semantics.
+1. Rebuild the Samsung Totoro kernel reproducibly using the historical `05` configuration/toolchain path.
+2. Compare the resulting zImage against the preserved kernel, including the CPUFreq object and configuration-sensitive symbols.
+3. Recover/confirm the exact-enough historical boot packaging path for a safe test image.
+4. Establish a Totoro-specific UART/SBL reconnaissance plan.
 5. Construct the first offline test boot image.
 6. Unpack/repack/check the result and record hashes.
 7. Verify rollback/recovery procedure.
@@ -135,7 +137,7 @@ The Museum baseline remains frozen.
 
 For the first meaningful hardware milestone — a reversible, diagnostic Totoro boot using a reproducible kernel and verified boot structure — the project is roughly 70–80% complete in research/preparation terms.
 
-The remaining work is concentrated rather than broad: build reproducibility, boot-image reconstruction, final AVS/CPUFreq interpretation, offline validation, and recovery verification.
+The remaining work is concentrated rather than broad: reproducible build, zImage provenance comparison, boot-image reconstruction, offline validation, and recovery verification.
 
 For a genuinely useful modern Linux system after that first boot, substantially more work remains. Hardware enablement (storage, framebuffer/display, input, USB, Wi-Fi/networking, audio, battery, suspend/resume and possibly Bluetooth) is a separate engineering phase.
 
