@@ -4,39 +4,42 @@ Research, preservation, reconstruction, and modernization of the Samsung Galaxy 
 
 ## Project direction
 
-The laboratory follows a preservation-first, reuse-first modernization strategy:
+The laboratory follows a preservation-first, reuse-first modernization strategy.
+
+There are now two independent modernization tracks:
 
     preserve specimen
           ↓
-    reconstruct hardware/software history
+    Android-native Linux userspace  ← active practical path
           ↓
-    reuse proven Totoro support
-          ↓
-    minimal Linux
-          ↓
-    Alpine / postmarketOS
-          ↓
-    useful lightweight system
-          ↓
-    selective mainline work
+    userspace Linux running
 
-The primary modernization target is a reproducible Linux system on the existing hardware. A fully mainline kernel is an optional later research milestone, not a prerequisite.
+    native Linux boot              ← research / deferred
+          ↓
+    reproducible kernel → boot image → controlled boot
+          ↓
+    later hardware/mainline work
+
+The active path keeps the stock Android kernel and boot chain intact. It aims to run a minimal ARMv6-compatible Linux userspace inside Android through chroot and make it reachable over SSH from the Mac.
+
+The native-boot path remains valuable research, but it is not a prerequisite for the first useful Linux milestone.
 
 ## Documentation map
 
-- STATUS.md — current specimen and laboratory state
+- STATUS.md — current specimen and project state
 - AGENTS.md — preservation and experiment rules
 - 01_PRESERVATION/ — specimen evidence and acquisition
 - 02_FIRMWARE/ — stock firmware history and reconstruction
 - 03_PARTITIONS/ — live partition evidence
 - 06_KERNEL/ — kernel archaeology
 - 07_BUILD/ — reproducible build work
-- 08_MODERNIZATION/plan.md — engineering roadmap and milestones
+- 08_MODERNIZATION/plan.md — two-track engineering roadmap
+- 08_MODERNIZATION/android-chroot-linux.md — active Android-native Linux/chroot procedure
 - 09_EXPERIMENTS/ — experiment records
 - 10_RESEARCH/modernization-history.md — historical modernization map
 
 ## Guiding rule
 
-**Simple fix first. Alternative second. Reinvention last.**
+**Observe → preserve → smallest reversible step → test → record.**
 
 No irreversible hardware change should be made merely to make the project look more modern. Evidence and reproducibility come first.
