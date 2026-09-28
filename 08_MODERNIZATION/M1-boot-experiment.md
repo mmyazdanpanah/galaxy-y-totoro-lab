@@ -8,6 +8,20 @@ M1 is the implementation stage of the simple project loop:
 
 The goal is only to prove a small, reproducible Totoro Linux boot path. Do not solve the whole phone at once.
 
+## Current gate status
+
+M1 is **not yet cleared for the first phone boot**.
+
+The research/preparation work is now close to the implementation boundary. The major remaining gates are:
+
+1. reproducible Samsung kernel build;
+2. final CPUFreq/AVS structure interpretation;
+3. exact-enough boot-image reconstruction;
+4. offline unpack/repack verification;
+5. rollback/recovery verification.
+
+The six-entry CPUFreq/AVS object discovered in the preserved kernel is now considered a high-confidence implementation lead, but no voltage/frequency modification should be made for the first boot.
+
 ## Current evidence
 
 ### Kernel
@@ -20,6 +34,8 @@ Samsung OSS explicitly supports GT-S5360_GB:
 Output:
 
     arch/arm/boot/zImage
+
+Samsung's public kernel repository documents the GT-S5360 build target and the historical CodeSourcery ARM EABI toolchain path. citeturn0search6
 
 ### Verified real Totoro boot image
 
@@ -52,18 +68,20 @@ Derived:
     tags_offset     0x00000100
     second_offset   0x00900000
 
-Payloads were checked against the header:
+### CPUFreq / AVS structure
 
-    kernel payload offset    0x1000
-    ramdisk payload offset   0x2b4000
-    second offset            0x4c0000
-    actual image size        0x4c0000
+The preserved kernel contains a unique six-entry frequency/voltage sequence inside an enclosing object at `0xc0813e08`:
 
-Kernel:
+    count = 6
 
-    size: 2,828,168 bytes
-    SHA-256:
-    251531c44c2763f2b58d36b02941d3b202a3987800a66f7990dabc9d6e59aefd
+    156   1160000
+    312   1200000
+    468   1200000
+    624   1220000
+    832   1300000
+    1124  1320000
+
+The same object stores a pointer to `cpufreq_bcm_list_states()`, and that function loads the object address. This is strong evidence that the table belongs to the stock CPUFreq implementation. It is an archaeology result only; the first boot image should preserve these stock values unchanged.
 
 ### Ramdisk
 
@@ -128,31 +146,9 @@ Independent evidence converges:
 
 The original stock Samsung mkbootimg command, exact stock cmdline, and exact stock board field are not claimed.
 
-### Stock Recovery
+## Implementation sequence
 
-The physical GT-S5360 has now been confirmed in stock Recovery Mode.
-
-Observed:
-
-    Android system recovery
-    reboot system now
-    apply update from sdcard
-    wipe data/factory reset
-
-Confirmed experimentally:
-
-- SD card is visible
-- folders can be opened
-- the physical Home button selects an item
-- the SD update path is available
-
-Historical research indicates that Galaxy Y stock recovery was used with update.zip and with temporary CWM ZIP packages. This is useful as a possible recovery/implementation route, but it is not required for the current plan.
-
-Do not use wipe data/factory reset.
-
-## Implementation
-
-Keep the first implementation small:
+The first hardware candidate should be deliberately conservative:
 
     known Totoro boot structure
           +
@@ -160,19 +156,23 @@ Keep the first implementation small:
           ↓
     test boot image
           ↓
+    offline unpack/recheck
+          ↓
+    rollback verification
+          ↓
     controlled phone test
 
-Before writing the phone:
+Do **not** combine the first boot with:
 
-1. complete the required backup;
-2. build the kernel;
-3. construct the boot image offline;
-4. unpack/recheck the constructed image;
-5. confirm the rollback path.
+- CPU overclocking
+- AVS/voltage changes
+- repartitioning
+- modem changes
+- EFS changes
+- a new userspace
+- a large kernel patch stack
 
-Do not change unrelated variables.
-
-Do not begin with a new Linux userspace.
+The first successful boot should prove only that the reconstructed boot path works.
 
 ## Fix
 
@@ -213,13 +213,8 @@ No modem.
 No system write.
 No userdata wipe.
 
-The first phone experiment should remain reversible.
+The first phone experiment must remain reversible.
 
-## Sources
+## External historical evidence
 
-- Samsung-OSS-Kernels/android_kernel_samsung_bcm21553
-- percy-g2/android_device_totoro
-- sonickles9/watson-kernel-totoro
-- thedeadfish59/cmx11-totoro
-- AndroidARMv6/CM11
-- historical GT-S5360 community boot-image work
+The Watson Totoro kernel repository documents a BCM21553 Totoro kernel with Gingerbread/ICS/KitKat ramdisk variants and an experimental DVFS-disabled configuration. It is historical comparison material, not the baseline for the first experiment. citeturn0search0
