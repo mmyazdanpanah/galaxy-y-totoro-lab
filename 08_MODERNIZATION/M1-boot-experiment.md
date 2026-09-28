@@ -12,7 +12,7 @@ The goal is only to prove a small, reproducible Totoro Linux boot path. Do not s
 
 M1 is **not yet cleared for the first phone boot**.
 
-The research/preparation work is now close to the implementation boundary. The major remaining gates are:
+The research/preparation work is now close to the implementation boundary. A first-party Samsung OSS source baseline has been verified and now provides the historical kernel/board reference. The major remaining gates are:
 
 1. reproducible Samsung kernel build;
 2. final CPUFreq/AVS structure interpretation;
@@ -35,7 +35,15 @@ Output:
 
     arch/arm/boot/zImage
 
-Samsung's public kernel repository documents the GT-S5360 build target and the historical CodeSourcery ARM EABI toolchain path. citeturn0search6
+Samsung's public kernel repository documents the GT-S5360 build target, the historical CodeSourcery ARM EABI toolchain path, and the expected `arch/arm/boot/zImage` output. The source branch used for this baseline is `gt-s5360_gb_opensource`, HEAD `179772dd`.
+
+### Samsung OSS source baseline
+
+The Samsung BCM21553 OSS tree explicitly contains five Totoro configurations: `bcm21553_totoro_02B0_defconfig`, `02B1`, `03`, `04`, and `05`, plus `board-totoro.c`, `cpu-bcm21553.c`, `cpufreq_bcm21553.c`, and `cpuidle_bcm21553.c`.
+
+The `05` defconfig enables historical Broadcom framebuffer/display and multimedia paths including `CONFIG_FB_BCM`, `CONFIG_FB_BCM_215XX`, `CONFIG_BCM_DSS`, `CONFIG_BCM215XX_DSS`, and `CONFIG_BRCM_V3D`. It also enables Broadcom MMC support and legacy flash/filesystem support. The board source explicitly documents SDIO/eMMC/SD controller roles and the OneNAND/SDHC2 pin-mux constraint.
+
+This source is the primary historical reference for the rebuild. It does not prove modern mainline support or the exact stock bootloader behavior.
 
 ### Verified real Totoro boot image
 
@@ -144,7 +152,11 @@ Independent evidence converges:
     kernel_addr = 0x81608000
     page_size = 4096
 
-The original stock Samsung mkbootimg command, exact stock cmdline, and exact stock board field are not claimed.
+The original stock Samsung mkbootimg command, exact stock cmdline, and exact stock board field are not claimed. The Samsung source baseline strengthens the `0x81600000` / `0x81608000` reconstruction but does not close the packaging question.
+
+## Next source-to-binary reconciliation
+
+Before building the first test image, reconcile the Samsung source directly against the preserved zImage: map the `cpufreq_bcm21553.c` state structure to the six-entry binary object, resolve the `1124` field semantics, identify the exact build configuration differences among the five Totoro defconfigs, and record the resulting configuration/hash provenance. Do not modify CPUFreq or AVS values during this phase.
 
 ## Implementation sequence
 
