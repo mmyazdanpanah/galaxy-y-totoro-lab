@@ -1,6 +1,6 @@
 # Status
 
-Phase: MUSEUM baseline frozen → M1-A/M1-B evidence and implementation preparation
+Phase: M1-B evidence reconstruction → M1-C implementation preparation
 
 Device: Samsung Galaxy Y GT-S5360 (totoro)
 
@@ -18,109 +18,80 @@ Device: Samsung Galaxy Y GT-S5360 (totoro)
 
 ## AVS / CPUFreq archaeology checkpoint
 
-The preserved decompressed Totoro kernel now contains a confirmed structured AVS/CPUFreq data region at file offset `0x80bf80`. It contains three voltage triplets separated by `0xffffffff` sentinels, followed by six coherent frequency/voltage pairs:
+The preserved decompressed Totoro kernel now provides strong binary evidence for a six-entry CPU operating-point structure.
 
-- 156 MHz → 1160 mV
-- 312 MHz → 1200 mV
-- 468 MHz → 1200 mV
-- 624 MHz → 1220 mV
-- 832 MHz → 1300 mV
-- 1124 → 1320 mV
+The relevant object begins at virtual address `0xc0813e08`. It contains hardware/register descriptor records, function pointers, configuration fields, a state count, and the following unique six-entry sequence at `0xc0813fb8`:
 
-The binary also contains Broadcom AVS/CPUFreq symbols and diagnostics for OTP silicon classification, FF/TT/SS voltage selection, normal/turbo regulator states, cpufreq table creation, and frequency/voltage transitions.
+| Entry | Frequency field | Voltage field |
+|---:|---:|---:|
+| 0 | 156 | 1,160,000 |
+| 1 | 312 | 1,200,000 |
+| 2 | 468 | 1,200,000 |
+| 3 | 624 | 1,220,000 |
+| 4 | 832 | 1,300,000 |
+| 5 | 1124 | 1,320,000 |
 
-The `1124` value is **not yet classified as a confirmed exposed cpufreq operating point**. Its code-level consumer must be recovered first. Likewise, the exact semantic labels of the three preceding voltage triplets remain unresolved.
+The preceding object field `0xc0813f80 = 6` matches the number of entries.
 
-The current evidence supports reconstructing the historical binary implementation before modifying the later Watson `device.c`. See `10_RESEARCH/avs-cpufreq-binary-reconstruction.md`.
+The same object contains `0xc0813f24 = 0xc005e3a8`, the address of `cpufreq_bcm_list_states()`, while `cpufreq_bcm_list_states()` itself loads the object address `0xc0813e08`. This is strong evidence that the structure is directly involved in the stock Broadcom CPUFreq implementation.
+
+The complete six-pair sequence occurs exactly once in the decompressed kernel. Absolute references to the first entry occur at `0xc0638cd4` and `0xc08153c0`; the individual interior entries are not referenced as standalone absolute pointers. This is consistent with the table being consumed through its enclosing structure rather than by independent pointers.
+
+The semantic interpretation is now substantially stronger than the earlier "candidate table" classification, but the exact C field layout and the question of whether all six entries are exposed by the runtime cpufreq policy still require code-level confirmation. In particular, `1124` must still be explained: it may be an exposed operating frequency or an internal PLL/divider representation.
+
+The earlier AVS voltage triplets remain present:
+
+- 1360 / 1360 / 1300 mV
+- 1320 / 1300 / 1240 mV
+- 1320 / 1220 / 1180 mV
+
+Their exact labels remain unresolved.
+
+## Boot-chain evidence
+
+Independent evidence converges on the Totoro boot geometry:
+
+- base: `0x81600000`
+- kernel address: `0x81608000`
+- page size: 4096
+- tags: `0x81600100`
+- verified community Totoro boot image: kernel 2,828,168 bytes; ramdisk 2,142,869 bytes
+
+The remaining historical packaging unknowns are the exact stock mkbootimg invocation, stock cmdline/board fields, and complete provenance of the stock boot image. The community image is usable as structural evidence and as an offline packaging reference, but is not claimed to be Samsung stock.
 
 ## Current modernization state
 
-The archaeology phase has produced enough evidence to move directly toward a controlled Totoro boot experiment.
+The project is now at the transition from archaeology to controlled implementation.
 
-The shortest reliable route is:
+Target loop:
 
-    Samsung/known Totoro kernel
+    preserved baseline
+         ↓
+    reproducible Samsung kernel
          ↓
     verified Totoro boot geometry
          ↓
-    Watson Gingerbread ramdisk
+    offline boot-image reconstruction
          ↓
-    kernel-only substitution
+    structural/hash verification
          ↓
-    offline verification
+    controlled first phone boot
          ↓
-    controlled boot
+    diagnostics
          ↓
     minimal Linux userspace
-         ↓
-    Modern Totoro
 
-The primary target remains M3 — Modern Totoro. Mainline Linux is optional.
+The first phone experiment should not yet attempt overclocking, AVS modification, repartitioning, modem work, or a large userspace migration.
 
-## M1-B evidence lock
+## Remaining M1 gates
 
-CM9 Totoro BoardConfig.mk independently records:
-
-- BOARD_KERNEL_BASE = 0x81600000
-- BOARD_KERNEL_PAGESIZE = 4096
-- BOARD_PAGE_SIZE = 0x1000
-- BOARD_KERNEL_CMDLINE = empty
-- BOARD_BOOTIMAGE_PARTITION_SIZE = 5242880
-
-This agrees with Samsung and Watson kernel evidence for the Totoro SDRAM base.
-
-Watson GB provides a real Totoro Gingerbread ramdisk and a real unpack/repack workflow. Its Git repository does not contain the referenced boot.img because image files are ignored.
-
-The preserved JPLC1 HOME firmware package contains no boot.img.
-
-Therefore the project will not waste time trying to recover the missing stock boot.img from the JPLC1 package.
-
-Remaining M1-B unknowns:
-
-- kernel offset
-- ramdisk offset
-- tags offset
-- exact historical mkbootimg invocation
-- complete compatible boot header
-
-These must be recovered from historical build metadata or an actual compatible Totoro image. They must not be guessed.
-
-## M1-A build environment
-
-Historical Linux ARM EABI 4.4.3 material is available.
-
-Preferred path:
-
-1. contained Linux execution of the historical toolchain;
-2. modern reproducible ARM cross-build if the historical host becomes the bottleneck;
-3. source changes only for demonstrated compatibility failures.
-
-Phone is not required for M1-A through M1-C.
-
-## Reuse findings
-
-Existing Totoro projects are treated as a parts library:
-
-- Samsung OSS → baseline kernel
-- Watson → Gingerbread ramdisk and boot packaging
-- CM9 Totoro → concrete device/boot configuration
-- AndroidARMv6/CM11 → later hardware/userspace evidence
-- other historical Totoro kernels → alternative implementation evidence
-
-See:
-
-- 08_MODERNIZATION/plan.md
-- 08_MODERNIZATION/M1-boot-experiment.md
-- 10_RESEARCH/totoro-reuse-map.md
-
-## Next actions
-
-1. Recover complete boot-image parameters from historical Totoro build metadata or an actual compatible image.
-2. Build Samsung's kernel with the simplest reproducible toolchain path.
-3. Reconstruct and unpack a compatible Totoro boot image offline.
-4. Substitute only the reproducible kernel.
-5. Verify the resulting image structurally.
-6. Only then prepare the controlled phone boot.
+1. Recover/confirm the exact historical boot packaging path sufficiently for a safe test image.
+2. Rebuild the Samsung Totoro kernel reproducibly and compare its zImage against preserved evidence.
+3. Finish the CPUFreq/AVS code-level reconstruction, especially the exact state-structure layout and `1124` semantics.
+4. Construct the first offline test boot image.
+5. Unpack/repack/check the result and record hashes.
+6. Verify rollback/recovery procedure.
+7. Only then perform the first controlled phone boot.
 
 ## Safety boundary
 
@@ -132,6 +103,12 @@ Do not write PIT, modem, system, userdata, or EFS during M1.
 
 The Museum baseline remains frozen.
 
-## Known firmware lineage
+## Estimate
 
-The observed PDA/CSC correspond to the JPLC1/OJPLC1 Middle East/Arabic stock family. The historically matching package uses modem S5360XXLC1; the specimen currently reports S5360XXLK3. The reason for that combination is not established and is not required for the current M1 path.
+For the first meaningful hardware milestone — a reversible, diagnostic Totoro boot using a reproducible kernel and verified boot structure — the project is roughly 70–80% complete in research/preparation terms.
+
+The remaining work is concentrated rather than broad: build reproducibility, boot-image reconstruction, final AVS/CPUFreq interpretation, offline validation, and recovery verification.
+
+For a genuinely useful modern Linux system after that first boot, substantially more work remains. Hardware enablement (storage, framebuffer/display, input, USB, Wi-Fi/networking, audio, battery, suspend/resume and possibly Bluetooth) is a separate engineering phase.
+
+The project should therefore be considered **close to the first controlled hardware experiment, but not yet ready to flash or boot the phone**.
