@@ -53,13 +53,13 @@ No userdata wipe.
 
 ## 1.5. RESEARCH / RECONNAISSANCE
 
-Status: source audit and Samsung OSS Totoro source extraction complete; implementation preparation continues.
+Status: CPUFreq/defconfig archaeology complete; reproducible-build preparation is next.
 
 The 2026-09-29 deep source audit independently corroborated the existing Totoro boot geometry and LZMA path and added a concrete historical BCM21553 driver inventory. A first-party Samsung OSS tree was then verified at `gt-s5360_gb_opensource` / `179772dd`, with five Totoro defconfigs plus `board-totoro.c`, CPU/CP initialization, CPUFreq/CPUidle code, and the historical display/V3D configuration. It also established that current postmarketOS no longer provides ARMv6/armhf package and cross-compiler infrastructure.
 
 Before the first phone boot, perform a Totoro-specific low-risk UART/SBL reconnaissance where physically and electrically safe. The purpose is diagnostic visibility, not bootloader replacement. Use the historical Samsung Broadcom workflow as methodology only: identify UART, capture early output, determine whether boot interruption/environment access exists, and map the kernel-loading path.
 
-The Samsung source baseline should now be treated as the primary historical kernel reference. Use it to reconcile board configuration, storage, display, CPUFreq, and boot geometry before introducing any new driver or patch.
+The Samsung source baseline remains the primary historical kernel reference. The exact five-defconfig comparison and CPUFreq source-to-binary reconciliation are now complete. The preserved six-state CPUFreq-shaped object is not identical to the public Samsung OSS two-state table, so its provenance should be resolved by reproducible zImage comparison rather than speculative interpretation.
 
 Keep the following historical alternatives documented but inactive unless the primary boot path requires them:
 
