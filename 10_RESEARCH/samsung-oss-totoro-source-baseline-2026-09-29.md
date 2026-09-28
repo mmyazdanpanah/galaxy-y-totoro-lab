@@ -93,13 +93,27 @@ These are primary-source board facts and should take precedence over generic BCM
 
 This confirms that the historical kernel is not merely a generic ARMv6 port. It contains platform-specific AP/CP and cache initialization for the BCM21553.
 
-## 5. CPUFreq / DVFS
+## 5. CPUFreq / DVFS — corrected source/binary interpretation
 
-The Samsung tree contains a dedicated `cpufreq_bcm21553.c` implementation.
+The Samsung tree contains a dedicated BCM21553 CPUFreq implementation. Its public source defines:
 
-This is the source-level counterpart to the six-entry structure identified in the preserved decompressed Totoro kernel at virtual address `0xc0813e08`.
+```
+struct bcm_freq_tbl {
+    u32 cpu_freq;      /* in MHz */
+    u32 cpu_voltage;   /* in uV */
+};
+```
 
-The binary evidence currently gives:
+The Samsung platform source constructs exactly two CPUFreq states:
+
+| State | Frequency | Voltage |
+|---:|---:|---:|
+| normal | 312 MHz | 1,200,000 uV |
+| turbo | 832 MHz | 1,360,000 uV |
+
+The BCM21553 governor also defines normal=312 MHz and turbo=832 MHz. AVS can replace the voltages for those two states according to silicon bin; it does not add additional frequency states.
+
+The preserved decompressed Totoro kernel contains a previously identified six-record sequence at `0xc0813fb8` inside an object at `0xc0813e08`:
 
 | Entry | Frequency field | Voltage field |
 |---:|---:|---:|
@@ -110,9 +124,11 @@ The binary evidence currently gives:
 | 4 | 832 | 1,300,000 |
 | 5 | 1124 | 1,320,000 |
 
-The source-level correlation is now strong enough to move the CPUFreq investigation from binary-only archaeology to source/binary reconciliation.
+Six 8-byte records are structurally compatible with the public `bcm_freq_tbl` shape, but the six-state contents do not match the two-state Samsung OSS table. The earlier interpretation that the preserved six-state object was simply the public Samsung OSS CPUFreq table is therefore retired.
 
-However, `1124` remains unresolved and must not be treated as a normal MHz value without confirming the source structure and conversion logic.
+The stronger conclusion is that the preserved binary and public Samsung source share a related CPUFreq record shape and implementation lineage, while the preserved six-state table comes from a different source/configuration lineage. The `1124` value remains unresolved and must not be treated as a stock Samsung OSS MHz value.
+
+The complete reconciliation and exact five-defconfig comparison are recorded in `10_RESEARCH/cpufreq-defconfig-reconciliation-2026-09-29.md`.
 
 No CPUFreq or AVS modification is appropriate for the first boot.
 
