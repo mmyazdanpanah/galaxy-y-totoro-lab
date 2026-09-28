@@ -53,11 +53,13 @@ No userdata wipe.
 
 ## 1.5. RESEARCH / RECONNAISSANCE
 
-Status: source audit complete; implementation preparation continues.
+Status: source audit and Samsung OSS Totoro source extraction complete; implementation preparation continues.
 
-The 2026-09-29 deep source audit independently corroborated the existing Totoro boot geometry and LZMA path and added a concrete historical BCM21553 driver inventory. It also established that current postmarketOS no longer provides ARMv6/armhf package and cross-compiler infrastructure.
+The 2026-09-29 deep source audit independently corroborated the existing Totoro boot geometry and LZMA path and added a concrete historical BCM21553 driver inventory. A first-party Samsung OSS tree was then verified at `gt-s5360_gb_opensource` / `179772dd`, with five Totoro defconfigs plus `board-totoro.c`, CPU/CP initialization, CPUFreq/CPUidle code, and the historical display/V3D configuration. It also established that current postmarketOS no longer provides ARMv6/armhf package and cross-compiler infrastructure.
 
 Before the first phone boot, perform a Totoro-specific low-risk UART/SBL reconnaissance where physically and electrically safe. The purpose is diagnostic visibility, not bootloader replacement. Use the historical Samsung Broadcom workflow as methodology only: identify UART, capture early output, determine whether boot interruption/environment access exists, and map the kernel-loading path.
+
+The Samsung source baseline should now be treated as the primary historical kernel reference. Use it to reconcile board configuration, storage, display, CPUFreq, and boot geometry before introducing any new driver or patch.
 
 Keep the following historical alternatives documented but inactive unless the primary boot path requires them:
 
@@ -86,8 +88,9 @@ First implementation target:
 
 Current technical evidence already gives us:
 
-- Samsung BCM21553 Totoro kernel source
-- bcm21553_totoro_05_defconfig
+- Samsung BCM21553 Totoro kernel source at `gt-s5360_gb_opensource` / `179772dd`
+- `bcm21553_totoro_05_defconfig`
+- Totoro-specific `board-totoro.c`, `cpu-bcm21553.c`, `cpufreq_bcm21553.c`, and `cpuidle_bcm21553.c`
 - kernel address 0x81608000 (independently corroborated by historical physical-device research)
 - base 0x81600000
 - page size 4096
