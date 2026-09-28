@@ -12,15 +12,17 @@ The goal is only to prove a small, reproducible Totoro Linux boot path. Do not s
 
 M1 is **not yet cleared for the first phone boot**.
 
-The research/preparation work is now close to the implementation boundary. A first-party Samsung OSS source baseline has been verified and now provides the historical kernel/board reference. The major remaining gates are:
+The research/preparation work is now close to the implementation boundary. A first-party Samsung OSS source baseline has been verified, and the CPUFreq/defconfig archaeology step is complete enough to proceed to reproducible-build work.
+
+The remaining gates are:
 
 1. reproducible Samsung kernel build;
-2. final CPUFreq/AVS structure interpretation;
+2. direct zImage comparison against the preserved kernel;
 3. exact-enough boot-image reconstruction;
 4. offline unpack/repack verification;
 5. rollback/recovery verification.
 
-The six-entry CPUFreq/AVS object discovered in the preserved kernel is now considered a high-confidence implementation lead, but no voltage/frequency modification should be made for the first boot.
+The preserved six-entry CPUFreq-shaped object remains an important provenance clue, but it is not identical to the two-state CPUFreq table in the public Samsung OSS source. No voltage/frequency modification should be made for the first boot.
 
 ## Current evidence
 
@@ -76,11 +78,16 @@ Derived:
     tags_offset     0x00000100
     second_offset   0x00900000
 
-### CPUFreq / AVS structure
+### CPUFreq / AVS source-to-binary result
 
-The preserved kernel contains a unique six-entry frequency/voltage sequence inside an enclosing object at `0xc0813e08`:
+The public Samsung OSS source defines an 8-byte `{cpu_freq MHz, cpu_voltage uV}` record and a two-state platform table:
 
-    count = 6
+    312 MHz / 1200000 uV
+    832 MHz / 1360000 uV
+
+AVS can alter the voltages of those two states.
+
+The preserved kernel instead contains the previously identified six-record sequence:
 
     156   1160000
     312   1200000
@@ -89,7 +96,7 @@ The preserved kernel contains a unique six-entry frequency/voltage sequence insi
     832   1300000
     1124  1320000
 
-The same object stores a pointer to `cpufreq_bcm_list_states()`, and that function loads the object address. This is strong evidence that the table belongs to the stock CPUFreq implementation. It is an archaeology result only; the first boot image should preserve these stock values unchanged.
+The record shape is compatible, but the contents are not the public Samsung OSS table. The six-state object's provenance must therefore be established by zImage comparison; `1124` must not be assumed to be a stock MHz value.
 
 ### Ramdisk
 
@@ -154,9 +161,25 @@ Independent evidence converges:
 
 The original stock Samsung mkbootimg command, exact stock cmdline, and exact stock board field are not claimed. The Samsung source baseline strengthens the `0x81600000` / `0x81608000` reconstruction but does not close the packaging question.
 
-## Next source-to-binary reconciliation
+## Next implementation experiment
 
-Before building the first test image, reconcile the Samsung source directly against the preserved zImage: map the `cpufreq_bcm21553.c` state structure to the six-entry binary object, resolve the `1124` field semantics, identify the exact build configuration differences among the five Totoro defconfigs, and record the resulting configuration/hash provenance. Do not modify CPUFreq or AVS values during this phase.
+The next task is a controlled source-to-binary build experiment rather than additional broad archaeology:
+
+    Samsung OSS 179772dd
+          +
+    bcm21553_totoro_05_defconfig
+          +
+    historical toolchain
+          ↓
+    reproducible zImage
+          ↓
+    compare with preserved kernel
+          ↓
+    identify CPUFreq/config provenance
+          ↓
+    reconstruct boot image offline
+
+Do not modify CPUFreq or AVS values during this build.
 
 ## Implementation sequence
 
