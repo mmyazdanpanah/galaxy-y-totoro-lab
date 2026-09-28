@@ -2,221 +2,114 @@
 
 ## Goal
 
-Turn the Samsung Galaxy Y GT-S5360 (totoro) into a useful, lightweight Linux system while preserving a known-good recovery path.
+Make the Samsung Galaxy Y GT-S5360 (totoro) useful as a lightweight Linux computer while preserving a known-good Android recovery path.
 
-Keep the project simple:
+The project now uses two independent implementation tracks. The first practical track does not replace the Android boot chain.
 
-    BACKUP → IMPLEMENTATION → FIX → DONE / RESTORE BACKUP
+    PRESERVE
+       ↓
+    ANDROID-NATIVE LINUX USERSPACE  ← active
+       ↓
+    userspace Linux running
 
-Do not create complexity before the phone requires it.
+    NATIVE LINUX BOOT              ← research / deferred
+       ↓
+    reproducible kernel → boot image → controlled boot
 
-## 1. BACKUP
+Keeping these paths separate lets us obtain a useful Linux environment without coupling the first experiment to kernel, bootloader, or repartitioning work.
 
-Status: active.
+## Track A — Android-native Linux userspace (active)
 
-First make the physical phone safely recoverable.
+### A0 — Read-only inventory
 
-Already preserved:
+Before rooting, capture ro.build.display.id, Android release/model, complete /proc/cpuinfo, uname -a, mount, df -h /data, /proc/mtd, /proc/filesystems, /dev/loop*, /proc/devices, getprop, and /proc/cmdline.
 
-- stock device identity and firmware state
-- Download Mode
-- live PIT
-- JPLC1 firmware source archive
-- historical Totoro boot-image specimen
-- kernel/ramdisk evidence
-- stock Recovery Mode
+Storage and filesystem route is selected from this evidence. Do not assume /data filesystem type, EFS path, or loop-device availability.
 
-Stock Recovery is confirmed working and can:
+### A1 — Static ARMv6 userspace test
 
-- browse the SD card
-- open folders
-- select with the physical Home button
-- expose an "apply update from sdcard" path
+Before root, run a statically linked ARMv6-capable BusyBox from /data/local/tmp.
 
-The SD update mechanism is a possible recovery/experiment path, but we do not need to explore it further unless it helps the backup or implementation.
+Minimum checks include BusyBox execution, uname, and a small floating-point expression through awk. The actual phone /proc/cpuinfo remains authoritative for CPU/VFP capability.
 
-Backup priority:
+Record package/version provenance and checksum.
 
-1. obtain the simplest reliable backup of the phone's original boot/recovery state;
-2. preserve the backup with hashes and provenance;
-3. verify that the rollback path is usable;
-4. stop backup work once we have a sufficient recovery path.
+### A2 — Firmware-matched root gate
 
-Do not modify the phone during backup.
+Root only after the phone's actual ro.build.display.id is matched to the selected root method/package and the package checksum/provenance is verified.
 
-No repartition.
-No PIT write.
-No EFS.
-No modem.
-No system.
-No userdata wipe.
+Stock recovery remains the preferred first recovery environment. Odin is not required for this first pass and remains a later recovery/firmware tool if needed.
 
-## 1.5. RESEARCH / RECONNAISSANCE
+### A3 — Preserve after root
 
-Status: CPUFreq/defconfig archaeology complete; reproducible-build preparation is next.
+Immediately re-check mount, /proc/mtd, getprop, and /proc/cmdline.
 
-The 2026-09-29 deep source audit independently corroborated the existing Totoro boot geometry and LZMA path and added a concrete historical BCM21553 driver inventory. A first-party Samsung OSS tree was then verified at `gt-s5360_gb_opensource` / `179772dd`, with five Totoro defconfigs plus `board-totoro.c`, CPU/CP initialization, CPUFreq/CPUidle code, and the historical display/V3D configuration. It also established that current postmarketOS no longer provides ARMv6/armhf package and cross-compiler infrastructure.
+For EFS, inspect actual partition/mount evidence first. Any EFS backup must be read-only and hashed. Do not write or format EFS.
 
-Before the first phone boot, perform a Totoro-specific low-risk UART/SBL reconnaissance where physically and electrically safe. The purpose is diagnostic visibility, not bootloader replacement. Use the historical Samsung Broadcom workflow as methodology only: identify UART, capture early output, determine whether boot interruption/environment access exists, and map the kernel-loading path.
+### A4 — Rootfs location
 
-The Samsung source baseline remains the primary historical kernel reference. The exact five-defconfig comparison and CPUFreq source-to-binary reconciliation are now complete. The preserved six-state CPUFreq-shaped object is not identical to the public Samsung OSS two-state table, so its provenance should be resolved by reproducible zImage comparison rather than speculative interpretation.
+Preferred: /data/local/alpine
 
-Keep the following historical alternatives documented but inactive unless the primary boot path requires them:
+Fallback: loop-backed image on removable SD.
 
-- Watson MTD kernel support for Gingerbread.
-- Merruk Totoro build/compression tooling.
-- Historical Totoro device-tree material.
-- BCM21553 GPU/video driver archaeology (`v3d`, `hx170dec`, `h6270enc`).
+Do not use CWM partitioning or repartitioning as the main route.
 
-Do not infer that any later Samsung Broadcom bootloader technique is directly compatible with Totoro.
+### A5 — ARMv6-compatible rootfs
 
-## 2. IMPLEMENTATION
+Select the Alpine ARMv6-compatible release from official Alpine release/download information at experiment time. Record exact release, architecture, checksum, and source.
 
-After backup is sufficient, make the smallest useful change.
+If the selected userspace fails with an explicit compatibility error, stop and diagnose before trying an older release.
 
-First implementation target:
+### A6 — Chroot
 
-    Samsung/Totoro boot chain
-          ↓
-    reproducible Totoro kernel
-          ↓
-    known-compatible boot structure
-          ↓
-    controlled boot
-          ↓
-    diagnostics
+Build the minimum required environment for /dev, /dev/pts, /proc, and /sys, adapting commands to the actual Android 2.6.35 environment.
 
-Current technical evidence already gives us:
+Maintain two small launchers: interactive shell and SSH daemon.
 
-- Samsung BCM21553 Totoro kernel source at `gt-s5360_gb_opensource` / `179772dd`
-- `bcm21553_totoro_05_defconfig`
-- Totoro-specific `board-totoro.c`, `cpu-bcm21553.c`, `cpufreq_bcm21553.c`, and `cpuidle_bcm21553.c`
-- kernel address 0x81608000 (independently corroborated by historical physical-device research)
-- base 0x81600000
-- page size 4096
-- verified historical Totoro boot image
-- verified raw-LZMA → newc CPIO ramdisk
-- independent historical confirmation that the BCM21553/Totoro kernel uses the Linux LZMA decompressor path
-- working historical Totoro ramdisk material
+### A7 — Networking + SSH
 
-Use existing working material first.
+Use Android's working network path. Install only the packages required for network diagnostics and SSH.
 
-Do not rebuild obsolete infrastructure just because it is interesting.
+Intended endpoint: Mac → ADB forward → sshd → chroot.
 
-Do not begin with Alpine, postmarketOS, mainline Linux, new drivers, repartitioning, modem work, or a large patch stack.
+### A8 — Milestone
 
-The first implementation should change as little as possible.
+The active track is complete at its first milestone when Android boots normally, the Linux rootfs enters reproducibly, networking works, sshd runs, and the Mac can connect.
 
-## 3. FIX
+Milestone name: **userspace Linux running**.
 
-If the implementation does not boot or something is broken:
+## Track B — Native Linux boot (research / deferred)
 
-    observe
-      ↓
-    identify the actual failure
-      ↓
-    make the smallest reversible fix
-      ↓
-    test again
+Preserved and valid:
 
-One variable at a time where practical.
+- Samsung OSS gt-s5360_gb_opensource source baseline;
+- bcm21553_totoro_05_defconfig build path;
+- CPUFreq/AVS source-to-binary reconciliation;
+- exact five-defconfig comparison;
+- Totoro boot geometry and historical boot-image specimen;
+- UART/SBL reconnaissance methodology;
+- later mainline/hardware-enablement research.
 
-Prefer:
-
-    reuse → small fix → proven alternative → new code
-
-Do not invent a larger architecture to solve a small failure.
-
-If the problem cannot be fixed simply, stop and choose the next proven alternative deliberately.
-
-## 4. DONE / RESTORE
-
-If the implementation works:
-
-- verify it
-- record the working image/config/hash
-- preserve the result
-- move to the next small capability
-
-If it fails and cannot be fixed safely:
-
-- restore the known-good backup
-- verify the phone returns to baseline
-- stop there or choose a new implementation path
-
-A failed experiment is acceptable if the backup works.
-
-## First useful milestone
-
-The first meaningful success is not "modern Linux desktop".
-
-It is:
-
-    kernel boots
-        ↓
-    init starts
-        ↓
-    /proc /sys /dev
-        ↓
-    shell / diagnostics
-
-Then add hardware and userspace incrementally.
-
-## Later, only after the basic loop works
-
-M2 — make it a useful Linux computer:
-
-- storage
-- display/framebuffer
-- touchscreen/buttons
-- USB
-- Wi-Fi/networking
-- audio
-- battery/charging
-- suspend/resume
-- Bluetooth
-- camera
-- modem
-
-Camera and modem remain optional.
-
-M3 — make the userspace maintainable and useful.
-
-Userspace note: current postmarketOS has dropped ARMv6/armhf package and cross-compiler support. Do not plan M3 around current postmarketOS binaries. Prefer a reproducible ARMv6-capable userspace assembled and maintained specifically for this project, or another historically compatible Linux userspace.
-
-M4 — optional mainline Linux audit.
-
-These are outcomes, not separate projects.
+Track B must not block Track A.
 
 ## Safety boundary
 
-Never use:
+Never use repartitioning as a first solution.
 
-    --repartition
+Do not write PIT, EFS, or modem. Do not wipe system or userdata.
 
-Do not write:
-
-    PIT
-    EFS
-    modem
-
-Do not wipe:
-
-    system
-    userdata
-
-unless a later experiment explicitly requires it and the backup/recovery path has already been verified.
+Do not combine the first experiment with CPU overclocking, AVS/voltage changes, kernel replacement, bootloader replacement, boot-image flashing, or a large patch stack.
 
 ## Working rule
 
-At every step ask:
+    observe
+      ↓
+    preserve
+      ↓
+    smallest reversible step
+      ↓
+    test
+      ↓
+    record
 
-    Can we do this simply?
-        ↓ yes
-      do it
-        ↓ no
-    Is there a proven alternative?
-        ↓ yes
-      use it
-        ↓ no
-    only then invent something new
+If a command fails, stop at the failing boundary and diagnose from actual phone output. Do not guess storage paths, filesystem types, root packages, Alpine versions, or mount options.
