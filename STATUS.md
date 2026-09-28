@@ -2,6 +2,8 @@
 
 Phase: M1-B evidence reconstruction → M1-C implementation preparation
 
+Latest research pass: 2026-09-29 external-source audit completed; see 10_RESEARCH/external-source-audit-2026-09-29.md.
+
 Device: Samsung Galaxy Y GT-S5360 (totoro)
 
 ## Preserved state
@@ -47,6 +49,19 @@ The earlier AVS voltage triplets remain present:
 
 Their exact labels remain unresolved.
 
+## External-source convergence
+
+A deep audit of all supplied online sources independently corroborated several existing conclusions and added actionable evidence:
+
+- Historical physical GT-S5360 work places the working kernel geometry at `0x81608000` and confirms LZMA kernel compression.
+- The same investigation exposes a historical BCM21553 driver surface including `v3d`, `lcd`, `camera`, `bcm_*`, `hx170dec`, `h6270enc`, `mtd`, `bml`, and `stl`.
+- Watson demonstrates historical MTD support on Gingerbread, but also reports radio/EFS and recovery limitations; MTD remains an alternative, not the first experiment.
+- Merruk Technology supplies Totoro-specific build/compression tooling and `totoro_brcm21553_05_defconfig`.
+- Current postmarketOS has dropped ARMv6/armhf package and cross-compiler support, so it should no longer be treated as the immediate userspace target.
+- Later Samsung Broadcom bootloader research strengthens the case for a UART/SBL reconnaissance phase before invasive boot-chain work.
+
+Source-access limitations and provenance are recorded explicitly in the external-source audit; inaccessible or incorrectly resolving URLs are not treated as verified evidence.
+
 ## Boot-chain evidence
 
 Independent evidence converges on the Totoro boot geometry:
@@ -86,12 +101,13 @@ The first phone experiment should not yet attempt overclocking, AVS modification
 ## Remaining M1 gates
 
 1. Recover/confirm the exact historical boot packaging path sufficiently for a safe test image.
-2. Rebuild the Samsung Totoro kernel reproducibly and compare its zImage against preserved evidence.
-3. Finish the CPUFreq/AVS code-level reconstruction, especially the exact state-structure layout and `1124` semantics.
-4. Construct the first offline test boot image.
-5. Unpack/repack/check the result and record hashes.
-6. Verify rollback/recovery procedure.
-7. Only then perform the first controlled phone boot.
+2. Establish a Totoro-specific UART/SBL reconnaissance plan and determine whether existing hardware access can expose early boot diagnostics safely.
+3. Rebuild the Samsung Totoro kernel reproducibly and compare its zImage against preserved evidence.
+4. Finish the CPUFreq/AVS code-level reconstruction, especially the exact state-structure layout and `1124` semantics.
+5. Construct the first offline test boot image.
+6. Unpack/repack/check the result and record hashes.
+7. Verify rollback/recovery procedure.
+8. Only then perform the first controlled phone boot.
 
 ## Safety boundary
 
@@ -111,4 +127,4 @@ The remaining work is concentrated rather than broad: build reproducibility, boo
 
 For a genuinely useful modern Linux system after that first boot, substantially more work remains. Hardware enablement (storage, framebuffer/display, input, USB, Wi-Fi/networking, audio, battery, suspend/resume and possibly Bluetooth) is a separate engineering phase.
 
-The project should therefore be considered **close to the first controlled hardware experiment, but not yet ready to flash or boot the phone**.
+The project should therefore be considered **close to the first controlled hardware experiment, but not yet ready to flash or boot the phone**. The new source audit does not change that safety boundary; it makes the next reconnaissance and implementation steps better specified.
