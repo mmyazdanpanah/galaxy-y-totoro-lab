@@ -16,6 +16,23 @@ Device: Samsung Galaxy Y GT-S5360 (totoro)
 - Custom binary count: 0
 - Live PIT SHA-256: 06d5b4f05588fa8f06d29f46c7e5056002fdfcbd15901520d651b4ee87a9a538
 
+## AVS / CPUFreq archaeology checkpoint
+
+The preserved decompressed Totoro kernel now contains a confirmed structured AVS/CPUFreq data region at file offset `0x80bf80`. It contains three voltage triplets separated by `0xffffffff` sentinels, followed by six coherent frequency/voltage pairs:
+
+- 156 MHz → 1160 mV
+- 312 MHz → 1200 mV
+- 468 MHz → 1200 mV
+- 624 MHz → 1220 mV
+- 832 MHz → 1300 mV
+- 1124 → 1320 mV
+
+The binary also contains Broadcom AVS/CPUFreq symbols and diagnostics for OTP silicon classification, FF/TT/SS voltage selection, normal/turbo regulator states, cpufreq table creation, and frequency/voltage transitions.
+
+The `1124` value is **not yet classified as a confirmed exposed cpufreq operating point**. Its code-level consumer must be recovered first. Likewise, the exact semantic labels of the three preceding voltage triplets remain unresolved.
+
+The current evidence supports reconstructing the historical binary implementation before modifying the later Watson `device.c`. See `10_RESEARCH/avs-cpufreq-binary-reconstruction.md`.
+
 ## Current modernization state
 
 The archaeology phase has produced enough evidence to move directly toward a controlled Totoro boot experiment.
