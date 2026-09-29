@@ -245,3 +245,71 @@ The package metadata is not exact JPLC1 evidence: `pre-device=tass` and `post-bu
 Direct read-only checks from the interactive shell returned `No such file or directory` for all five package destination paths: `/system/xbin/su`, `/system/xbin/busybox`, `/system/xbin/ssh`, `/system/xbin/sqlite3`, and `/system/app/Superuser.apk`. No handset write has occurred.
 
 **Disposition: do not flash yet.** The artifact audit is complete, but the final firmware-matched root gate remains open. Obtain and verify the exact stock JPLC1 firmware/recovery environment before any recovery installation attempt. Full evidence is recorded in `10_RESEARCH/root-package-evidence-gate-2026-09-29.md`.
+
+
+## Post-root preservation checkpoint — 2026-09-29
+
+Root is now verified on the physical JPLC1 handset and the required post-root read-only inventory is complete.
+
+### Root verification
+
+- Model: GT-S5360
+- Build: `GINGERBREAD.JPLC1`
+- ADB device: `0123456789ABCDEF device`
+- `su -c id`: `uid=0(root) gid=0(root)`
+
+### Direct JPLC1 storage evidence
+
+`/proc/cmdline` reports the active `bcm_umi-nand` layout:
+
+    bcm_boot       256 KiB
+    loke         2,048 KiB
+    loke_bk      2,048 KiB
+    systemdata     256 KiB
+    modem        12,800 KiB
+    param_lfs     5,120 KiB
+    boot          5,120 KiB
+    boot_backup   5,120 KiB
+    system      235,520 KiB
+    cache        40,960 KiB
+    userdata    201,984 KiB
+    efs             256 KiB
+    sysparm_dep     256 KiB
+    umts_cal        256 KiB
+    cal           1,024 KiB
+
+`/proc/partitions` independently reports the corresponding BML devices:
+
+    bml1 256
+    bml2 2048
+    bml3 2048
+    bml4 256
+    bml5 12800
+    bml6 5120
+    bml7 5120
+    bml8 5120
+    bml9 235520
+    bml10 40960
+    bml11 201984
+    bml12 256
+    bml13 256
+    bml14 256
+    bml15 1024
+
+Live mounts confirm:
+
+    /dev/stl9  -> /system      RFS  RO
+    /dev/stl10 -> /cache       RFS  RW
+    /dev/stl11 -> /data        RFS  RW
+    /dev/stl6  -> /mnt/.lfs    j4fs RW
+    mmcblk0p1  -> /mnt/sdcard  VFAT RW
+
+The complete raw command outputs are preserved in `01_PRESERVATION/evidence/post-root-jplc1-device-inventory-2026-09-29.md`.
+
+### Consequence for the chroot track
+
+The active userspace-Linux experiment now has direct storage evidence from the actual rooted phone. In particular, `/data` is Samsung RFS rather than ext*, while the removable SD is VFAT. Rootfs placement and mount strategy must therefore be selected from observed permissions/capabilities rather than assumed Linux filesystem behavior.
+
+The next gate is capability evaluation: verify the available static ARMv6 userspace tooling, confirm safe rootfs placement options, and only then build the smallest reversible chroot experiment.
+
+Do not modify EFS, repartition, replace the boot/recovery images, or write BML/STL partitions as part of this userspace track.
