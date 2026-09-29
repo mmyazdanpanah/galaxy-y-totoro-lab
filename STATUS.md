@@ -234,3 +234,48 @@ BusyBox v1.17.2 provides chroot, losetup, mount, umount, pivot_root, mke2fs, and
 Current practical gate: BASIC CHROOT EXECUTION PASSED. Loop-backed storage and network operation remain unverified. No mount, loop attachment, BML/STL write, EFS operation, repartitioning, or boot/recovery modification has been performed during this checkpoint.
 
 Next: perform a reversible loop-device capability test, then choose between a directory rootfs and filesystem-image rootfs from observed results.
+
+
+## Loop-backed storage checkpoint — 2026-09-29
+
+Direct testing on the physical rooted JPLC1 handset has now validated loop-backed ext2 storage.
+
+- A 4 MiB regular file was created under `/data/local/tmp` with BusyBox `dd`.
+- `mke2fs` successfully created an ext2 filesystem in that file.
+- `losetup -f` identified a free loop device; Android exposes the usable node as `/dev/block/loop0`, not `/dev/loop0`.
+- `losetup /dev/block/loop0 /data/local/tmp/totoro-loop-test.img` returned status 0.
+- `mount -t ext2 /dev/block/loop0 /data/local/tmp/totoro-loop-mnt` returned status 0.
+- The live mount was explicitly `rw`: `/dev/block/loop0 on /data/local/tmp/totoro-loop-mnt type ext2 (rw,relatime,errors=continue)`.
+- A file was written and read back successfully inside the mounted filesystem.
+- The filesystem was unmounted, the loop device detached, and the image/mountpoint removed successfully.
+
+This proves a reversible filesystem-image mechanism on the actual handset. It does **not** yet prove execution of an ELF binary from the loop-mounted filesystem; the shell-script execution attempt used a BusyBox shebang incorrectly and is not treated as an execution test.
+
+Detailed evidence: `01_PRESERVATION/evidence/loop-backed-ext2-capability-2026-09-29.md`.
+
+## Rootfs candidate assessment checkpoint — 2026-09-29
+
+The rootfs selection has been narrowed using the live Totoro constraints.
+
+**Primary compatibility experiment:** Alpine Linux v3.22.6 `armhf` minirootfs. Alpine's official architecture matrix explicitly describes its `armhf` port as 32-bit ARM for ARMv6 devices, and the official v3.22 armhf release directory contains the 3.22.6 minirootfs with checksum/GPG sidecars. The archive is approximately 3 MiB compressed. citeturn0search0turn1search0
+
+The primary unresolved risk is the old kernel. Totoro runs Linux 2.6.35.7. Current musl documentation states that Linux >=2.6.39 is necessary for POSIX-conformant behaviour; older kernels may work with varying non-conformance. Therefore the architecture match does **not** establish current Alpine/musl compatibility. citeturn3search0
+
+The fallback investigation order is:
+1. older Alpine `armhf` release;
+2. a purpose-built ARMv6 musl/BusyBox tree with tightly controlled syscall and ABI requirements;
+3. minimal Debian `armel` userspace.
+
+Current Debian `armhf` is ARMv7-oriented and therefore not a Totoro target. Debian `armel` is the older-ARM alternative, but current Debian documentation says trixie is the last armel release and support is being restricted, so it is a fallback rather than the first deployment target. citeturn0search7turn0search12
+
+Storage is also tight: the latest measured `/data` free space was about 162.1 MiB. Public Galaxy Y specifications commonly report about 290 MiB RAM, while Alpine's current requirements page lists 256 MiB as a generic armhf starting point and warns that its non-x86 figures are work in progress. This leaves little margin while stock Android remains resident. citeturn2search6turn1search7
+
+Accordingly, the first real rootfs must be minimal: no desktop, no compiler toolchain, no unnecessary daemons, and no retained package cache. The image size will be chosen from the actual extracted rootfs size rather than guessed.
+
+Detailed assessment: `10_RESEARCH/rootfs-candidate-assessment-2026-09-29.md`.
+
+## Current active gate
+
+The next step is **offline verification and minimal live compatibility testing of Alpine v3.22.6 armhf**, not full rootfs deployment. Verify the official archive SHA-256/GPG metadata, inspect representative ELF binaries for ARM ISA/ABI/interpreter requirements, then run the smallest verified candidate executable on the phone. A failure such as Illegal instruction, missing loader, ABI error, or unsupported syscall is a diagnosis boundary.
+
+The native/mainline boot track remains separate and unchanged.
