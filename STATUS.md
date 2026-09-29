@@ -209,3 +209,28 @@ Direct runtime evidence:
 The post-root preservation gate is therefore **PASSED**.
 
 No additional phone write was performed during this inventory. The next work is capability evaluation and rootfs design for the Android-native Linux userspace track. Native boot remains a separate research track.
+
+
+## Chroot capability checkpoint — 2026-09-29
+
+Direct post-root testing on the physical GT-S5360 JPLC1 handset has now confirmed basic chroot execution.
+
+Observed with BusyBox v1.17.2:
+
+    /system/xbin/busybox chroot /data/local/tmp/totoro-chroot /bin/busybox sh -c 'echo CHROOT_EXEC_OK; /bin/busybox id'
+
+Result:
+
+    CHROOT_EXEC_OK
+    uid=0 gid=0
+    chroot_status=0
+
+The test root was created under /data/local/tmp using BusyBox mkdir and cp; the copied BusyBox is root-owned and executable. This confirms that the rooted Android environment can change root to a separate directory tree and execute a static ARM userspace binary as UID 0.
+
+The earlier Android mkdir -p failure (Read-only file system) is not evidence that /data is read-only: the same directory was subsequently created successfully with BusyBox mkdir, and file write/read/remove tests on /data/local/tmp and /mnt/sdcard both passed.
+
+BusyBox v1.17.2 provides chroot, losetup, mount, umount, pivot_root, mke2fs, and networking applets. Applet availability is not treated as proof of kernel/device capability.
+
+Current practical gate: BASIC CHROOT EXECUTION PASSED. Loop-backed storage and network operation remain unverified. No mount, loop attachment, BML/STL write, EFS operation, repartitioning, or boot/recovery modification has been performed during this checkpoint.
+
+Next: perform a reversible loop-device capability test, then choose between a directory rootfs and filesystem-image rootfs from observed results.
