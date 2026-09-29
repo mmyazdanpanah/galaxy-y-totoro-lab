@@ -186,3 +186,53 @@ The next phase is capability testing and rootfs design, not flashing.
 **ROOT GATE: PASSED**
 
 **NEXT: ARMv6 userspace/rootfs capability evaluation**
+
+
+## Chroot capability test — 2026-09-29
+
+### Temporary test root
+
+The following temporary tree was created successfully with BusyBox:
+
+    /data/local/tmp/totoro-chroot/bin/busybox
+
+The copied BusyBox was verified as:
+
+    -rwsr-xr-x 1 0 0 1062992 ... /data/local/tmp/totoro-chroot/bin/busybox
+
+The setuid bit is inherited from the installed root-owned BusyBox copy. The test itself was run from an already-rooted shell.
+
+### Direct chroot result
+
+Command:
+
+    /system/xbin/busybox chroot /data/local/tmp/totoro-chroot /bin/busybox sh -c 'echo CHROOT_EXEC_OK; /bin/busybox id'
+
+Observed:
+
+    CHROOT_EXEC_OK
+    uid=0 gid=0
+
+Exit status:
+
+    chroot_status=0
+
+This directly confirms basic chroot execution on the rooted JPLC1 handset.
+
+### Storage/tooling observations
+
+- BusyBox version: 1.17.2 (2010-09-05).
+- BusyBox applets include chroot, losetup, mount, umount, pivot_root, mke2fs, mkfs.ext2, dd, and network utilities.
+- /data/local/tmp write/read/remove test passed.
+- /mnt/sdcard write/read/remove test passed.
+- /mnt/sdcard remains mounted VFAT with noexec; therefore SD file storage and direct executable storage are distinct concerns.
+- /proc/self/ns remains absent.
+- /proc/net/route returned no displayed routes during this capture; this is not yet treated as proof that Android networking is unavailable.
+
+### Safety
+
+No loop device was attached, no mount state was changed, and no BML/STL, EFS, boot, recovery, modem, PIT, or partition operation was performed.
+
+CAPABILITY CHECKPOINT: BASIC CHROOT PASSED
+
+NEXT: LOOP-DEVICE CAPABILITY TEST
