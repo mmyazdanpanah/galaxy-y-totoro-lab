@@ -141,3 +141,26 @@ The package metadata is not JPLC1-specific: `pre-device=tass` and `post-build=go
 A direct read-only interactive ADB check found all five package destination paths absent on the current handset: `/system/xbin/su`, `/system/xbin/busybox`, `/system/xbin/ssh`, `/system/xbin/sqlite3`, and `/system/app/Superuser.apk`. No phone write has occurred.
 
 **Root-package disposition: do not flash yet.** The package has passed the offline artifact audit but has not passed the final firmware-matched root gate. The remaining safe preparation step is to obtain and independently verify the exact stock JPLC1 firmware/recovery environment and compare its recovery/update assumptions with the actual handset. Detailed evidence is recorded in `10_RESEARCH/root-package-evidence-gate-2026-09-29.md`.
+
+
+## Root installation readiness checkpoint — 2026-09-29
+
+The final pre-install checks have now passed on the user's local workstation.
+
+- Git root was verified as the exact project repository: `/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab`.
+- Branch is `main`, tracking `origin/main`.
+- No tracked local changes are present. The four untracked paths remain intentional research/preservation work areas and were not altered:
+  - `01_PRESERVATION/evidence/pre-root-baseline/`
+  - `10_RESEARCH/work/TotoroBuild.sparseimage`
+  - `10_RESEARCH/work/root-research/`
+  - `10_RESEARCH/work/samsung-bcm21553/`
+- The SD-card copy of `update.zip` was re-hashed immediately before installation preparation.
+- SD-card package SHA-256: `3e4ebe31b908ea3a8750347f875f91493f550edd1cd2a3006293c45a41592a27`.
+- Package size: 2,260,360 bytes.
+
+The package therefore remains byte-identical to the offline-verified artifact. The planned handset operation is limited to applying this historical update package from stock recovery. No Odin firmware flash, PIT/repartition operation, boot/recovery replacement, modem change, CSC change, EFS write, userdata wipe, or format is part of this step.
+
+The recovery/restore assessment remains conservative: exact JPLC1 recovery-binary identity has not been proven, and a complete JPLC1 firmware restore package has not been established. However, the actual JPLC1 handset mount topology matches the preserved stock Totoro recovery layout (`/system -> /dev/stl9`, `/cache -> /dev/stl10`, `/data -> /dev/stl11`, `/mnt/.lfs -> /dev/stl6`), while the verified updater-script performs only a system-tree extraction, four 04755 permission assignments, and a system unmount. This is sufficient for the narrowly scoped root experiment, but not evidence of a complete device-recovery guarantee.
+
+**Current state: ready for the controlled stock-recovery installation step; phone write has not yet been performed.**
+
