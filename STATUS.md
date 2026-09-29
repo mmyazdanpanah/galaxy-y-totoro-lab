@@ -126,3 +126,18 @@ The exact historical Galaxy Y root artifact has now been acquired and independen
 This is an **artifact-verification checkpoint, not a flashing approval**. The next gate is offline inspection of `META-INF/com/google/android/updater-script` and `update-binary`, including device assertions and a complete write/format/partition-operation audit. No phone write has occurred.
 
 The verified artifact, extracted updater binary, and pre-root baseline are being organized under the repository's preservation/research work areas. Raw research binaries remain work artifacts unless explicitly committed.
+
+
+## Root-package evidence gate — 2026-09-29
+
+The offline audit of the historical `update.zip` candidate is now complete. The exact artifact remains hash-verified (2,260,360 bytes; MD5 `eac189609fd71de6bf053e7ff2636d7e`; SHA-1 `89108755e3cf1d6c298e60fc963881dacb3d313d`; SHA-256 `3e4ebe31b908ea3a8750347f875f91493f550edd1cd2a3006293c45a41592a27`) and passes ZIP integrity testing.
+
+The active updater script explicitly accepts `GT-S5360`. Its active operations are limited to extracting the package's `system` tree, assigning 04755 permissions to `sqlite3`, `su`, `ssh`, and `busybox`, then unmounting `/system`. The script's format/mount lines are commented out. No active raw-image, program-execution, modem, boot, recovery, EFS, repartitioning, or partition-formatting operation was identified. The bundled updater binary nevertheless has broader recovery/BML capabilities; this is recorded separately and is not treated as proof that those capabilities are invoked by the current script.
+
+Offline payload inspection reports ARM EABI4 static BusyBox and ARM EABI5 dynamically linked `ssh`, `sqlite3`, and `su` using `/system/bin/linker`. These headers are not obviously incompatible with the ARMv6 handset, but they are not a substitute for execution testing.
+
+The package metadata is not JPLC1-specific: `pre-device=tass` and `post-build=google/passion/passion:2.3.3/GRI40/102588:user/release-keys`. Its generic Android signing certificate is likewise not independent provenance proof.
+
+A direct read-only interactive ADB check found all five package destination paths absent on the current handset: `/system/xbin/su`, `/system/xbin/busybox`, `/system/xbin/ssh`, `/system/xbin/sqlite3`, and `/system/app/Superuser.apk`. No phone write has occurred.
+
+**Root-package disposition: do not flash yet.** The package has passed the offline artifact audit but has not passed the final firmware-matched root gate. The remaining safe preparation step is to obtain and independently verify the exact stock JPLC1 firmware/recovery environment and compare its recovery/update assumptions with the actual handset. Detailed evidence is recorded in `10_RESEARCH/root-package-evidence-gate-2026-09-29.md`.
