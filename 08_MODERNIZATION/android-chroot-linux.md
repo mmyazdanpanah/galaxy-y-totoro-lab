@@ -313,3 +313,39 @@ The active userspace-Linux experiment now has direct storage evidence from the a
 The next gate is capability evaluation: verify the available static ARMv6 userspace tooling, confirm safe rootfs placement options, and only then build the smallest reversible chroot experiment.
 
 Do not modify EFS, repartition, replace the boot/recovery images, or write BML/STL partitions as part of this userspace track.
+
+
+## Chroot capability checkpoint — 2026-09-29
+
+A direct test on the rooted physical JPLC1 handset has now confirmed basic chroot execution.
+
+The temporary root tree was created with BusyBox under /data/local/tmp/totoro-chroot, and the known-good BusyBox v1.17.2 binary was copied to /bin/busybox. The test command returned:
+
+    CHROOT_EXEC_OK
+    uid=0 gid=0
+    chroot_status=0
+
+Therefore the current Android 2.6.35.7 environment supports the basic chroot operation required by this track. This is a direct runtime result, not an inference from BusyBox applet availability.
+
+The Android standalone mkdir command previously reported Read-only file system; BusyBox mkdir subsequently succeeded. BusyBox cp also succeeded where standalone cp was unavailable. These command-environment differences are recorded to avoid misclassifying them as filesystem limitations.
+
+BusyBox v1.17.2 exposes the required chroot, losetup, mount, umount, pivot_root, and filesystem/networking applets. Their presence does not yet prove loop or network functionality.
+
+### Current capability state
+
+- Root: confirmed.
+- /data/local/tmp write/read: confirmed.
+- SD write/read: confirmed.
+- Shell-script execution under /data/local/tmp: confirmed.
+- Static BusyBox execution: confirmed for installed BusyBox.
+- Basic chroot: CONFIRMED.
+- Loop-device attachment/mount: not yet tested.
+- Network route/connectivity: not yet confirmed.
+- /proc/self/ns: absent in current environment.
+- Native/mainline boot: separate deferred research track.
+
+The temporary test tree is intentionally retained until the next capability test. No mount or partition operation has been performed.
+
+### Next gate
+
+Test loop-device functionality using the smallest reversible operation possible. Do not alter /system, /data, EFS, BML/STL, PIT, boot, recovery, modem, or partition layout.
