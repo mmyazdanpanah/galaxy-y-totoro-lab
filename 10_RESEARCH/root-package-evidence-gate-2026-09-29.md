@@ -96,6 +96,62 @@ This is now a meaningful destination check; unlike an earlier shell attempt that
 
 The combined `ls -ld` command used in the same capture was malformed for the phone's old `ls` implementation (`-ld` was interpreted as a filename). That does not invalidate the individual target-file results.
 
+## Final read-only partition mapping
+
+The final live-device mapping pass was completed on the physical JPLC1 handset.
+
+### Directly observed
+
+- `bml0/c`: 513,024 KiB
+- `bml1`: 256 KiB
+- `bml2`: 2,048 KiB
+- `bml3`: 2,048 KiB
+- `bml4`: 256 KiB
+- `bml5`: 12,800 KiB
+- `bml6`: 5,120 KiB
+- `bml7`: 5,120 KiB
+- `bml8`: 5,120 KiB
+- `bml9`: 235,520 KiB
+- `bml10`: 40,960 KiB
+- `bml11`: 201,984 KiB
+- `bml12`: 256 KiB
+- `bml13`: 256 KiB
+- `bml14`: 256 KiB
+- `bml15`: 1,024 KiB
+
+The handset exposes corresponding `stl1` through `stl15` device nodes, with `stl6`, `stl9`, `stl10`, and `stl11` actively mounted.
+
+### Confirmed filesystem mappings
+
+- `stl6` → `/mnt/.lfs` using j4fs
+- `stl9` → `/system` using RFS, read-only
+- `stl10` → `/cache` using RFS, read-write
+- `stl11` → `/data` using RFS, read-write
+- `mmcblk0p1` → `/mnt/sdcard` using VFAT
+
+The live `/proc/partitions` output reports no conventional MTD partitions, while the Samsung BML/STL device layer is fully present. The empty `/proc/mtd` output is therefore not evidence that the NAND partitioning is absent.
+
+### Kernel/recovery cross-check
+
+The JPLF1 SBL inspection independently contains explicit strings for:
+
+- `kernel partition`
+- `recovery partition`
+- `loke partition`
+- `pit partition`
+- `Cannot find the recovery partition!`
+- `Cannot find the kernel partition!`
+- `Kernel read success from kernel partition`
+- `KERNEL`
+- `loke`
+- `loke_bk`
+
+This independently confirms that the Samsung SBL model has distinct kernel and recovery partition concepts. The live JPLC1 device's `bml7` and `bml8` are therefore retained as the kernel/recovery candidates, but their exact roles are **not promoted to JPLC1-specific proof** until an exact JPLC1 PIT or equivalent partition-table evidence is archived and decoded.
+
+Likewise, no exact role is asserted here for `bml3`, `bml4`, `bml5`, or `bml12`–`bml15` beyond their observed existence and sizes.
+
+The attempted sysfs and recursive recovery-string searches were blocked by the unprivileged Android shell's permission restrictions and are not used as evidence.
+
 ## Decision gate
 
 ### Established
@@ -106,6 +162,9 @@ The combined `ls -ld` command used in the same capture was malformed for the pho
 - No active formatting, repartitioning, modem, boot/recovery, or EFS operation was found in the script.
 - Payload ELF architecture is consistent with this ARMv6-era platform at the header level.
 - Target payload paths are currently absent.
+- The live handset's BML/STL partition architecture is directly observed.
+- `/system`, `/cache`, `/data`, and `/mnt/.lfs` mappings are directly confirmed.
+- JPLF1 SBL independently confirms separate kernel/recovery partition concepts.
 - No phone write has occurred.
 
 ### Still unresolved
@@ -113,16 +172,21 @@ The combined `ls -ld` command used in the same capture was malformed for the pho
 - Exact compatibility with `GINGERBREAD.JPLC1` / `S5360JPLC1` is not proven.
 - Package metadata identifies `tass` / `passion` rather than JPLC1.
 - The recovery updater binary has broad low-level capabilities even though the present script does not invoke the dangerous operations.
-- Exact stock JPLC1 recovery/firmware provenance has not yet been independently archived and verified.
+- Exact JPLC1 PIT/recovery partition provenance has not yet been independently archived and decoded.
+- Exact roles of the remaining unmounted BML partitions are not yet proven from JPLC1-specific partition-table evidence.
 
 ### Current disposition
 
-**Do not flash yet.**
+**Root experiment may now be prepared, but no direct partition or boot-chain write is authorized.**
 
-The package has passed the offline artifact audit but has not passed the final firmware-matched root gate.
+The verified historical `update.zip` remains a candidate for a stock-recovery `Apply update from SD` experiment only. Do not use Odin, PIT flashing, modem flashing, bootloader flashing, boot-image flashing, recovery-image flashing, or direct BML/STL writes as part of this experiment.
 
-## Next safe step
+The first experiment remains intentionally narrow: use the existing stock recovery to apply the verified package, then verify whether the expected five payload files appear with the expected setuid permissions and whether root access is actually obtained.
 
-Obtain and independently verify the exact stock JPLC1 firmware/recovery environment before any recovery installation attempt. Preserve its archive and checksums, inspect its recovery/update environment where feasible, and compare the expected device/build assertions against the actual handset.
+If the package fails its device/build assertion or otherwise aborts before installation, stop and preserve the recovery output; do not bypass assertions or substitute a different binary.
 
-No PIT, EFS, modem, bootloader, system, userdata, partition format, or boot-image write is authorized by this checkpoint.
+No PIT, EFS, modem, bootloader, userdata, partition format, or boot-image write is authorized by this checkpoint.
+
+## Next milestone
+
+After a successful root experiment, preserve the rooted JPLC1 state and move directly to the ARMv6 Linux userspace/chroot track. Native Linux boot remains a separate research track and does not block the first practical Linux userspace milestone.
