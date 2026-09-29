@@ -124,3 +124,14 @@ Track A has completed the pre-root observation and preservation gates and has no
 - ZIP integrity test passed.
 
 Before any recovery installation, perform a complete offline updater-script/update-binary audit and confirm the GT-S5360/JPLC1 assertions. The artifact verification does not by itself authorize flashing.
+
+
+## Root-package evidence gate — 2026-09-29
+
+Track A has completed the offline audit of the historical root artifact. The updater script explicitly accepts `GT-S5360` and its active operations are limited to extracting `system`, setting 04755 permissions on the five bundled tools, and unmounting `/system`. The script's format/mount lines are commented out; no active raw-image, program-execution, modem, boot/recovery, EFS, repartitioning, or partition-formatting operation was identified. The updater binary itself has broader recovery/BML capabilities and remains a separate risk consideration.
+
+The payloads are ARM EABI4 static BusyBox plus ARM EABI5 dynamic `ssh`, `sqlite3`, and `su`; this is not obviously incompatible with the ARMv6 handset at the ELF-header level. Package metadata remains non-JPLC1-specific (`pre-device=tass`, `post-build=google/passion/passion:2.3.3/GRI40/102588:user/release-keys`). Direct read-only checks found the five package destination paths absent on the handset. No write has occurred.
+
+Therefore A2 is **not yet cleared**. The next gate is independent acquisition and verification of the exact stock JPLC1 firmware/recovery environment. Do not flash the historical root package until that comparison is complete.
+
+Detailed evidence: `10_RESEARCH/root-package-evidence-gate-2026-09-29.md`.
