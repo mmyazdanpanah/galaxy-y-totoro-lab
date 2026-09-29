@@ -257,18 +257,18 @@ Detailed evidence: `01_PRESERVATION/evidence/loop-backed-ext2-capability-2026-09
 
 The rootfs selection has been narrowed using the live Totoro constraints.
 
-**Primary compatibility experiment:** Alpine Linux v3.22.6 `armhf` minirootfs. Alpine's official architecture matrix explicitly describes its `armhf` port as 32-bit ARM for ARMv6 devices, and the official v3.22 armhf release directory contains the 3.22.6 minirootfs with checksum/GPG sidecars. The archive is approximately 3 MiB compressed. citeturn0search0turn1search0
+**Primary compatibility experiment:** Alpine Linux v3.22.6 `armhf` minirootfs. Alpine's official architecture matrix explicitly describes its `armhf` port as 32-bit ARM for ARMv6 devices, and the official v3.22 armhf release directory contains the 3.22.6 minirootfs with checksum/GPG sidecars. The archive is approximately 3 MiB compressed.
 
-The primary unresolved risk is the old kernel. Totoro runs Linux 2.6.35.7. Current musl documentation states that Linux >=2.6.39 is necessary for POSIX-conformant behaviour; older kernels may work with varying non-conformance. Therefore the architecture match does **not** establish current Alpine/musl compatibility. citeturn3search0
+The primary unresolved risk is the old kernel. Totoro runs Linux 2.6.35.7. Current musl documentation states that Linux >=2.6.39 is necessary for POSIX-conformant behaviour; older kernels may work with varying non-conformance. Therefore the architecture match does **not** establish current Alpine/musl compatibility.
 
 The fallback investigation order is:
 1. older Alpine `armhf` release;
 2. a purpose-built ARMv6 musl/BusyBox tree with tightly controlled syscall and ABI requirements;
 3. minimal Debian `armel` userspace.
 
-Current Debian `armhf` is ARMv7-oriented and therefore not a Totoro target. Debian `armel` is the older-ARM alternative, but current Debian documentation says trixie is the last armel release and support is being restricted, so it is a fallback rather than the first deployment target. citeturn0search7turn0search12
+Current Debian `armhf` is ARMv7-oriented and therefore not a Totoro target. Debian `armel` is the older-ARM alternative, but current Debian documentation says trixie is the last armel release and support is being restricted, so it is a fallback rather than the first deployment target.
 
-Storage is also tight: the latest measured `/data` free space was about 162.1 MiB. Public Galaxy Y specifications commonly report about 290 MiB RAM, while Alpine's current requirements page lists 256 MiB as a generic armhf starting point and warns that its non-x86 figures are work in progress. This leaves little margin while stock Android remains resident. citeturn2search6turn1search7
+Storage is also tight: the latest measured `/data` free space was about 162.1 MiB. Public Galaxy Y specifications commonly report about 290 MiB RAM, while Alpine's current requirements page lists 256 MiB as a generic armhf starting point and warns that its non-x86 figures are work in progress. This leaves little margin while stock Android remains resident.
 
 Accordingly, the first real rootfs must be minimal: no desktop, no compiler toolchain, no unnecessary daemons, and no retained package cache. The image size will be chosen from the actual extracted rootfs size rather than guessed.
 
