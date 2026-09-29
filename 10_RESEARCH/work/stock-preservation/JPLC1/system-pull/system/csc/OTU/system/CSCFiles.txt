@@ -1,0 +1,7 @@
+/system/csc/OTU/system/csc/contents.db
+/system/csc/OTU/system/csc/others.xml
+/system/csc/OTU/system/csc/sales_code.dat
+/system/csc/OTU/system/csc/customer.xml
+/system/csc/OTU/system/default.prop
+/system/csc/OTU/system/CSCFiles.txt
+/system/csc/OTU/system/CSCVersion.txt

@@ -1,0 +1,7 @@
+/system/csc/XSS/system/csc/contents.db
+/system/csc/XSS/system/csc/others.xml
+/system/csc/XSS/system/csc/sales_code.dat
+/system/csc/XSS/system/csc/customer.xml
+/system/csc/XSS/system/default.prop
+/system/csc/XSS/system/CSCFiles.txt
+/system/csc/XSS/system/CSCVersion.txt

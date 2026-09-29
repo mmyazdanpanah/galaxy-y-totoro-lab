@@ -1,0 +1,8 @@
+/system/csc/MWD/system/csc/contents.db
+/system/csc/MWD/system/csc/others.xml
+/system/csc/MWD/system/csc/sales_code.dat
+/system/csc/MWD/system/csc/customer.xml
+/system/csc/MWD/system/default.prop
+/system/csc/MWD/system/app/Maps.apk
+/system/csc/MWD/system/CSCFiles.txt
+/system/csc/MWD/system/CSCVersion.txt

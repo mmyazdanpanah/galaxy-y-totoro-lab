@@ -1,0 +1,7 @@
+/system/csc/BTC/system/csc/contents.db
+/system/csc/BTC/system/csc/others.xml
+/system/csc/BTC/system/csc/sales_code.dat
+/system/csc/BTC/system/csc/customer.xml
+/system/csc/BTC/system/default.prop
+/system/csc/BTC/system/CSCFiles.txt
+/system/csc/BTC/system/CSCVersion.txt

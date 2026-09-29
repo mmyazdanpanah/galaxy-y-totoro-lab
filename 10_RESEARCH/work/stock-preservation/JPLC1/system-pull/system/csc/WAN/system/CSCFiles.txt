@@ -1,0 +1,10 @@
+/system/csc/WAN/system/csc/contents.db
+/system/csc/WAN/system/csc/others.xml
+/system/csc/WAN/system/csc/sales_code.dat
+/system/csc/WAN/system/csc/customer.xml
+/system/csc/WAN/system/default.prop
+/system/csc/WAN/system/app/Maps.apk
+/system/csc/WAN/system/app/2501bSAM40_samsungs5660_en_ar_tr_signed_25.01.2011.apk
+/system/csc/WAN/system/app/sam2_mdpi_port.apk
+/system/csc/WAN/system/CSCFiles.txt
+/system/csc/WAN/system/CSCVersion.txt

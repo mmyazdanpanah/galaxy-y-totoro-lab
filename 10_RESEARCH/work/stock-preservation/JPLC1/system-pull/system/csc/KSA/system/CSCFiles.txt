@@ -1,0 +1,7 @@
+/system/csc/KSA/system/csc/contents.db
+/system/csc/KSA/system/csc/others.xml
+/system/csc/KSA/system/csc/sales_code.dat
+/system/csc/KSA/system/csc/customer.xml
+/system/csc/KSA/system/default.prop
+/system/csc/KSA/system/CSCFiles.txt
+/system/csc/KSA/system/CSCVersion.txt

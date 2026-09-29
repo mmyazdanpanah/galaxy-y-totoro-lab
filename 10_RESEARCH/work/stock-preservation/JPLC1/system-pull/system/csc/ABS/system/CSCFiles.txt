@@ -1,0 +1,7 @@
+/system/csc/ABS/system/csc/contents.db
+/system/csc/ABS/system/csc/others.xml
+/system/csc/ABS/system/csc/sales_code.dat
+/system/csc/ABS/system/csc/customer.xml
+/system/csc/ABS/system/default.prop
+/system/csc/ABS/system/CSCFiles.txt
+/system/csc/ABS/system/CSCVersion.txt

@@ -1,0 +1,7 @@
+/system/csc/JED/system/csc/contents.db
+/system/csc/JED/system/csc/others.xml
+/system/csc/JED/system/csc/sales_code.dat
+/system/csc/JED/system/csc/customer.xml
+/system/csc/JED/system/default.prop
+/system/csc/JED/system/CSCFiles.txt
+/system/csc/JED/system/CSCVersion.txt

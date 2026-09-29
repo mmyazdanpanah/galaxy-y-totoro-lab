@@ -1,0 +1,53 @@
+Character devices:
+  1 mem
+  2 pty
+  3 ttyp
+  4 /dev/vc/0
+  4 tty
+  4 ttyS
+  5 /dev/tty
+  5 /dev/console
+  5 /dev/ptmx
+  7 vcs
+ 10 misc
+ 13 input
+ 29 fb
+ 89 i2c
+ 90 mtd
+108 ppp
+116 alsa
+128 ptm
+136 pts
+151 gememalloc
+199 bcm_gps
+200 bcm_cntin
+201 bcm_kril
+202 bcm_log
+203 bcm_atc
+204 bcm_fuse_ipc
+205 bcm_rpc
+206 bcm_alsa_pcg
+207 bcm_audio_log
+208 bcm_vsp
+209 bcm_alsa_voip
+210 hx170dec
+211 h6270enc
+212 bcm_kpdp
+230 memalloc
+243 lcd
+246 camera
+250 BrcmHeadset
+251 v3d
+252 ttyGS
+253 cache-ops
+254 rtc
+
+Block devices:
+  1 ramdisk
+259 blkext
+  7 loop
+ 31 mtdblock
+137 bml
+138 stl
+179 mmc
+254 device-mapper

@@ -1,0 +1,7 @@
+/system/csc/PAK/system/csc/contents.db
+/system/csc/PAK/system/csc/others.xml
+/system/csc/PAK/system/csc/sales_code.dat
+/system/csc/PAK/system/csc/customer.xml
+/system/csc/PAK/system/default.prop
+/system/csc/PAK/system/CSCFiles.txt
+/system/csc/PAK/system/CSCVersion.txt

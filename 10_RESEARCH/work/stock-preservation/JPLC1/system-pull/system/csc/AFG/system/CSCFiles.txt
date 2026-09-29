@@ -1,0 +1,6 @@
+/system/csc/AFG/system/csc/contents.db
+/system/csc/AFG/system/csc/others.xml
+/system/csc/AFG/system/csc/sales_code.dat
+/system/csc/AFG/system/csc/customer.xml
+/system/csc/AFG/system/CSCFiles.txt
+/system/csc/AFG/system/CSCVersion.txt

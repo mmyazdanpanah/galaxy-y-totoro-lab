@@ -1,0 +1,8 @@
+/system/csc/THR/system/csc/contents.db
+/system/csc/THR/system/csc/others.xml
+/system/csc/THR/system/csc/sales_code.dat
+/system/csc/THR/system/csc/customer.xml
+/system/csc/THR/system/default.prop
+/system/csc/THR/system/app/operamini-5.1.24639.apk
+/system/csc/THR/system/CSCFiles.txt
+/system/csc/THR/system/CSCVersion.txt

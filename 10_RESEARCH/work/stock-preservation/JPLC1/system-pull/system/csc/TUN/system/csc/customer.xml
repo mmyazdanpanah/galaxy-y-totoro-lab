@@ -1,0 +1,125 @@
+﻿<?xml  version="1.0" encoding="UTF-8" ?>
+<CustomerData>
+  <GeneralInfo>
+    <CSCEdition>ED002</CSCEdition>
+    <Country>TUNISIA</Country>
+    <SalesCode>TUN</SalesCode>
+    <NbNetworkInfo>2</NbNetworkInfo>
+    <NetworkInfo>
+      <MCCMNC>60502</MCCMNC>
+      <NetworkName>TUNISIE TELECOM</NetworkName>
+    </NetworkInfo>
+    <NetworkInfo>
+      <MCCMNC>60503</MCCMNC>
+      <NetworkName>TUNISIANA</NetworkName>
+    </NetworkInfo>
+  </GeneralInfo>
+  <Settings>
+    <Main>
+      <Phone>
+        <DefLanguage>french</DefLanguage>
+        <DefLanguageNoSIM>french</DefLanguageNoSIM>
+      </Phone>
+      <Security />
+    </Main>
+    <Browser>
+      <NbBookmark>2</NbBookmark>
+      <Bookmark>
+        <NetworkName>default</NetworkName>
+        <BookmarkName>Samsung Apps Web</BookmarkName>
+        <URL>http://www.samsungapps.com</URL>
+      </Bookmark>
+      <Bookmark>
+        <NetworkName>default</NetworkName>
+        <BookmarkName>Yahoo!</BookmarkName>
+        <URL>http://www.yahoo.com</URL>
+      </Bookmark>
+    </Browser>
+    <Connections>
+      <NbProfileHandle>2</NbProfileHandle>
+      <ProfileHandle>
+        <NbNetProfile>2</NbNetProfile>
+        <NetworkName>TUNISIANA</NetworkName>
+        <ProfBrowser>internet Tunisiana</ProfBrowser>
+        <ProfMMS>MMS Tunisiana</ProfMMS>
+      </ProfileHandle>
+      <ProfileHandle>
+        <NbNetProfile>2</NbNetProfile>
+        <NetworkName>TUNISIE TELECOM</NetworkName>
+        <ProfBrowser>mobinet</ProfBrowser>
+        <ProfMMS>MMS</ProfMMS>
+      </ProfileHandle>
+      <NbProfile>4</NbProfile>
+      <Profile>
+        <NetworkName>TUNISIE TELECOM</NetworkName>
+        <ProfileName>mobinet</ProfileName>
+        <Auth>none</Auth>
+        <Protocol>http</Protocol>
+        <MTUSize>1500</MTUSize>
+        <Proxy>
+          <EnableFlag>on</EnableFlag>
+          <ServAddr>0.0.0.0</ServAddr>
+          <Port>80</Port>
+        </Proxy>
+        <PSparam>
+          <APN>gprs.tn</APN>
+          <UserId>gprs</UserId>
+          <Password>gprs</Password>
+        </PSparam>
+      </Profile>
+      <Profile>
+        <NetworkName>TUNISIE TELECOM</NetworkName>
+        <ProfileName>MMS</ProfileName>
+        <URL>http://</URL>
+        <Auth>none</Auth>
+        <Protocol>http</Protocol>
+        <MTUSize>1500</MTUSize>
+        <Proxy>
+          <EnableFlag>on</EnableFlag>
+          <ServAddr>192.168.0.2</ServAddr>
+          <Port>8080</Port>
+        </Proxy>
+        <PSparam>
+          <APN>mms.tn</APN>
+          <UserId>mms@tt1</UserId>
+          <Password>mms</Password>
+        </PSparam>
+      </Profile>
+      <Profile>
+        <NetworkName>TUNISIANA</NetworkName>
+        <ProfileName>internet Tunisiana</ProfileName>
+        <Auth>normal</Auth>
+        <Protocol>http</Protocol>
+        <MTUSize>1500</MTUSize>
+        <Proxy>
+          <EnableFlag>on</EnableFlag>
+          <ServAddr>10.3.2.99</ServAddr>
+          <Port>80</Port>
+        </Proxy>
+        <PSparam>
+          <APN>internet.tunisiana.com</APN>
+          <UserId>internet</UserId>
+          <Password>internet</Password>
+        </PSparam>
+      </Profile>
+      <Profile>
+        <NetworkName>TUNISIANA</NetworkName>
+        <ProfileName>MMS Tunisiana</ProfileName>
+        <URL>http://mmsc.tunisiana.com</URL>
+        <Auth>normal</Auth>
+        <Protocol>http</Protocol>
+        <MTUSize>1500</MTUSize>
+        <Proxy>
+          <EnableFlag>on</EnableFlag>
+          <ServAddr>10.3.2.100</ServAddr>
+          <Port>80</Port>
+        </Proxy>
+        <PSparam>
+          <APN>mms.tunisiana.com</APN>
+          <UserId>mms</UserId>
+          <Password>mms</Password>
+        </PSparam>
+      </Profile>
+    </Connections>
+  </Settings>
+</CustomerData>

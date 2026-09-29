@@ -1,0 +1,1 @@
+Linux version 2.6.35.7 (dpi@DELL161) (gcc version 4.4.3 (GCC) ) #1 PREEMPT Fri Mar 16 15:40:13 KST 2012

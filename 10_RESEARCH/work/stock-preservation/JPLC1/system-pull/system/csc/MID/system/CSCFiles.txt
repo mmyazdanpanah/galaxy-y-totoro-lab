@@ -1,0 +1,7 @@
+/system/csc/MID/system/csc/contents.db
+/system/csc/MID/system/csc/others.xml
+/system/csc/MID/system/csc/sales_code.dat
+/system/csc/MID/system/csc/customer.xml
+/system/csc/MID/system/default.prop
+/system/csc/MID/system/CSCFiles.txt
+/system/csc/MID/system/CSCVersion.txt

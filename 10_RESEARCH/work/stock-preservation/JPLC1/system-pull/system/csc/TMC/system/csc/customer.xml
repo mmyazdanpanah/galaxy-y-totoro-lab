@@ -1,0 +1,143 @@
+﻿<?xml  version="1.0" encoding="UTF-8" ?>
+<CustomerData>
+  <GeneralInfo>
+    <CSCEdition>ED003</CSCEdition>
+    <Country>Algeria</Country>
+    <SalesCode>TMC</SalesCode>
+    <NbNetworkInfo>3</NbNetworkInfo>
+    <NetworkInfo>
+      <MCCMNC>60301</MCCMNC>
+      <NetworkName>Mobilis</NetworkName>
+    </NetworkInfo>
+    <NetworkInfo>
+      <MCCMNC>60302</MCCMNC>
+      <NetworkName>Djezzy</NetworkName>
+    </NetworkInfo>
+    <NetworkInfo>
+      <MCCMNC>60303</MCCMNC>
+      <NetworkName>Nedjma</NetworkName>
+    </NetworkInfo>
+  </GeneralInfo>
+  <Settings>
+    <Main>
+      <Network>
+        <AutoProfile>on</AutoProfile>
+        <AutoVoicemail>off</AutoVoicemail>
+        <AutoEmailAccount>off</AutoEmailAccount>
+        <AutoBookmark>off</AutoBookmark>
+        <AutoLink>off</AutoLink>
+        <AutoSyncML>off</AutoSyncML>
+        <AutoFastDormancy>off</AutoFastDormancy>
+        <AutoWbAmr>off</AutoWbAmr>
+      </Network>
+      <Phone>
+        <DefLanguage>french</DefLanguage>
+        <DefLanguageNoSIM>french</DefLanguageNoSIM>
+        <DateTimeFormat>
+          <DateFormat>ddmmyyyy</DateFormat>
+          <TimeFormat>24h</TimeFormat>
+        </DateTimeFormat>
+      </Phone>
+      <Security />
+    </Main>
+    <Browser>
+      <NbBookmark>2</NbBookmark>
+      <Bookmark>
+        <NetworkName>default</NetworkName>
+        <BookmarkName>Samsung Apps Web</BookmarkName>
+        <URL>http://www.samsungapps.com</URL>
+      </Bookmark>
+      <Bookmark>
+        <NetworkName>default</NetworkName>
+        <BookmarkName>Yahoo!</BookmarkName>
+        <URL>http://www.yahoo.com</URL>
+      </Bookmark>
+    </Browser>
+    <Connections>
+      <NbProfileHandle>2</NbProfileHandle>
+      <ProfileHandle>
+        <NbNetProfile>2</NbNetProfile>
+        <NetworkName>Nedjma</NetworkName>
+        <ProfBrowser>Nedjma WAP</ProfBrowser>
+        <ProfMMS>Nedjma MMS</ProfMMS>
+      </ProfileHandle>
+      <ProfileHandle>
+        <NbNetProfile>2</NbNetProfile>
+        <NetworkName>Djezzy</NetworkName>
+        <ProfBrowser>Djezzy WAP</ProfBrowser>
+        <ProfMMS>Djezzy MMS</ProfMMS>
+      </ProfileHandle>
+      <NbProfile>4</NbProfile>
+      <Profile>
+        <NetworkName>Nedjma</NetworkName>
+        <EnableStatus>enable</EnableStatus>
+        <ProfileName>Nedjma WAP</ProfileName>
+        <Auth>normal</Auth>
+        <Protocol>http</Protocol>
+        <MTUSize>1500</MTUSize>
+        <Proxy>
+          <EnableFlag>on</EnableFlag>
+          <ServAddr>192.168.52.2</ServAddr>
+          <Port>3128</Port>
+        </Proxy>
+        <PSparam>
+          <APN>nedjmawap</APN>
+          <UserId>wap</UserId>
+          <Password>wap</Password>
+        </PSparam>
+      </Profile>
+      <Profile>
+        <NetworkName>Nedjma</NetworkName>
+        <EnableStatus>enable</EnableStatus>
+        <ProfileName>Nedjma MMS</ProfileName>
+        <URL>http://10.10.111.1</URL>
+        <Auth>normal</Auth>
+        <Protocol>http</Protocol>
+        <MTUSize>1500</MTUSize>
+        <Proxy>
+          <EnableFlag>on</EnableFlag>
+          <ServAddr>192.168.52.2</ServAddr>
+          <Port>3128</Port>
+        </Proxy>
+        <PSparam>
+          <APN>nedjmamms</APN>
+          <UserId>mms</UserId>
+          <Password>mms</Password>
+        </PSparam>
+      </Profile>
+      <Profile>
+        <NetworkName>Djezzy</NetworkName>
+        <EnableStatus>enable</EnableStatus>
+        <ProfileName>Djezzy WAP</ProfileName>
+        <Auth>normal</Auth>
+        <Protocol>http</Protocol>
+        <MTUSize>1500</MTUSize>
+        <Proxy>
+          <EnableFlag>on</EnableFlag>
+          <ServAddr>172.24.97.3</ServAddr>
+          <Port>3130</Port>
+        </Proxy>
+        <PSparam>
+          <APN>djezzy.wap</APN>
+        </PSparam>
+      </Profile>
+      <Profile>
+        <NetworkName>Djezzy</NetworkName>
+        <EnableStatus>enable</EnableStatus>
+        <ProfileName>Djezzy MMS</ProfileName>
+        <URL>http://172.24.97.152:10021/mmsc</URL>
+        <Auth>normal</Auth>
+        <Protocol>http</Protocol>
+        <MTUSize>1500</MTUSize>
+        <Proxy>
+          <EnableFlag>on</EnableFlag>
+          <ServAddr>172.24.97.158</ServAddr>
+          <Port>8799</Port>
+        </Proxy>
+        <PSparam>
+          <APN>djezzy.mms</APN>
+        </PSparam>
+      </Profile>
+    </Connections>
+  </Settings>
+</CustomerData>

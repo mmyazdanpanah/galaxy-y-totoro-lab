@@ -1,0 +1,7 @@
+/system/csc/EGY/system/csc/contents.db
+/system/csc/EGY/system/csc/others.xml
+/system/csc/EGY/system/csc/sales_code.dat
+/system/csc/EGY/system/csc/customer.xml
+/system/csc/EGY/system/default.prop
+/system/csc/EGY/system/CSCFiles.txt
+/system/csc/EGY/system/CSCVersion.txt

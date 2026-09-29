@@ -1,0 +1,9 @@
+Stock /system extraction attempted over unprivileged ADB.
+Result: PARTIAL.
+ADB stopped at:
+/system/etc/dbus.conf
+Error:
+remote Permission denied
+
+This directory is NOT a complete /system backup.
+No root, remount, chmod, write, or filesystem modification was performed.

@@ -1,0 +1,8 @@
+/system/csc/MAT/system/csc/contents.db
+/system/csc/MAT/system/csc/others.xml
+/system/csc/MAT/system/csc/sales_code.dat
+/system/csc/MAT/system/csc/customer.xml
+/system/csc/MAT/system/default.prop
+/system/csc/MAT/system/app/Maps.apk
+/system/csc/MAT/system/CSCFiles.txt
+/system/csc/MAT/system/CSCVersion.txt

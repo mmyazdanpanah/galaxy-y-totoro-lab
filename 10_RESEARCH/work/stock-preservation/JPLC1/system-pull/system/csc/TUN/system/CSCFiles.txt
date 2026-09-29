@@ -1,0 +1,7 @@
+/system/csc/TUN/system/csc/contents.db
+/system/csc/TUN/system/csc/others.xml
+/system/csc/TUN/system/csc/sales_code.dat
+/system/csc/TUN/system/csc/customer.xml
+/system/csc/TUN/system/default.prop
+/system/csc/TUN/system/CSCFiles.txt
+/system/csc/TUN/system/CSCVersion.txt

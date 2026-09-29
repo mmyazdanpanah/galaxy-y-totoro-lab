@@ -1,0 +1,19 @@
+﻿<?xml  version="1.0" encoding="UTF-8" ?>
+<CustomerData>
+  <System>
+  	<accelerometer_rotation>1</accelerometer_rotation>
+  </System>
+  <MMS>
+	<vibrate>on</vibrate>
+	<enable_notifications>on</enable_notifications>
+  </MMS>
+  <LatinIME>
+    <VibrateOn>on</VibrateOn>
+    <SoundOn>on</SoundOn>
+  </LatinIME>
+  <BrowserData>
+    <HomePage>
+      <URL>http://www.samsungmobile.com</URL>
+    </HomePage>
+  </BrowserData>
+</CustomerData>
