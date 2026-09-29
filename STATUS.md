@@ -164,3 +164,30 @@ The recovery/restore assessment remains conservative: exact JPLC1 recovery-binar
 
 **Current state: ready for the controlled stock-recovery installation step; phone write has not yet been performed.**
 
+
+## Root installation success checkpoint — 2026-09-29
+
+The controlled stock-recovery root installation has now completed successfully on the actual GT-S5360 JPLC1 handset.
+
+Recovery reported:
+
+    installing su and Superuser.apk
+    installing OK
+    by yodeput
+    Install from sdcard complete
+
+Post-reboot ADB verification is conclusive:
+
+- Model: GT-S5360
+- Build: GINGERBREAD.JPLC1
+- ADB device: `0123456789ABCDEF device`
+- `adb shell su -c id`: `uid=0(root) gid=0(root)`
+- `/system/xbin/su`: present, root:root, mode 04755
+- `/system/xbin/busybox`: present, root:root, mode 04755
+- `/system/xbin/ssh`: present, root:root, mode 04755
+- `/system/xbin/sqlite3`: present, root:root, mode 04755
+- `/system/app/Superuser.apk`: present, root:root, mode 0644
+
+This proves the historical package was accepted by the stock recovery and that the handset now provides working UID 0 through `su`. No firmware, bootloader, recovery, modem, repartitioning, userdata wipe, or EFS operation was performed.
+
+**Root gate: PASSED.** The next phase is read-only post-root preservation and capability inventory before introducing any Linux rootfs/chroot. Do not modify EFS or flash additional firmware at this stage.
