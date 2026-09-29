@@ -108,3 +108,21 @@ For the active chroot path, broad reconnaissance is now complete. The remaining 
 ## Next action
 
 Verify `/data/local/tmp` write/execute access without root; inspect and verify an ARMv6-compatible statically linked BusyBox candidate (architecture, CPU requirements, provenance, checksum); then run the harmless pre-root compatibility checks. Do not root until the binary test and root-package provenance are reviewed.
+
+
+## Root package acquisition checkpoint — 2026-09-29
+
+The exact historical Galaxy Y root artifact has now been acquired and independently verified offline before any handset write:
+
+- file: `update.zip`
+- size: 2,260,360 bytes
+- MD5: `eac189609fd71de6bf053e7ff2636d7e`
+- SHA-1: `89108755e3cf1d6c298e60fc963881dacb3d313d`
+- SHA-256: `3e4ebe31b908ea3a8750347f875f91493f550edd1cd2a3006293c45a41592a27`
+- ZIP integrity test: passed
+- archive contents: 11 entries including `system/xbin/su`, `system/app/Superuser.apk`, static BusyBox, SSH, sqlite3, updater-script, update-binary, and Android signing metadata.
+- archive entry timestamps are consistent with the 2011 historical lineage; the acquisition mirror is not itself treated as proof of original provenance.
+
+This is an **artifact-verification checkpoint, not a flashing approval**. The next gate is offline inspection of `META-INF/com/google/android/updater-script` and `update-binary`, including device assertions and a complete write/format/partition-operation audit. No phone write has occurred.
+
+The verified artifact, extracted updater binary, and pre-root baseline are being organized under the repository's preservation/research work areas. Raw research binaries remain work artifacts unless explicitly committed.
