@@ -190,3 +190,64 @@ No PIT, EFS, modem, bootloader, userdata, partition format, or boot-image write 
 ## Next milestone
 
 After a successful root experiment, preserve the rooted JPLC1 state and move directly to the ARMv6 Linux userspace/chroot track. Native Linux boot remains a separate research track and does not block the first practical Linux userspace milestone.
+
+
+## Outcome — controlled root installation and post-root verification
+
+The previously described candidate was subsequently applied through the existing stock recovery on the actual GT-S5360 JPLC1 handset.
+
+Recovery reported:
+
+    installing su and Superuser.apk
+    installing OK
+    by yodeput
+    Install from sdcard complete
+
+After reboot:
+
+    Model: GT-S5360
+    Build: GINGERBREAD.JPLC1
+    ADB: 0123456789ABCDEF device
+    su -c id: uid=0(root) gid=0(root)
+
+The expected payload files were then verified on the live handset with root-owned setuid permissions:
+
+    /system/xbin/su          root:root 04755
+    /system/xbin/busybox     root:root 04755
+    /system/xbin/ssh         root:root 04755
+    /system/xbin/sqlite3     root:root 04755
+    /system/app/Superuser.apk root:root 0644
+
+This changes the disposition of the artifact: the controlled stock-recovery root experiment is **COMPLETE and SUCCESSFUL** on this JPLC1 handset. The earlier unresolved package-metadata caveats remain historical provenance caveats, but they are no longer compatibility blockers because the physical device accepted the package and produced verified UID 0.
+
+No Odin/PIT/repartition, bootloader write, modem/radio write, boot/recovery image replacement, userdata wipe, EFS write, or direct BML/STL write was performed.
+
+## Post-root storage preservation
+
+The immediate post-root read-only inventory is preserved separately at:
+
+`01_PRESERVATION/evidence/post-root-jplc1-device-inventory-2026-09-29.md`
+
+Direct runtime evidence establishes:
+
+- `/proc/cmdline` exposes the JPLC1 `bcm_umi-nand` map.
+- `/proc/partitions` exposes the BML/STL device layer and exact observed sizes.
+- `/dev/stl9 -> /system` is RFS read-only.
+- `/dev/stl10 -> /cache` is RFS read-write.
+- `/dev/stl11 -> /data` is RFS read-write.
+- `/dev/stl6 -> /mnt/.lfs` is j4fs read-write.
+- The removable SD is VFAT at `/mnt/sdcard`.
+
+The empty/header-only `/proc/mtd` output is retained as an observation and is not interpreted as absence of NAND because the Samsung BML/STL layer is directly visible.
+
+## Updated disposition
+
+**ROOT GATE: PASSED.**
+
+**POST-ROOT READ-ONLY PRESERVATION: PASSED.**
+
+The historical package is no longer merely a candidate: it has been demonstrated to root the actual JPLC1 handset through stock recovery.
+
+The next milestone is the Android-native Linux userspace track: capability testing, rootfs placement, minimal chroot, networking, and SSH. Native boot remains a separate deferred research track.
+
+No additional firmware or boot-chain modification is authorized by this checkpoint.
