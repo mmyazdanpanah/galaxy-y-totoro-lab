@@ -1,10 +1,10 @@
 # Status
 
-Phase: M0/M1 — Android-native userspace Linux reconnaissance and preparation
+Phase: M0 complete; M1 preparation — Android-native userspace Linux reconnaissance
 
-Latest research pass: 2026-09-29. The Samsung OSS Totoro source baseline, CPUFreq/defconfig reconciliation, boot-image geometry, and external historical-source audit remain preserved as the native-boot research track.
+Latest handset evidence: 2026-09-29. The physical GT-S5360 was inspected through an interactive ADB shell. The active practical track remains Android-native Linux userspace; the Samsung OSS Totoro source baseline, CPUFreq/defconfig reconciliation, boot-image geometry, and external historical-source audit remain preserved as the separate native-boot research track.
 
-The practical modernization path is now split into two deliberately independent tracks:
+The practical modernization path is split into two deliberately independent tracks:
 
 1. **Android-native userspace Linux (active):** keep stock Android/kernel, introduce a minimal ARMv6-compatible Linux userspace through chroot, and reach it over SSH from the Mac.
 2. **Native Linux boot (research/deferred):** reproducible Samsung kernel, boot-image reconstruction, UART/SBL work, and eventual mainline/hardware enablement.
@@ -33,13 +33,30 @@ Target:
 
 ### Current gates
 
-1. Phase 0 phone inventory has not yet been completed in this documentation checkpoint.
-2. Static BusyBox ARMv6 compatibility must be tested before rooting.
-3. Root package must be matched to the phone's actual ro.build.display.id and checksum-verified.
-4. Post-root preservation must inspect /proc/mtd, mount, getprop, and /proc/cmdline without modifying EFS.
-5. Rootfs location is evidence-driven: /data/local/alpine first, loop-backed SD image if necessary.
-6. Alpine release is selected from official release information at experiment time and recorded with checksum.
+1. **Phase 0 inventory captured from the actual phone.** Firmware, CPU, kernel, mounts, storage capacity, filesystem support, device nodes, and Android properties are recorded in `08_MODERNIZATION/android-chroot-linux.md`.
+2. Static BusyBox ARMv6 compatibility must be tested before rooting. Confirm `/data/local/tmp` write/execute access and verify candidate architecture, CPU requirements, static-link status, provenance, and checksum first.
+3. Root package must be matched to the phone's actual `ro.build.display.id` and checksum-verified.
+4. Post-root preservation must inspect `/proc/mtd`, `mount`, `getprop`, and `/proc/cmdline` without modifying EFS.
+5. Rootfs location is evidence-driven: `/data/local/alpine` is only a candidate because `/data` is RFS and had 163 MB free at inventory; a loop-backed SD image is a conditional fallback because loop nodes are root-owned and not exposed as `/dev/loop*`.
+6. Alpine release is selected from official release information at experiment time and recorded with checksum and ARMv6 compatibility evidence.
 7. Chroot and SSH are built incrementally, with separate interactive and SSH launch scripts.
+
+### Confirmed physical phone inventory — 2026-09-29
+
+- Model/product GT-S5360; board/device `totoro`; platform `bcm21553`.
+- Android 2.3.6, build `GINGERBREAD.JPLC1`; PDA `S5360JPLC1`; CSC `S5360OJPLC1`; baseband `S5360XXLK3`.
+- CPU ARMv6-compatible rev 5 (v6l), architecture 6TEJ, BCM21553 ThunderbirdEDN31; features include VFP and EDSP.
+- Kernel `2.6.35.7`, GCC 4.4.3, `#1 PREEMPT`, dated Fri Mar 16 15:40:13 KST 2012, confirmed via `/proc/version`. `uname -a` was permission denied to the shell user.
+- Android ABI property is `armeabi`; candidate binary compatibility still requires direct validation.
+- ADB device was listed as `0123456789ABCDEF device`; interactive shell identity was UID/GID 2000 (`shell`).
+- `/data` is `/dev/stl11` Samsung RFS, 189 MB total / 163 MB free at capture. `/system` and `/cache` are also RFS. Removable SD is VFAT at `/mnt/sdcard`.
+- `/proc/filesystems` lists ext2/ext3 and other filesystems including RFS and j4fs.
+- Loop block major 7 is listed in `/proc/devices`; `/dev/block/loop0`–`loop7` exist with root:root mode 0600, while `/dev/loop*` is absent. This proves device nodes exist, not that the shell can access them.
+- `/data/local/tmp` exists and was empty. Write/execute access is not yet tested.
+- Unprivileged `/proc/mtd` showed only its header and `/proc/cmdline` was permission denied; neither result establishes absence of flash partitions or boot arguments. Recheck after root, read-only.
+- Build properties indicate `ro.secure=1`, `ro.debuggable=0`, build type `user`, and `release-keys`.
+
+No phone write operation has been performed. Rooting has not started. The initial inventory attempts run on the Mac are not handset evidence; the accepted inventory came from the interactive Android ADB shell. A later batch of quoted `adb shell '...'` calls returned host-side `adb: permission denied`, while direct interactive `adb shell` worked; use the interactive shell for repeatable capture until that discrepancy is explained.
 
 ## Preserved phone state
 
@@ -68,7 +85,7 @@ The preserved decompressed Totoro kernel contains a six-entry CPUFreq-shaped obj
 
 Public Samsung OSS source defines the same 8-byte record shape but only two states: 312 MHz / 1.20 V and 832 MHz / 1.36 V. Therefore the preserved six-entry object is not the public Samsung OSS table; its provenance remains unresolved pending reproducible zImage comparison. The 1124 field must not be interpreted as MHz without proof.
 
-The five Samsung Totoro defconfigs and their exact adjacent differences remain documented in 10_RESEARCH/cpufreq-defconfig-reconciliation-2026-09-29.md.
+The five Samsung Totoro defconfigs and their exact adjacent differences remain documented in `10_RESEARCH/cpufreq-defconfig-reconciliation-2026-09-29.md`.
 
 ## Native-boot safety boundary
 
@@ -76,7 +93,7 @@ The native-boot track remains **not ready for flashing or first hardware boot**.
 
 ## First practical hardware milestone
 
-For the active chroot track, the first meaningful milestone is no longer a kernel boot. It is:
+For the active chroot track, the first meaningful milestone is:
 
 **userspace Linux running** — Android remains the booting system, a Linux rootfs enters reproducibly through chroot, networking works, and SSH access from the Mac is established.
 
@@ -86,8 +103,8 @@ This is intentionally lower-risk than replacing the Android boot path and can be
 
 The earlier estimate remains valid for the separate native-boot track: research/preparation is roughly 70–80% complete for a reversible diagnostic boot experiment, with reproducible build, zImage provenance, boot-image reconstruction, offline validation, and rollback verification remaining.
 
-For the active chroot path, the remaining work is narrower and starts with actual phone output rather than additional broad archaeology.
+For the active chroot path, broad reconnaissance is now complete. The remaining preparation is the verified static BusyBox selection/test, followed by the firmware-matched root decision and preservation gate. A reliable userspace Linux milestone still depends on these tests and subsequent chroot/network/SSH integration.
 
 ## Next action
 
-Run the read-only Phase 0 inventory and preserve its complete output. Then perform the static BusyBox ARMv6 compatibility test. Do not root until those results are reviewed.
+Verify `/data/local/tmp` write/execute access without root; inspect and verify an ARMv6-compatible statically linked BusyBox candidate (architecture, CPU requirements, provenance, checksum); then run the harmless pre-root compatibility checks. Do not root until the binary test and root-package provenance are reviewed.
