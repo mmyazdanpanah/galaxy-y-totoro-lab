@@ -213,3 +213,20 @@ Keeping the tracks separate prevents a userspace experiment from becoming couple
     record
 
 If an error appears, stop at the failing boundary and diagnose from actual phone output. Do not guess a storage path, filesystem type, root package, Alpine release, or mount option.
+
+
+## Root artifact checkpoint — 2026-09-29
+
+The historical root package candidate has been acquired and hash-verified before any handset modification:
+
+    update.zip
+    size:   2,260,360 bytes
+    MD5:    eac189609fd71de6bf053e7ff2636d7e
+    SHA-1:  89108755e3cf1d6c298e60fc963881dacb3d313d
+    SHA256: 3e4ebe31b908ea3a8750347f875f91493f550edd1cd2a3006293c45a41592a27
+
+The ZIP passes `unzip -t`. Its payload contains `system/xbin/su`, `system/app/Superuser.apk`, `system/xbin/busybox`, `system/xbin/ssh`, and `system/xbin/sqlite3`, plus the Android update metadata and signing files.
+
+The archive is compatible by historical target lineage with GT-S5360 Android 2.3.x, while exact JPLC1 package compatibility still requires inspection of the updater assertions and operations. Do not flash this package yet. The required next step is an offline audit of `updater-script` and `update-binary` for model assertions and to rule out formatting, repartitioning, boot/recovery, modem, or other unintended writes.
+
+The separately tested official BusyBox 1.21.1 ARMv6 candidate remains the pre-root compatibility reference; the root ZIP's bundled BusyBox is not substituted for that provenance-controlled test.
