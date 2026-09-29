@@ -230,3 +230,18 @@ The ZIP passes `unzip -t`. Its payload contains `system/xbin/su`, `system/app/Su
 The archive is compatible by historical target lineage with GT-S5360 Android 2.3.x, while exact JPLC1 package compatibility still requires inspection of the updater assertions and operations. Do not flash this package yet. The required next step is an offline audit of `updater-script` and `update-binary` for model assertions and to rule out formatting, repartitioning, boot/recovery, modem, or other unintended writes.
 
 The separately tested official BusyBox 1.21.1 ARMv6 candidate remains the pre-root compatibility reference; the root ZIP's bundled BusyBox is not substituted for that provenance-controlled test.
+
+
+## Root-package evidence gate — 2026-09-29
+
+The historical `update.zip` candidate has now completed the offline updater-script/payload audit and a direct read-only destination check on the physical JPLC1 handset. The artifact remains hash-verified and passes ZIP integrity testing.
+
+The updater script explicitly accepts `GT-S5360`. Active operations are system extraction plus 04755 permissions on `sqlite3`, `su`, `ssh`, and `busybox`, followed by unmounting `/system`. The format/mount lines are commented out. No active raw-image, program-execution, modem, boot/recovery, EFS, repartitioning, or partition-formatting operation was identified in the script. The bundled updater binary has broader recovery/BML capabilities, so the package remains subject to the firmware-matched gate.
+
+Payload ELF inspection found static ARM EABI4 BusyBox and ARM EABI5 dynamic `ssh`, `sqlite3`, and `su` with interpreter `/system/bin/linker`. This is consistent at the ELF-header level with the ARMv6-era platform but is not execution proof.
+
+The package metadata is not exact JPLC1 evidence: `pre-device=tass` and `post-build=google/passion/passion:2.3.3/GRI40/102588:user/release-keys`. The generic Android signing certificate is not treated as provenance proof.
+
+Direct read-only checks from the interactive shell returned `No such file or directory` for all five package destination paths: `/system/xbin/su`, `/system/xbin/busybox`, `/system/xbin/ssh`, `/system/xbin/sqlite3`, and `/system/app/Superuser.apk`. No handset write has occurred.
+
+**Disposition: do not flash yet.** The artifact audit is complete, but the final firmware-matched root gate remains open. Obtain and verify the exact stock JPLC1 firmware/recovery environment before any recovery installation attempt. Full evidence is recorded in `10_RESEARCH/root-package-evidence-gate-2026-09-29.md`.
