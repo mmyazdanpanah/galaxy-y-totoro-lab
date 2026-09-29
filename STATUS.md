@@ -191,3 +191,21 @@ Post-reboot ADB verification is conclusive:
 This proves the historical package was accepted by the stock recovery and that the handset now provides working UID 0 through `su`. No firmware, bootloader, recovery, modem, repartitioning, userdata wipe, or EFS operation was performed.
 
 **Root gate: PASSED.** The next phase is read-only post-root preservation and capability inventory before introducing any Linux rootfs/chroot. Do not modify EFS or flash additional firmware at this stage.
+
+
+## Post-root read-only preservation checkpoint — 2026-09-29
+
+The first post-root read-only inventory on the physical GT-S5360 JPLC1 handset is complete and preserved in `01_PRESERVATION/evidence/post-root-jplc1-device-inventory-2026-09-29.md`.
+
+Direct runtime evidence:
+
+- `su -c id` returns `uid=0(root) gid=0(root)`.
+- `/proc/mtd` is header-only; this is consistent with the Samsung BML/STL storage architecture and is not treated as evidence that NAND is absent.
+- `/proc/cmdline` directly exposes the JPLC1 `bcm_umi-nand` partition map, including named `boot`, `boot_backup`, `system`, `cache`, `userdata`, `efs`, and calibration partitions.
+- `/proc/partitions` directly exposes `bml1`–`bml15`, `stl6`, `stl9`, `stl10`, and `stl11`.
+- Live mounts directly confirm `/dev/stl9 -> /system` (RFS, RO), `/dev/stl10 -> /cache` (RFS, RW), `/dev/stl11 -> /data` (RFS, RW), `/dev/stl6 -> /mnt/.lfs` (j4fs, RW), and the removable SD VFAT mount.
+- The BML sizes match the kernel command-line partition sizes exactly; STL exposes the expected smaller logical capacities for the RFS-backed filesystems.
+
+The post-root preservation gate is therefore **PASSED**.
+
+No additional phone write was performed during this inventory. The next work is capability evaluation and rootfs design for the Android-native Linux userspace track. Native boot remains a separate research track.
