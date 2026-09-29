@@ -22,47 +22,45 @@ Keeping these paths separate lets us obtain a useful Linux environment without c
 
 ### A0 — Read-only inventory
 
-Before rooting, capture ro.build.display.id, Android release/model, complete /proc/cpuinfo, uname -a, mount, df -h /data, /proc/mtd, /proc/filesystems, /dev/loop*, /proc/devices, getprop, and /proc/cmdline.
+Before rooting, capture firmware/build properties, complete `/proc/cpuinfo`, kernel version, mounts, `df -h /data`, `/proc/mtd`, `/proc/filesystems`, loop nodes, `/proc/devices`, `getprop`, and `/proc/cmdline`. Preserve the full output.
 
-Storage and filesystem route is selected from this evidence. Do not assume /data filesystem type, EFS path, or loop-device availability.
+**Physical handset inventory captured 2026-09-29:** GT-S5360/totoro, Android 2.3.6 `GINGERBREAD.JPLC1`, PDA `S5360JPLC1`, CSC `S5360OJPLC1`, baseband `S5360XXLK3`; ARMv6 6TEJ BCM21553 ThunderbirdEDN31 with VFP/EDSP; Linux `2.6.35.7` (GCC 4.4.3, PREEMPT). Android ABI property is `armeabi`. `/data` is Samsung RFS with 163 MB free at capture; removable SD is VFAT. Loop block major 7 and `/dev/block/loop0`–`loop7` exist, but nodes are root-owned mode 0600 and `/dev/loop*` is absent. `/data/local/tmp` exists and was empty; write/execute permission remains to be tested. Unprivileged `/proc/mtd` showed only a header and `/proc/cmdline` was denied, so these must not be interpreted as absent; inspect read-only after root. Full evidence and caveats are in `android-chroot-linux.md`.
+
+Storage and filesystem route is selected from handset evidence. Do not assume /data filesystem type, EFS path, or loop-device usability.
 
 ### A1 — Static ARMv6 userspace test
 
-Before root, run a statically linked ARMv6-capable BusyBox from /data/local/tmp.
-
-Minimum checks include BusyBox execution, uname, and a small floating-point expression through awk. The actual phone /proc/cpuinfo remains authoritative for CPU/VFP capability.
-
-Record package/version provenance and checksum.
+Before root, run a statically linked BusyBox from `/data/local/tmp`. Verify the candidate's ARM architecture/minimum CPU requirements, static-link status, provenance, and checksum; an `armhf` label alone does not establish ARMv6 compatibility. Minimum checks include BusyBox execution, `uname`, and a small floating-point expression through `awk`. The actual phone `/proc/cpuinfo` remains authoritative for CPU/VFP capability.
 
 ### A2 — Firmware-matched root gate
 
-Root only after the phone's actual ro.build.display.id is matched to the selected root method/package and the package checksum/provenance is verified.
+Root only after the phone's actual `ro.build.display.id` is matched to the selected root method/package and the package checksum/provenance is verified.
 
 Stock recovery remains the preferred first recovery environment. Odin is not required for this first pass and remains a later recovery/firmware tool if needed.
 
 ### A3 — Preserve after root
 
-Immediately re-check mount, /proc/mtd, getprop, and /proc/cmdline.
+Immediately re-check `mount`, `/proc/mtd`, `getprop`, and `/proc/cmdline`.
 
 For EFS, inspect actual partition/mount evidence first. Any EFS backup must be read-only and hashed. Do not write or format EFS.
 
 ### A4 — Rootfs location
 
-Preferred: /data/local/alpine
+Preferred candidate: `/data/local/alpine`, subject to RFS behavior, free space, and permissions.
 
-Fallback: loop-backed image on removable SD.
+Fallback candidate: loop-backed image on removable SD, subject to root access, device-node permissions, SD capacity, and mount validation.
 
 Do not use CWM partitioning or repartitioning as the main route.
 
 ### A5 — ARMv6-compatible rootfs
 
-Select the Alpine ARMv6-compatible release from official Alpine release/download information at experiment time. Record exact release, architecture, checksum, and source.
+Select an Alpine rootfs only after confirming the selected release's ARMv6 CPU compatibility from official release/package information. Record exact release, architecture, checksum, and source.
 
 If the selected userspace fails with an explicit compatibility error, stop and diagnose before trying an older release.
 
 ### A6 — Chroot
 
-Build the minimum required environment for /dev, /dev/pts, /proc, and /sys, adapting commands to the actual Android 2.6.35 environment.
+Build the minimum required environment for `/dev`, `/dev/pts`, `/proc`, and `/sys`, adapting commands to the actual Android 2.6.35 environment.
 
 Maintain two small launchers: interactive shell and SSH daemon.
 
@@ -74,7 +72,7 @@ Intended endpoint: Mac → ADB forward → sshd → chroot.
 
 ### A8 — Milestone
 
-The active track is complete at its first milestone when Android boots normally, the Linux rootfs enters reproducibly, networking works, sshd runs, and the Mac can connect.
+The active track reaches its first milestone when Android boots normally, the Linux rootfs enters reproducibly, networking works, sshd runs, and the Mac can connect.
 
 Milestone name: **userspace Linux running**.
 
