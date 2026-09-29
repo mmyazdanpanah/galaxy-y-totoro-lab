@@ -111,3 +111,16 @@ Do not combine the first experiment with CPU overclocking, AVS/voltage changes, 
     record
 
 If a command fails, stop at the failing boundary and diagnose from actual phone output. Do not guess storage paths, filesystem types, root packages, Alpine versions, or mount options.
+
+
+## Current checkpoint — 2026-09-29
+
+Track A has completed the pre-root observation and preservation gates and has now reached a verified historical root-artifact checkpoint. The exact `update.zip` candidate is:
+
+- 2,260,360 bytes
+- MD5 `eac189609fd71de6bf053e7ff2636d7e`
+- SHA-1 `89108755e3cf1d6c298e60fc963881dacb3d313d`
+- SHA-256 `3e4ebe31b908ea3a8750347f875f91493f550edd1cd2a3006293c45a41592a27`
+- ZIP integrity test passed.
+
+Before any recovery installation, perform a complete offline updater-script/update-binary audit and confirm the GT-S5360/JPLC1 assertions. The artifact verification does not by itself authorize flashing.
