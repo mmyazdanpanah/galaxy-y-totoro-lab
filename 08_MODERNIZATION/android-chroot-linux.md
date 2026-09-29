@@ -47,7 +47,7 @@ Run these commands from the Android shell before making changes:
     echo '=== KERNEL ==='
     uname -a
     echo
-    '=== MOUNTS ==='
+    echo '=== MOUNTS ==='
     mount
     echo
     echo '=== DATA SPACE ==='
