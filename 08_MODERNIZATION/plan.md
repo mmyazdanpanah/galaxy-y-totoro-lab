@@ -2,136 +2,60 @@
 
 ## Goal
 
-Make the Samsung Galaxy Y GT-S5360 (totoro) useful as a lightweight Linux computer while preserving a known-good Android recovery path.
+Launch a new operating system on the physical Samsung Galaxy Y GT-S5360 (Totoro), ultimately booting a Linux environment without Android. A Linux userspace inside Android through chroot is an intermediate milestone, not independent OS boot.
 
-The project now uses two independent implementation tracks. The first practical track does not replace the Android boot chain.
+## Fast, reliable strategy
 
-    PRESERVE
-       ↓
-    ANDROID-NATIVE LINUX USERSPACE  ← active
-       ↓
-    userspace Linux running
+Keep the working stock Android kernel and boot chain unchanged while validating the simplest useful Linux userspace. Do not select a distribution or native-boot design by assumption. Add complexity only when a measured compatibility or capability blocker requires it.
 
-    NATIVE LINUX BOOT              ← research / deferred
-       ↓
-    reproducible kernel → boot image → controlled boot
+    Preserve and inventory
+            ↓
+    Small binary compatibility test
+            ↓
+    Minimal Android-hosted Linux userspace (chroot)
+            ↓
+    Networking / USB-ADB access
+            ↓
+    Useful Linux userspace milestone
 
-Keeping these paths separate lets us obtain a useful Linux environment without coupling the first experiment to kernel, bootloader, or repartitioning work.
+    In parallel, after recovery evidence:
+    Stock boot-chain and ramdisk feasibility research
+            ↓
+    Controlled native-boot plan (not yet authorized)
 
-## Track A — Android-native Linux userspace (active)
+## Track A — practical Android-hosted Linux (active)
 
-### A0 — Read-only inventory
+1. **Read-only D1 inventory.** Capture full CPU identity, /proc/meminfo, kernel details, partition information, filesystem support, relevant device/sysfs interfaces, and carefully selected logs. Use interactive ADB. Redact sensitive identifiers.
+2. **Offline candidate check.** Inspect a small executable for ARM ISA, EABI/float ABI, linkage, interpreter, libc and kernel requirements. Verify provenance and checksum.
+3. **Minimal live test.** Execute one verified binary in a reversible writable location. Test ELF execution from loop-backed ext2 explicitly; prior loop evidence proves filesystem read/write and clean teardown only.
+4. **Small rootfs.** If the binary passes, construct the smallest useful rootfs. Measure extracted size first and preserve /data headroom. Keep the SD card as transfer/storage unless execution constraints are resolved.
+5. **Chroot integration.** Add only required /proc, /sys, /dev and terminal support. Test shell and basic utilities before services.
+6. **Network and access.** Validate connectivity, then establish SSH or another reliable host access path. USB/ADB forwarding is an option to test, not an assumed capability.
+7. **Milestone A.** Android boots normally; the Linux userspace enters reproducibly through chroot; basic utilities and host access work.
 
-Before rooting, capture firmware/build properties, complete `/proc/cpuinfo`, kernel version, mounts, `df -h /data`, `/proc/mtd`, `/proc/filesystems`, loop nodes, `/proc/devices`, `getprop`, and `/proc/cmdline`. Preserve the full output.
+## Track B — independent/native boot (research, gated)
 
-**Physical handset inventory captured 2026-09-29:** GT-S5360/totoro, Android 2.3.6 `GINGERBREAD.JPLC1`, PDA `S5360JPLC1`, CSC `S5360OJPLC1`, baseband `S5360XXLK3`; ARMv6 6TEJ BCM21553 ThunderbirdEDN31 with VFP/EDSP; Linux `2.6.35.7` (GCC 4.4.3, PREEMPT). Android ABI property is `armeabi`. `/data` is Samsung RFS with 163 MB free at capture; removable SD is VFAT. Loop block major 7 and `/dev/block/loop0`–`loop7` exist, but nodes are root-owned mode 0600 and `/dev/loop*` is absent. `/data/local/tmp` exists and was empty; write/execute permission remains to be tested. Unprivileged `/proc/mtd` showed only a header and `/proc/cmdline` was denied, so these must not be interpreted as absent; inspect read-only after root. Full evidence and caveats are in `android-chroot-linux.md`.
+The stock-kernel/custom-ramdisk approach is a credible hypothesis because it may avoid a kernel rebuild, but it is not proven. First establish boot/recovery partition layout, stock image format, bootloader acceptance behavior, early-boot debugging, and a credible recovery route. Do not flash a test image until those gates are reviewed and explicit approval is given.
 
-Storage and filesystem route is selected from handset evidence. Do not assume /data filesystem type, EFS path, or loop-device usability.
+A rebuilt Samsung kernel is a later option only if required drivers or kernel features block the stock-kernel route. Mainline porting, kexec, multiboot and second-device experiments remain alternatives to assess only where they offer concrete benefit; they are not default parallel workstreams.
 
-### A1 — Static ARMv6 userspace test
+## Current evidence
 
-Before root, run a statically linked BusyBox from `/data/local/tmp`. Verify the candidate's ARM architecture/minimum CPU requirements, static-link status, provenance, and checksum; an `armhf` label alone does not establish ARMv6 compatibility. Minimum checks include BusyBox execution, `uname`, and a small floating-point expression through `awk`. The actual phone `/proc/cpuinfo` remains authoritative for CPU/VFP capability.
+- Physical device: GT-S5360 / BCM21553, Android 2.3.6 JPLC1, Linux 2.6.35.7.
+- Root access and basic BusyBox chroot execution are verified.
+- Loop-backed ext2 creation, attach, read-write mount, file I/O and clean teardown are verified.
+- /data had approximately 162–163 MiB free at the last recorded measurement; this is not a current live measurement.
+- SD VFAT was observed mounted noexec.
+- Candidate binary compatibility, ELF execution from loop ext2, networking, SSH, recovery partition identity and a tested restore path remain open.
 
-### A2 — Firmware-matched root gate
+## Recovery and preservation gates
 
-Root only after the phone's actual `ro.build.display.id` is matched to the selected root method/package and the package checksum/provenance is verified.
+Before boot-critical changes, map partition nodes to names from device evidence and cross-check against PIT; acquire and hash read-only boot/recovery/EFS evidence using a verified method; keep EFS private and never write it; obtain a matching full-firmware restoration set; document a host-side restore runbook; and require explicit approval for any write.
 
-Stock recovery remains the preferred first recovery environment. Odin is not required for this first pass and remains a later recovery/firmware tool if needed.
+A partition dump or Download Mode availability alone is not proof of a working restoration route. A no-op flash is a write and must not be described as read-only validation.
 
-### A3 — Preserve after root
+## Safety and working method
 
-Immediately re-check `mount`, `/proc/mtd`, `getprop`, and `/proc/cmdline`.
+**Observe → preserve → smallest reversible step → test → record.**
 
-For EFS, inspect actual partition/mount evidence first. Any EFS backup must be read-only and hashed. Do not write or format EFS.
-
-### A4 — Rootfs location
-
-Preferred candidate: `/data/local/alpine`, subject to RFS behavior, free space, and permissions.
-
-Fallback candidate: loop-backed image on removable SD, subject to root access, device-node permissions, SD capacity, and mount validation.
-
-Do not use CWM partitioning or repartitioning as the main route.
-
-### A5 — ARMv6-compatible rootfs
-
-Select an Alpine rootfs only after confirming the selected release's ARMv6 CPU compatibility from official release/package information. Record exact release, architecture, checksum, and source.
-
-If the selected userspace fails with an explicit compatibility error, stop and diagnose before trying an older release.
-
-### A6 — Chroot
-
-Build the minimum required environment for `/dev`, `/dev/pts`, `/proc`, and `/sys`, adapting commands to the actual Android 2.6.35 environment.
-
-Maintain two small launchers: interactive shell and SSH daemon.
-
-### A7 — Networking + SSH
-
-Use Android's working network path. Install only the packages required for network diagnostics and SSH.
-
-Intended endpoint: Mac → ADB forward → sshd → chroot.
-
-### A8 — Milestone
-
-The active track reaches its first milestone when Android boots normally, the Linux rootfs enters reproducibly, networking works, sshd runs, and the Mac can connect.
-
-Milestone name: **userspace Linux running**.
-
-## Track B — Native Linux boot (research / deferred)
-
-Preserved and valid:
-
-- Samsung OSS gt-s5360_gb_opensource source baseline;
-- bcm21553_totoro_05_defconfig build path;
-- CPUFreq/AVS source-to-binary reconciliation;
-- exact five-defconfig comparison;
-- Totoro boot geometry and historical boot-image specimen;
-- UART/SBL reconnaissance methodology;
-- later mainline/hardware-enablement research.
-
-Track B must not block Track A.
-
-## Safety boundary
-
-Never use repartitioning as a first solution.
-
-Do not write PIT, EFS, or modem. Do not wipe system or userdata.
-
-Do not combine the first experiment with CPU overclocking, AVS/voltage changes, kernel replacement, bootloader replacement, boot-image flashing, or a large patch stack.
-
-## Working rule
-
-    observe
-      ↓
-    preserve
-      ↓
-    smallest reversible step
-      ↓
-    test
-      ↓
-    record
-
-If a command fails, stop at the failing boundary and diagnose from actual phone output. Do not guess storage paths, filesystem types, root packages, Alpine versions, or mount options.
-
-
-## Current checkpoint — 2026-09-29
-
-Track A has completed the pre-root observation and preservation gates and has now reached a verified historical root-artifact checkpoint. The exact `update.zip` candidate is:
-
-- 2,260,360 bytes
-- MD5 `eac189609fd71de6bf053e7ff2636d7e`
-- SHA-1 `89108755e3cf1d6c298e60fc963881dacb3d313d`
-- SHA-256 `3e4ebe31b908ea3a8750347f875f91493f550edd1cd2a3006293c45a41592a27`
-- ZIP integrity test passed.
-
-Before any recovery installation, perform a complete offline updater-script/update-binary audit and confirm the GT-S5360/JPLC1 assertions. The artifact verification does not by itself authorize flashing.
-
-
-## Root-package evidence gate — 2026-09-29
-
-Track A has completed the offline audit of the historical root artifact. The updater script explicitly accepts `GT-S5360` and its active operations are limited to extracting `system`, setting 04755 permissions on the five bundled tools, and unmounting `/system`. The script's format/mount lines are commented out; no active raw-image, program-execution, modem, boot/recovery, EFS, repartitioning, or partition-formatting operation was identified. The updater binary itself has broader recovery/BML capabilities and remains a separate risk consideration.
-
-The payloads are ARM EABI4 static BusyBox plus ARM EABI5 dynamic `ssh`, `sqlite3`, and `su`; this is not obviously incompatible with the ARMv6 handset at the ELF-header level. Package metadata remains non-JPLC1-specific (`pre-device=tass`, `post-build=google/passion/passion:2.3.3/GRI40/102588:user/release-keys`). Direct read-only checks found the five package destination paths absent on the handset. No write has occurred.
-
-Therefore A2 is **not yet cleared**. The next gate is independent acquisition and verification of the exact stock JPLC1 firmware/recovery environment. Do not flash the historical root package until that comparison is complete.
-
-Detailed evidence: `10_RESEARCH/root-package-evidence-gate-2026-09-29.md`.
+No PIT write, repartitioning, EFS/modem write, userdata wipe, bootloader replacement, or boot/recovery flash without a separate reviewed decision and explicit approval. Preserve original artifacts and document failed tests.
