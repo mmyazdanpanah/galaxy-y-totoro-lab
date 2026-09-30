@@ -2,44 +2,36 @@
 
 Research, preservation, reconstruction, and modernization of the Samsung Galaxy Y GT-S5360 (totoro).
 
-## Project direction
+## Project goal
 
-The laboratory follows a preservation-first, reuse-first modernization strategy.
+The long-term goal is to launch a new operating system on the physical Totoro, ideally booting a Linux environment without Android. A Linux userspace inside Android through chroot is a valuable, lower-risk intermediate milestone, but is not an independent OS boot.
 
-There are now two independent modernization tracks:
+## Current strategy
 
-    preserve specimen
-          ↓
-    Android-native Linux userspace  ← active practical path
-          ↓
-    userspace Linux running
+Use the fastest reliable path without unnecessary complexity: preserve the working stock Android kernel and boot chain, complete a read-only capability inventory, establish a credible recovery baseline, and validate the smallest compatible Linux userspace on the device. Native boot remains an evidence-gated objective; speculative kernel or mainline work must not block practical progress. No distribution or boot strategy is assumed to be final.
 
-    native Linux boot              ← research / deferred
-          ↓
-    reproducible kernel → boot image → controlled boot
-          ↓
-    later hardware/mainline work
+## Verified milestones
 
-The active path keeps the stock Android kernel and boot chain intact. It aims to run a minimal ARMv6-compatible Linux userspace inside Android through chroot and make it reachable over SSH from the Mac.
+- Physical GT-S5360, Android 2.3.6 JPLC1, Linux 2.6.35.7 and root access verified.
+- Basic static BusyBox chroot execution verified.
+- Loop-backed ext2 creation, attachment, read-write mount, file I/O and clean teardown verified.
+- ELF execution from the loop mount, network connectivity, SSH integration, recovery partition identity, and a usable full-firmware restore route remain unverified.
 
-The native-boot path remains valuable research, but it is not a prerequisite for the first useful Linux milestone.
+See STATUS.md for current gates and 08_MODERNIZATION/plan.md for the simplified implementation plan.
 
 ## Documentation map
 
-- STATUS.md — current specimen and project state
+- STATUS.md — current state, open gates and next action
 - AGENTS.md — preservation and experiment rules
 - 01_PRESERVATION/ — specimen evidence and acquisition
 - 02_FIRMWARE/ — stock firmware history and reconstruction
 - 03_PARTITIONS/ — live partition evidence
-- 06_KERNEL/ — kernel archaeology
-- 07_BUILD/ — reproducible build work
-- 08_MODERNIZATION/plan.md — two-track engineering roadmap
-- 08_MODERNIZATION/android-chroot-linux.md — active Android-native Linux/chroot procedure
+- 06_KERNEL/ and 07_BUILD/ — kernel archaeology and reproducible builds
+- 08_MODERNIZATION/plan.md — strategy and milestones
+- 08_MODERNIZATION/android-chroot-linux.md — active userspace procedure and evidence
 - 09_EXPERIMENTS/ — experiment records
-- 10_RESEARCH/modernization-history.md — historical modernization map
+- 10_RESEARCH/ — historical and technical research
 
 ## Guiding rule
 
 **Observe → preserve → smallest reversible step → test → record.**
-
-No irreversible hardware change should be made merely to make the project look more modern. Evidence and reproducibility come first.
