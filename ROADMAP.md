@@ -1,6 +1,6 @@
 # Roadmap
 
-The roadmap is ordered around the fastest reliable path to launching a new OS on the physical Galaxy Y Totoro, ultimately without Android running. A chroot userspace is an intermediate milestone, not independent boot.
+The roadmap is ordered around one simple goal: **turn the Totoro into something useful and cool.** The preferred technical destination is a useful Linux environment that boots independently of Android, but we keep simpler alternatives open if they produce a genuinely good user experience faster and more safely.
 
 ## Preservation and evidence
 
@@ -24,8 +24,9 @@ The roadmap is ordered around the fastest reliable path to launching a new OS on
 - [ ] Validate networking
 - [ ] Establish reliable host access, preferably through a tested USB/ADB path
 - [ ] **Milestone:** reproducible Linux userspace available while stock Android remains bootable
+- [ ] **Milestone:** genuinely useful/cool Totoro experience
 
-## Independent/native OS boot — gated research
+## Independent/native OS boot — preferred destination
 
 - [ ] Confirm boot/recovery partition identities and image structure
 - [ ] Assess stock-kernel/custom-ramdisk feasibility and early-boot debugging
@@ -34,6 +35,12 @@ The roadmap is ordered around the fastest reliable path to launching a new OS on
 - [ ] **Milestone:** Linux userspace boots without Android, with a verified recovery path
 - [ ] Consider a rebuilt kernel only if the stock kernel is a demonstrated blocker
 - [ ] Consider mainline, kexec, multiboot or hardware debug only where evidence justifies added complexity
+
+## Alternative approaches
+
+- [ ] Assess any simpler Android-assisted or hybrid architecture that could provide a better Totoro experience sooner
+- [ ] Keep alternative paths small, reversible and evidence-driven
+- [ ] Do not reject a useful outcome simply because it is not the final independent-boot architecture
 
 ## Historical research (non-blocking)
 
@@ -44,4 +51,4 @@ The roadmap is ordered around the fastest reliable path to launching a new OS on
 
 ## Execution principle
 
-**Observe → preserve → smallest reversible step → test → record.** Avoid parallel speculative work, unnecessary toolchains, broad distributions, and risky device changes without evidence-based need and explicit approval.
+**Make the Totoro useful first. Keep the path short. Observe → preserve → smallest reversible step → test → record.** Avoid parallel speculative work, unnecessary toolchains, broad distributions, and risky device changes without evidence-based need and explicit approval.
