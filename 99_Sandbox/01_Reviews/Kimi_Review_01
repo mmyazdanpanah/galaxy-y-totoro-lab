@@ -1,0 +1,11 @@
+**Headline conclusions:**
+
+1. **Your strategy is right, but the center of gravity is off.** The repo is disciplined about *not breaking the phone* but has no answer to "what will the user actually do with it." The report proposes four device-specific end-use concepts (pocket SSH/offline-library server, MPD network music player, GPS logger, retro handheld) and recommends adopting the pocket server as the explicit M5 target — this retroactively sizes everything (rootfs ≈64–128 MB, Dropbear not OpenSSH, SSH not VNC).
+
+2. **The distribution question is narrower than the repo treats it.** glibc is effectively disqualified: modern glibc assumes `prlimit64` (kernel ≥2.6.36 — one minor version above your 2.6.35.7), and Debian armel is being retired upstream anyway. musl explicitly tolerates older kernels, and Alpine still ships an official ARMv6+VFP `armhf` minirootfs (~3 MB) as of 3.24.1. Your raw cpuinfo capture already confirms ARM1136J-S (part `0xb36`) with VFP — the ISA/ABI match is evidence, not hope.
+
+3. **One experiment gates everything:** running one static + one dynamic musl binary from `/data/local/tmp`. Fully reversible, one ADB session, and every fallback branch (older Alpine → custom musl build → era-correct 2012 Debian image → CM11 contingency) is pre-mapped to a specific failure mode.
+
+4. **What to stop:** postmarketOS is dead for this device (armhf dropped project-wide in June 2026; the totoro page itself says non-booting), and native boot / kernel rebuild / UART / mainline should be formally parked — their first real step is a boot-critical write behind five unmet recovery gates, for zero user-visible gain over a good chroot.
+
+5. **Two findings your docs missed:** with root now verified, a **read-only** EFS dump (`dd` of bml12/bml15 to SD) is suddenly possible — closing your biggest preservation gap — and the community's **CM11 (KitKat) nightlies for totoro** are a viable "buy a 3.0.x kernel" contingency if the stock kernel proves to be a hard blocker.
