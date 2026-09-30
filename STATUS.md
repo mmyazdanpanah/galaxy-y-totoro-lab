@@ -1,57 +1,79 @@
 # Status
 
-**Current stage:** read-only capability inventory and recovery-risk reduction, followed by the smallest userspace compatibility test.
+**Current stage:** integrated external-review strategy → smallest Linux-userspace compatibility gate.
 
-**Project goal:** **turn the Totoro into something useful and cool.** The preferred technical destination is a useful Linux environment that can boot independently of Android, but a simpler Android-assisted or alternative architecture is also a success if it produces a genuinely useful experience without unnecessary project length or complexity.
+**Project goal:** **turn the Totoro into something useful and cool.** A useful Android-assisted Linux environment or other reversible hybrid outcome is fully successful. Independent Linux boot is now a conditional research branch, not the active critical path.
 
-**Working strategy:** pursue the shortest reliable route to a useful device, preserve the known-working stock system, and add complexity only when a measured blocker requires it. Native boot is a preferred destination, not a requirement that overrides practicality.
+**Working strategy:** preserve the known-working Android system and stock kernel; add complexity only when a measured blocker requires it; prefer evidence-producing experiments that write only to `/data/local/tmp` or removable storage.
 
 ## Verified physical-device state — 2026-09-29
 
 - GT-S5360 / totoro / BCM21553; Android 2.3.6 GINGERBREAD.JPLC1; PDA S5360JPLC1; CSC S5360OJPLC1; baseband S5360XXLK3.
-- CPU reports ARMv6-compatible architecture 6TEJ with VFP and EDSP. Full implementer/part/variant/revision details remain a capture item; do not infer a specific core model from v6l alone.
+- CPU reports ARMv6-compatible architecture 6TEJ with VFP and EDSP. Exact implementer/part/variant/revision remains a primary-evidence item unless the corresponding handset transcript is linked and reviewed.
 - Linux 2.6.35.7, GCC 4.4.3, PREEMPT, build dated 2012-03-16.
-- Root verified: su -c id returned uid=0(root).
+- Root verified: `su -c id` returned `uid=0(root)`.
 - Basic static BusyBox chroot execution verified as UID 0.
-- Loop-backed ext2 creation, attachment through /dev/block/loop0, read-write mount, file I/O, unmount, detach and cleanup verified.
-- The loop test does not prove ELF execution from the mounted image.
-- /data is Samsung RFS, read-write, with approximately 162–163 MiB free at the recorded capture. SD is VFAT and was observed mounted noexec.
-- Root installation added five files under /system. The device is therefore not byte-for-byte stock at the system-file level; record this as a known post-root delta.
-- No boot, recovery, modem, EFS, PIT, repartitioning, or userdata wipe/write has been performed. The root installation did modify /system.
-- Live PIT SHA-256: 06d5b4f05588fa8f06d29f46c7e5056002fdfcbd15901520d651b4ee87a9a538.
+- Loop-backed ext2 creation, attachment through `/dev/block/loop0`, read-write mount, file I/O, unmount, detach and cleanup verified.
+- The loop test does **not** prove ELF execution from the mounted image.
+- `/data` is Samsung RFS, read-write, with approximately 162–163 MiB free at the recorded capture. SD is VFAT and was observed mounted `noexec`.
+- Root installation added five files under `/system`; the device is not byte-for-byte stock at the system-file level.
+- No boot, recovery, modem, EFS, PIT, repartitioning, or userdata wipe/write has been performed. The root installation did modify `/system`.
+- Live PIT SHA-256: `06d5b4f05588fa8f06d29f46c7e5056002fdfcbd15901520d651b4ee87a9a538`.
 
-Detailed handset and loop evidence is linked from 08_MODERNIZATION/android-chroot-linux.md and 01_PRESERVATION/evidence/. Some review conclusions rely on STATUS summaries rather than independent inspection of every raw evidence file; treat those as documented claims until raw output is reviewed.
+## Integrated review result
+
+Five independent reviews were consolidated in `08_MODERNIZATION/integrated-external-review-2026-09-30.md`.
+
+The strongest common findings are:
+
+- Android-assisted Linux is the shortest practical active architecture.
+- A small static ARMv6 ELF test should precede any full rootfs or distribution work.
+- A dynamic musl-based test should follow the static test and answer the real userspace compatibility question.
+- The already-proven SD loop/ext2 mechanism is preferable to consuming scarce internal RFS space for the persistent rootfs.
+- Dropbear/SSH or a small web service can provide the first genuinely useful Linux experience.
+- Native boot, custom kernel, mainline, UART/SBL, CPUFreq/AVS and similar work should be preserved but removed from the critical path.
+- Review-reported claims about exact CPU part, restore-set completeness, EFS readback, community ROMs, or distro support remain qualified until tied to primary evidence.
 
 ## Current gates
 
-1. **D1 — read-only capability and partition inventory: NEXT.** Capture CPU identity, memory, kernel and partition information, relevant filesystem/device metadata, available framebuffer/USB interfaces, power-supply metadata, and reviewed logs. Use interactive ADB. Redact sensitive values before sharing or committing. A missing /proc/config.gz does not prove a feature is disabled; a device node or sysfs entry does not prove functionality.
-2. **D2 — preservation and recovery evidence: AFTER D1.** Establish exact partition-node mappings first. Then acquire carefully scoped read-only boot/recovery/EFS evidence and hashes. EFS must never be written or published. A dump alone is not a tested restoration path.
-3. **Offline compatibility audit.** Inspect a small candidate executable for ISA, EABI/float ABI, interpreter/libc and likely kernel requirements. A distribution architecture label alone is insufficient.
-4. **Small live executable test.** Run only a verified minimal candidate in a reversible location. Record exact output and errors. ELF execution from loop ext2 remains unverified.
-5. **Minimal chroot integration.** After compatibility passes, build a small rootfs, then test required interfaces, networking and SSH incrementally.
-6. **Useful-device milestone.** Stop and celebrate once we have a genuinely useful/cool Totoro experience, even if the implementation is not the final independent-boot architecture.
-
-Offline audit can proceed in parallel with D1. Do not perform a recovery-slot test, flash, partition write, or other boot-critical modification as part of D1.
+1. **M1 — decision-critical read-only baseline:** capture exact CPU identity if still unresolved, actual available RAM, network state/interfaces, pty availability and relevant mount flags. Do not turn this into broad archaeology.
+2. **M2 — static ARMv6 ELF:** offline-audit provenance, ISA/EABI/float ABI, linkage and interpreter; execute one verified static binary from `/data/local/tmp`.
+3. **M3 — dynamic userspace:** execute one dynamic musl-based ARMv6 binary from a reversible location. Diagnose the exact failure mode before changing candidates.
+4. **M4 — persistent rootfs:** only after M2/M3, use the already-proven SD loop/ext2 path for a small host-built rootfs and repeatable chroot.
+5. **M5 — access/service:** Dropbear/SSH and one useful service or browser-accessible local dashboard.
+6. **M6 — useful/cool checkpoint:** stop and reassess when the physical Totoro is genuinely useful or fun.
+7. **M7 — conditional fallback:** Buildroot/uClibc-ng or another purpose-built rootfs only if richer userspace is still needed and the chosen distribution path fails.
+8. **M8 — native boot reconsideration:** reopen only if a documented user-facing requirement cannot be met by the Android-assisted design.
 
 ## Recovery readiness
 
+Recovery readiness remains separate from the active low-risk path.
+
 Established: root and stock Android operation; live PIT hash; documented partition-map evidence from the post-root inventory; boot-critical regions reported untouched.
 
-Not established: independently verified full JPLC1 restore set; definitive recovery partition identity and image structure; complete named mapping of relevant BML/STL nodes; raw EFS backup; rehearsed host-side restoration procedure. Download Mode availability alone does not guarantee recovery.
+Not yet promoted to “verified”: exact recovery partition/image identity, a fully verified matching JPLC1 restore set, a rehearsed host-side restoration procedure, and any claim that EFS can be safely read back. Review statements about these items are not sufficient by themselves.
 
-Before any boot-critical write, require verified matching images, a node-to-partition map cross-checked against PIT evidence, a written restoration runbook, and an explicit experimental decision. A no-op flash is still a write, not a read-only rehearsal.
+Before any boot-critical write, require verified matching inputs, node-to-partition cross-checking, a written restoration runbook, and explicit approval. A no-op flash is still a write.
 
-## Simplified technical direction
+## Active safety boundary
 
-- **Active practical path:** retain Android and the stock kernel; prove a minimal Linux userspace binary, then a small chroot and USB/ADB-assisted access.
-- **Native-boot research:** investigate stock-kernel/custom-ramdisk feasibility only after partition identity, image structure, debug path and recovery confidence are established.
-- **Alternative UX paths:** keep open any simpler approach that makes the physical Totoro genuinely useful or fun.
-- **Avoid for now:** kernel rebuilds, mainline porting, overclock/AVS work, repartitioning, large distributions, unnecessary services and broad package installations.
+The userspace path must not write BML/STL raw nodes, PIT, EFS/modem, boot/recovery partitions or userdata.
 
-## Next action
+For chroot work:
+- never use `pivot_root`;
+- do not create a second `devpts` mount unless later evidence proves it is required and safe;
+- always tear down loop mounts before SD removal;
+- verify mount and loop state after teardown;
+- keep persistent rootfs storage on removable media when practical.
 
-Run the strictly read-only D1 inventory from an interactive ADB shell and save the transcript privately on the development computer. Redact serial, IMEI, credentials, keys, network identifiers and other sensitive values before sharing. Return the transcript and a provisional partition-node map; mark unresolved mappings as unknown. Review D1 before planning any dump or state-changing experiment.
+## Immediate next action
 
-## Historical checkpoints
+**Do not build a full distribution yet.**
 
-Earlier entries in this status history described pre-root or pre-loop-test states. They are superseded by this current summary. In particular, statements that rooting has not occurred, that no /system write has occurred, or that loop-backed ext2 is untested are stale and must not be used as current status.
+Run the smallest compatibility gate:
+
+**read-only baseline → host-side static ARMv6 ELF audit → execute one static binary from `/data/local/tmp` → record exact output and exit status.**
+
+If that succeeds, immediately test one dynamic musl binary. Only then build the smallest persistent rootfs.
+
+Historical checkpoints below this section are superseded where they conflict with the current status.
