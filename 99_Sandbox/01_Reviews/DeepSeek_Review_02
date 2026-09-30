@@ -1,0 +1,526 @@
+# Independent Engineering Review: Samsung Galaxy Y GT-S5360 ("Totoro")
+
+---
+
+## 1. Executive Conclusion
+
+The Totoro is a 2011 ARMv6 device with 290 MB of usable RAM, a 3-inch 240×320 screen, 832 MHz single-core CPU, and a Linux 2.6.35.7 kernel. After independently reviewing the available evidence—including the repository structure, hardware limitations, kernel support status, distribution availability, and community activity—the central conclusion is this:
+
+**The most practical path to a genuinely useful and cool Totoro is a minimal Linux chroot running alongside the existing Android 2.3.6 system, using a distribution with true ARMv6 support (Alpine Linux or Debian armel), delivered via an already-proven loop-mounted ext2 image.** Independent Linux boot, custom kernel development, and mainline Linux porting are technically interesting but have low probability of delivering a working, maintainable result on this specific hardware within any reasonable timeframe.
+
+The key strategic insight is that the project's own verified evidence already proves the two hardest prerequisites: **root chroot execution works**, and **loop-mounted ext2 filesystem I/O works**. The remaining work is almost entirely userspace compatibility (libc, dynamic linking, package selection), not kernel or boot development. That is a userspace problem, not a system-level one, and it is solvable with existing tools and distributions.
+
+The repository's current direction toward independent Linux boot is understandable from an architectural-purity standpoint but is likely to consume enormous effort with very little practical payoff. The BCM21553 has no mainline Linux kernel support. The kernel is a Samsung/Broadcom fork from 2012. There is no device tree in mainline. There is no postmarketOS port. There is no active upstream development. The XDA threads from 2012 discussing "Linux native boot" on the Galaxy Y describe an unfinished, imperfect experiment that was never completed. Pursuing this path would mean reverse-engineering BCM21553 hardware initialization, writing a device tree from scratch, porting a modern kernel to ARMv6 with no upstream support, and solving display/input/storage/power drivers without documentation. That is a multi-person-year effort with no guarantee of success.
+
+The chroot approach, by contrast, reuses every driver that already works (display, touch, Wi-Fi, audio, storage) because it runs inside the Android kernel. It requires only that the userspace binaries in the chroot can execute. This is a much smaller, more verifiable problem.
+
+The recommended destination is a headless or terminal-based Linux environment accessible via ADB or a terminal emulator, running Alpine Linux (edge, armhf) or Debian armel with a curated set of lightweight tools: SSH, Python 3, GCC/Clang, git, tmux, and a text editor. This turns the Totoro into a pocket-sized Linux server/lab machine that can be SSH'd into over Wi-Fi, run scripts, compile small programs, and serve as a portable development environment. It does not require replacing Android, does not require kernel changes, and does not risk bricking the device.
+
+---
+
+## 2. Current Evidence Audit
+
+### Verified facts (from repository and device evidence)
+
+| Fact | Status | Implication |
+|------|--------|-------------|
+| Root access verified | ✅ Confirmed | chroot is possible |
+| BusyBox v1.17.2 at `/system/xbin/busybox` | ✅ Confirmed | Basic userspace tools available |
+| Chroot execution test succeeded | ✅ Confirmed | `chroot()` syscall works, but not distribution compatibility |
+| 4 MiB ext2 image created, loop-mounted, written, read, unmounted, detached | ✅ Confirmed | Loop filesystem workflow validated |
+| `/data/local/tmp` supports executables | ✅ Confirmed | A staging area exists for binaries |
+| ~14 GB free on VFAT SD card | ✅ Confirmed | Ample storage for a rootfs |
+| ~162 MB free on `/data` | ✅ Confirmed | Tight for rootfs, but workable for a minimal system |
+| Android 2.3.6, kernel 2.6.35.7, ARMv6 (ARM1136) | ✅ Confirmed | Architecture is old; distribution support is limited |
+| 290 MB RAM (approximately) | ✅ Confirmed (multiple sources) | Severe constraint; Android uses most of it |
+| 3-inch 240×320 display, capacitive touch | ✅ Confirmed | Usable for terminal, poor for GUI |
+| Wi-Fi, 3G, Bluetooth, AGPS, 2 MP camera | ✅ Confirmed | Networking is available |
+| No mainline Linux kernel support for BCM21553 | ✅ Confirmed (Dissonant wiki) | Independent boot requires custom kernel |
+| No postmarketOS port | ✅ Confirmed | No ready-made modern OS |
+| Ubuntu dropped ARMv6 after 9.04 | ✅ Confirmed | Ubuntu is not an option |
+| Alpine armhf targets ARMv6 with FPU | ✅ Confirmed | Alpine is a viable distribution |
+| Debian armel supports ARMv6 | ✅ Confirmed | Debian is a viable distribution |
+| SliTaz has an ARMv6 port | ✅ Confirmed | SliTaz is a lightweight option |
+| Custom kernels exist (Merruk, White, Watson, Samurai) | ✅ Confirmed | Kernel source is available, but all are Android-oriented |
+
+### Assumptions (stated as such in the repository, not yet verified)
+
+- The exact CPU core is ARM1136 (confirmed via PhoneDB, but not independently verified on-device)
+- Complete kernel configuration (which modules are built-in vs. loadable) is not fully mapped.
+- Available RAM may be less than 290 MB due to kernel and modem reservations.
+- Display framebuffer access from chroot is untested.
+- Audio, Bluetooth, and camera access from chroot is untested.
+- `/data` free space may fluctuate due to Android system usage.
+
+### Important unknowns
+
+- **Can dynamic ELF binaries from a Debian/Alpine ARMv6 rootfs actually execute?** The chroot milestone proves `chroot()` works, but not that glibc or musl-based binaries will run. This is the single most important unknown.
+- **What is the actual available RAM after Android boots?** If Android consumes 200+ MB, a chroot Linux environment may have only 60–90 MB to work with, which is enough for a terminal but not for much else.
+- **Does the kernel support all syscalls required by modern glibc/musl?** The 2.6.35 kernel predates many syscalls that modern userspace expects. Some packages may fail to start.
+- **Is the loop device persistent across reboots?** The repository confirms it works in a session; it's unclear whether it survives a reboot without re-setup.
+- **What is the exact partition layout and restoration readiness?** The repository states that complete recovery packages are not yet established for all critical partitions.
+
+---
+
+## 3. Possible End-Use Concepts
+
+### Concept A: Pocket Linux Server / SSH Node
+
+**What the user does:** The Totoro runs a minimal Linux userland in a chroot with SSHd and a few services. The user SSHes into it from a laptop or another device over Wi-Fi. It serves as a persistent, low-power Linux node for running scripts, cron jobs, small web services, or as a jump host.
+
+**Hardware/software required:** Root, chroot, Wi-Fi (already working in Android), SSHd in the chroot, a static IP or mDNS name. No GUI. No framebuffer access needed.
+
+**Needs Linux?** Yes, but only as a userspace environment. The Android kernel provides all drivers.
+
+**Works with existing Android?** Yes, perfectly. Android continues to run; the chroot is a parallel environment.
+
+**Obstacles:** Ensuring SSHd starts automatically, managing IP address changes, keeping the phone charged and awake, keeping the chroot rootfs small enough to fit in `/data` (or on SD card).
+
+**Minimum success demo:** SSH into the Totoro from a laptop. Run `uname -a`, `python3 --version`, and a simple script. Confirm the phone is reachable and responsive over Wi-Fi.
+
+### Concept B: Retro Terminal / Text-Mode Workstation
+
+**What the user does:** Uses the Totoro's physical keyboard (via a terminal emulator app) or an external Bluetooth keyboard to write code, take notes, or interact with a text-mode Linux environment. The 240×320 screen is small but sufficient for a terminal with a compact font.
+
+**Hardware/software required:** Terminal emulator app on Android, chroot Linux with a shell, tmux, vim/nano, git, and a compiler. Bluetooth keyboard support (Android handles this).
+
+**Needs Linux?** The Linux environment is desirable for real GNU tools, but a strong alternative is to use Android's terminal emulator with BusyBox and a carefully selected set of static ARMv6 binaries. However, BusyBox v1.17.2 is ancient and lacks modern features.
+
+**Works with existing Android?** Yes, via terminal emulator.
+
+**Obstacles:** Screen size, no hardware keyboard, Android's input handling for external keyboards, font rendering in terminal apps.
+
+**Minimum success demo:** Open a terminal emulator, `chroot` into the Linux rootfs, run `vim` and write a file, compile a simple C program with `gcc`, and run it.
+
+### Concept C: Portable Offline Reference / Knowledge Base
+
+**What the user does:** The Totoro serves as a pocket reference device containing offline documentation, Wikipedia dumps (KiwiX), programming references, or a personal knowledge base. It uses a lightweight local web server (e.g., `lighttpd` or `busybox httpd`) serving static content, accessible via the phone's own browser or over Wi-Fi.
+
+**Hardware/software required:** Chroot with a web server, storage for content (SD card), a browser on the phone (Android browser or `w3m`/`lynx` in chroot).
+
+**Needs Linux?** Not strictly. Android could run a local web server, but the Linux environment makes it easier to install and manage server software.
+
+**Works with existing Android?** Yes.
+
+**Obstacles:** Storage management, ensuring the server starts automatically, managing the phone's sleep behavior.
+
+**Minimum success demo:** Browse to `http://localhost:8080` from the phone's browser and see a locally served page. Or SSH in and `curl` the page.
+
+### Concept D: Network Diagnostic / Security Tool
+
+**What the user does:** Uses the Totoro as a portable network diagnostic device: `nmap`, `tcpdump`, `iperf`, `dig`, `whois`, and other tools for troubleshooting networks. The phone's Wi-Fi and 3G provide connectivity.
+
+**Hardware/software required:** Chroot with network tools. Root access is required for `tcpdump` and raw sockets.
+
+**Needs Linux?** Strongly preferred, because Android's toybox/BusyBox lacks these tools. Installing them in a chroot is straightforward.
+
+**Works with existing Android?** Yes. The chroot uses Android's network stack.
+
+**Obstacles:** Some tools may need kernel features not present in 2.6.35. `tcpdump` needs `AF_PACKET` support (likely present). `nmap` needs raw sockets (root has this).
+
+**Minimum success demo:** Run `nmap -sT` against a local host, `ping`, `dig`, and `curl` from within the chroot. Verify results are correct.
+
+### Concept E: Lightweight GUI Desktop (Long Shot)
+
+**What the user does:** Runs a minimal X11 or Wayland desktop (e.g., `i3`, `dwm`, or `JWM`) inside the chroot, displayed via VNC or X forwarding to a terminal emulator or a VNC client on the phone itself or another device.
+
+**Hardware/software required:** Chroot with X11, a VNC server (`x11vnc` or `tigervnc`), a lightweight window manager, and a VNC client. Alternatively, use Android's `XServer XSDL` app to display X11 apps.
+
+**Needs Linux?** Yes. This is the most "Linux desktop" concept.
+
+**Works with existing Android?** Yes, via VNC or XSDL. Android provides the display and input.
+
+**Obstacles:** 290 MB RAM is very tight for X11 + VNC + window manager. Performance will be poor. The 240×320 screen is very small for a desktop. This is a demonstration, not a productivity tool.
+
+**Minimum success demo:** Start VNC server in chroot, connect from Android VNC client, see a window manager desktop, open `xterm`, run `xeyes`. If it works at all, it's a success.
+
+---
+
+## 4. Architecture Comparison
+
+| Approach | Compatibility | Risk to Device | Reversibility | Time to Demo | Practical Usefulness | Verdict |
+|----------|--------------|----------------|---------------|--------------|---------------------|---------|
+| **Android-assisted chroot (Alpine/Debian armel)** | High — uses existing kernel/drivers | Very Low — no partition writes | High — delete rootfs image | Days to 1–2 weeks | High — real Linux tools | **Recommended** |
+| **PRoot (no root required)** | High — userspace only | None | Trivial | Days | Medium — slower, some limitations | Viable fallback |
+| **DebDroid / Linux Deploy (existing tools)** | Medium — may assume newer kernel | Low | High | Days | Medium — may not support ARMv6 | Test as shortcut |
+| **Specialized Android app (Termux, etc.)** | High | None | N/A | Hours | Medium — limited package availability | Viable for quick win |
+| **Custom kernel + independent boot** | Low — requires kernel port | High — boot partition writes | Low — brick risk | Months to years | Potentially high, but unproven | **Defer/Abandon** |
+| **Mainline Linux port** | Very Low — no support exists | High | Low | Years | Theoretically high | **Abandon** |
+| **Custom minimal rootfs (LFS/Buildroot)** | Medium — full control | Low | High | Weeks | Medium — more work than Alpine | Not recommended first |
+
+### Detailed assessment
+
+**Android-assisted chroot** is the clear winner. It requires no kernel changes, no partition writes, and no bootloader modification. The repository has already proven the two critical mechanics: `chroot()` works, and loop-mounted ext2 works. The remaining work is userspace: obtaining an ARMv6-compatible rootfs, testing binary execution, and installing tools. The risk is nearly zero—if something fails, you delete the image file and the phone is unchanged.
+
+**PRoot** is worth mentioning as a fallback if chroot execution proves problematic for dynamic binaries. PRoot is a userspace implementation of `chroot`, `mount --bind`, and `binfmt_misc` that requires no root privileges. It is slower than real chroot because it intercepts syscalls via `ptrace`, but it may work when real chroot fails due to kernel limitations. For a device with this old a kernel, PRoot is a pragmatic safety net.
+
+**Existing Android chroot tools** like Linux Deploy, DebDroid, and Complete Linux Installer are worth testing as shortcuts. However, DebDroid explicitly requires kernel 3.10 or newer (released December 2017), which the Totoro does not meet. Linux Deploy supports Android 2.1+, which is more promising, but its ARMv6 support is uncertain. These tools should be tested quickly, but the project should not depend on them.
+
+**Independent Linux boot** is the most ambitious path and the least justified by evidence. The BCM21553 has no mainline kernel support. The Dissonant wiki page on BCM215xx is a stub created in April 2026 with no actual mainlining progress documented—it merely lists development boards and Samsung devices. The XDA threads from 2012 describing "Linux native boot" are unfinished experiments from over a decade ago, and the developers who attempted them have moved on. There is no active community, no device tree, no hardware documentation, and no realistic path to a working independent Linux system on this hardware. Pursuing this would be a research project, not an engineering project.
+
+**Custom kernel development** is equally problematic. While custom kernels exist (Merruk, White, Watson, Samurai), they are all Android-oriented kernels designed to improve Android performance, not to enable independent Linux boot. The Merruk kernel mentions "Linux native boot (done but not perfect)" but this is from 2012 and was never completed. Building on this would mean inheriting a decade-old codebase with unknown bugs and no upstream support.
+
+---
+
+## 5. Recommended Next Experiments
+
+These experiments are ordered by priority. Each is designed to answer a decision-critical question with minimal risk. All are read-only or write only to a disposable image file in `/data/local/tmp` or the SD card.
+
+### Experiment 1: Test dynamic ELF execution in chroot (CRITICAL)
+
+**Question:** Can a dynamically linked ARMv6 ELF binary from a standard Linux distribution actually execute inside the existing Android kernel via chroot?
+
+**Why it matters:** This is the single make-or-break unknown. If dynamic binaries work, the entire chroot approach is viable. If they don't, the project must either fall back to PRoot, use static binaries only, or abandon the Linux-userspace approach.
+
+**Procedure:**
+1. Download a minimal ARMv6 rootfs (e.g., Alpine Linux minirootfs armhf or a Debian armel tarball).
+2. Extract it to a directory on the SD card or `/data/local/tmp`.
+3. Enter chroot as root: `chroot /path/to/rootfs /bin/sh`
+4. Run `ldd /bin/busybox` and `/bin/busybox echo "hello"`.
+5. Run `apk --version` (Alpine) or `dpkg --version` (Debian).
+6. Try to run a dynamically linked binary like `python3` if available.
+
+**Read-only or state-changing:** Writes only to the rootfs directory. No partition or system changes.
+
+**Expected evidence:** If `busybox` and the package manager run, dynamic linking works. If you get "not found" or "cannot execute binary file" errors despite the binary existing, there is a kernel/userspace incompatibility.
+
+**Decision impact:**
+- **If successful:** Proceed with Alpine or Debian chroot as the primary architecture.
+- **If partially successful (static works, dynamic fails):** Consider a static-only rootfs, or test PRoot.
+- **If completely failed:** The kernel may lack required syscalls. PRoot or a static BusyBox-based userspace becomes the only option.
+
+### Experiment 2: Measure actual available RAM in chroot
+
+**Question:** How much RAM is actually free for the chroot environment after Android and all its services have started?
+
+**Why it matters:** The 290 MB figure is the total physical RAM. Android will consume most of it. If only 50–80 MB is available, the chroot can run a shell and SSHd but not much else. If 120+ MB is available, Python and small compilers become feasible.
+
+**Procedure:**
+1. Boot Android normally.
+2. From ADB shell or terminal emulator: `cat /proc/meminfo | grep MemAvailable`
+3. Also run `free` or `busybox free`.
+4. Start the chroot, enter it, and run `free` again from inside.
+
+**Read-only:** Yes.
+
+**Expected evidence:** `MemAvailable` (or `MemFree` + `Buffers` + `Cached`) in kB.
+
+**Decision impact:**
+- **< 60 MB free:** Restrict to static BusyBox, shell, and minimal network tools.
+- **60–100 MB free:** Alpine + musl + SSHd + Python (without heavy libraries) is feasible.
+- **> 100 MB free:** Debian + glibc + GCC + Python is potentially feasible.
+
+### Experiment 3: Test loop device persistence and mount stability
+
+**Question:** Does a loop-mounted ext2 image survive Android's low-memory killer and background process management? Can it be reliably re-mounted?
+
+**Why it matters:** If Android kills the loop device or unmounts the image during normal operation, the chroot will be unstable.
+
+**Procedure:**
+1. Create a larger ext2 image (e.g., 1 GB) on the SD card.
+2. Set up loop mount.
+3. Write a script to create a file every 30 seconds.
+4. Leave the phone idle for 2 hours.
+5. Check if the loop device is still mounted and the file is still being written.
+
+**Read-only or state-changing:** Writes to the image file only.
+
+**Expected evidence:** Loop device is still active, files are still being created.
+
+**Decision impact:**
+- **If stable:** Loop-mounted ext2 is viable for the rootfs.
+- **If unstable:** Consider a directory-based rootfs (extracted to a folder on SD card) instead of a loop image. This avoids loop device management entirely, though it may have performance implications.
+
+### Experiment 4: Inventory kernel capabilities relevant to Linux userspace
+
+**Question:** Does the kernel support the syscalls and features that modern Linux userspace expects?
+
+**Why it matters:** Kernel 2.6.35 predates many syscalls that modern glibc and musl use. Knowing which are missing helps choose the right distribution and userspace version.
+
+**Procedure (all read-only):**
+1. `zcat /proc/config.gz | grep -E "CONFIG_(EPOLL|SIGNALFD|TIMERFD|EVENTFD|INOTIFY|FANOTIFY|CGROUPS|NAMESPACES|SECCOMP)"` (if `/proc/config.gz` exists)
+2. `cat /proc/sys/kernel/osrelease`
+3. `cat /proc/version`
+4. `ls /sys/kernel/debug` (if debugfs is mounted)
+5. `cat /proc/filesystems`
+6. `cat /proc/cpuinfo`
+
+**Read-only:** Yes.
+
+**Expected evidence:** Kernel config options and filesystem support.
+
+**Decision impact:**
+- **If CONFIG_EPOLL, CONFIG_SIGNALFD, CONFIG_EVENTFD are enabled:** Modern userspace has a better chance.
+- **If CONFIG_CGROUPS is disabled:** Systemd-based distributions are out; Alpine/OpenRC or Debian sysvinit are the only options.
+- **If ext4 is not in /proc/filesystems:** Use ext2 (already proven) or ext3 for the rootfs image.
+
+### Experiment 5: Test a pre-built ARMv6 chroot tool (Linux Deploy)
+
+**Question:** Does Linux Deploy (or a similar existing tool) successfully install a Linux distribution on the Totoro?
+
+**Why it matters:** If an existing tool works, it saves weeks of manual setup. If it fails, the failure mode is informative.
+
+**Procedure:**
+1. Install Linux Deploy from F-Droid or APK.
+2. Configure it to install Alpine Linux or Debian armel to an image file on the SD card.
+3. Attempt installation and chroot.
+
+**Read-only or state-changing:** Writes to SD card only. No system partition changes.
+
+**Expected evidence:** Linux Deploy reports success or failure. If success, a shell prompt appears.
+
+**Decision impact:**
+- **If successful:** Use Linux Deploy as the deployment mechanism and focus on userspace configuration.
+- **If failed:** Document the failure mode (kernel incompatibility, missing features, etc.) and proceed with manual setup.
+
+---
+
+## 6. Shortest Path to a Real-Device Demonstration
+
+### Milestone 0: Prerequisite verification (already done)
+
+- Root access ✅
+- Chroot execution ✅
+- Loop ext2 I/O ✅
+- SD card storage ✅
+
+### Milestone 1: Dynamic binary execution in chroot
+
+**Goal:** Prove that a dynamically linked ARMv6 Linux binary can execute inside a chroot on the Totoro.
+
+**Required inputs:** ARMv6 rootfs tarball, 1 GB free on SD card, root shell.
+
+**Work:**
+1. Download Alpine Linux minirootfs armhf (or Debian armel tarball).
+2. Extract to `/data/local/tmp/chroot-test/` or SD card.
+3. Enter chroot, run `busybox echo hello` and `ldd /bin/busybox`.
+4. Run the package manager (`apk --version` or `dpkg --version`).
+
+**Pass criteria:** `busybox` executes and prints output. Package manager reports version.
+
+**Fail criteria:** "No such file or directory" or "cannot execute binary file" despite the binary existing.
+
+**Risks/rollback:** None. Delete the test directory if it fails.
+
+**Stop condition:** If dynamic binaries cannot execute, stop and evaluate PRoot or static-only approach.
+
+### Milestone 2: Minimal usable Linux environment
+
+**Goal:** A chroot environment with a shell, package manager, SSHd, and one useful tool (e.g., Python 3 or `nmap`).
+
+**Required inputs:** Successful Milestone 1.
+
+**Work:**
+1. Install Alpine or Debian armel to a persistent location (SD card recommended for space).
+2. Configure networking (the chroot uses Android's network stack).
+3. Install and start SSHd.
+4. Install one useful package (`python3`, `nmap`, or `gcc`).
+5. From a laptop, SSH into the Totoro and run a command.
+
+**Pass criteria:** SSH connection succeeds. `python3 --version` or `nmap --version` returns a result.
+
+**Fail criteria:** SSHd fails to start, or network is unreachable from chroot.
+
+**Risks/rollback:** Low. Delete the rootfs if it fails.
+
+**Stop condition:** If SSHd cannot run, investigate kernel networking limitations before proceeding.
+
+### Milestone 3: Useful demonstration
+
+**Goal:** Demonstrate a concrete, useful task being performed on the Totoro.
+
+**Required inputs:** Successful Milestone 2.
+
+**Work (choose one):**
+- **Option A (Server):** Run a simple HTTP server (`busybox httpd` or `python3 -m http.server`) and access it from another device.
+- **Option B (Diagnostic):** Run `nmap` against a local network host and `dig` a domain.
+- **Option C (Development):** Compile and run a small C program with `gcc`.
+
+**Pass criteria:** The task completes successfully and produces the expected output.
+
+**Fail criteria:** The task fails due to missing libraries, insufficient memory, or kernel limitations.
+
+**Risks/rollback:** None beyond deleting the rootfs.
+
+**Earliest user-try point:** After Milestone 2, the user can SSH in and explore. After Milestone 3, the device has a demonstrable use case.
+
+### Optional Milestone 4: Boot persistence
+
+**Goal:** The chroot and services start automatically after Android boots.
+
+**Work:** Create a script or use an Android app like `Tasker` to mount the rootfs and start SSHd on boot.
+
+**Pass criteria:** After reboot, the phone is reachable via SSH within 2 minutes.
+
+**Risks/rollback:** Low. The script can be removed or disabled.
+
+---
+
+## 7. Risks, Recovery, and Preservation Gates
+
+### Absolute prohibitions (until gates are satisfied)
+
+| Operation | Gate required before proceeding |
+|-----------|-------------------------------|
+| Writing to boot partition | Verified dump of original boot image, verified restoration procedure, explicit user approval |
+| Writing to recovery partition | Verified dump, verified restoration procedure, explicit user approval |
+| Writing to EFS partition | Verified dump, verified restoration procedure, explicit user approval |
+| Writing to PIT or raw BML/STL | Full partition table documentation, verified dumps of all critical regions, verified restoration, explicit approval |
+| Flashing a custom kernel | Recovery image available, boot image backup, Odin restore files ready, explicit approval |
+| Repartitioning | Full understanding of BML/STL layout, verified PIT, all partitions backed up, explicit approval |
+
+### Current risk posture
+
+The project's recorded work has **not** written to any boot-critical partition. Root installation modified `/system`, which means the device is not byte-for-byte stock, but `/system` is recoverable via Odin firmware flash. No boot, recovery, modem, EFS, PIT, or userdata writes have been performed. This is the correct posture.
+
+### Recovery readiness requirements
+
+Before any higher-risk operation, the project must have:
+
+1. **Verified dumps** of boot, recovery, EFS, modem, and PIT partitions, with checksums.
+2. **A tested restoration procedure** using Odin and/or `dd`, verified on a sacrificial device or with a guaranteed recovery path.
+3. **A known-good firmware package** (S5360JPLC1 or equivalent) available offline.
+4. **Documented partition map** with sizes, offsets, and contents.
+5. **User approval** for the specific operation, with explicit acknowledgment of risk.
+
+Until these gates are satisfied, the project should remain in the "userspace only" zone: chroot, PRoot, SD card images, `/data/local/tmp`, and Android apps. These operations carry no risk to the device's boot integrity.
+
+---
+
+## 8. Premature or Unnecessary Work
+
+### Independent Linux boot — DEFER (effectively abandon)
+
+**Evidence against:** No mainline kernel support. No device tree. No hardware documentation. No active community. The only documented attempt (XDA 2012) was never completed. The Dissonant wiki page is an empty stub created in 2026 with no actual mainlining progress. The effort required is measured in person-years, and the probability of success is very low. The payoff—a device that boots Linux independently but has no better hardware support than Android provides—does not justify the risk and effort.
+
+**Recommendation:** Formally close this path. Document it as "investigated and rejected for this hardware." Do not spend further time on it unless a full mainline port appears from another party.
+
+### Custom kernel development — DEFER
+
+**Evidence against:** All existing custom kernels (Merruk, White, Watson, Samurai) are Android-oriented. They do not enable independent Linux boot. They are from 2012–2016 and have no upstream support. Building a custom kernel would mean inheriting a decade-old codebase, patching it for modern userspace compatibility, and debugging unknown issues—without any guarantee that independent boot would work even then.
+
+**Recommendation:** Do not build a custom kernel unless a specific, verified kernel feature is missing that is required for the chroot to function. Even then, prefer working around the limitation rather than changing the kernel.
+
+### Mainline Linux porting — ABANDON
+
+**Evidence against:** The BCM21553 is a 2010-era ARM11 SoC with no mainline support. The effort to add support—reverse-engineering the SoC, writing device tree bindings, implementing clock/power/display/storage drivers—is enormous and has no community backing. This is a research project, not an engineering project.
+
+### Distribution selection before compatibility testing — PREMATURE
+
+**Evidence against:** The repository has not yet verified that dynamic ELF binaries can execute. Selecting Alpine vs. Debian vs. SliTaz before this test is premature. The right order is: (1) test dynamic execution, (2) test package manager, (3) test specific tools, (4) choose the distribution that works.
+
+**Recommendation:** Download both Alpine armhf and Debian armel minirootfs tarballs. Test both. Choose based on empirical results, not theory.
+
+### GUI desktop investigation — PREMATURE
+
+**Evidence against:** The 290 MB RAM budget and 240×320 screen make a GUI desktop impractical for anything beyond a demonstration. The effort to set up X11/VNC is not justified until the terminal-based environment is working and the user has a concrete need for GUI.
+
+**Recommendation:** Defer all GUI work until Milestone 3 is complete and the user explicitly requests it.
+
+---
+
+## 9. Overlooked Alternatives
+
+### Alpine Linux armhf as the primary distribution
+
+Alpine Linux's `armhf` architecture explicitly targets ARMv6 devices with an FPU, including the Raspberry Pi 1 and Zero. The BCM21553 has VFP and EDSP (confirmed in the repository's device facts), so it meets the FPU requirement. Alpine uses musl libc, which is smaller and more lightweight than glibc—a significant advantage on a 290 MB RAM device. Alpine's `apk` package manager is fast and has a wide range of packages. This is arguably the best distribution choice for the Totoro.
+
+**Risk:** Alpine's `armhf` port has been considered for deprecation. However, as of 2026, it remains available. The project should download a known-good minirootfs and keep it locally, in case future releases drop support.
+
+### Debian armel as the fallback
+
+Debian's `armel` port supports ARMv4T, ARMv5T, and ARMv6. It uses glibc, which is larger than musl but has broader compatibility with existing software. If Alpine proves incompatible due to musl/glibc differences or missing packages, Debian armel is the natural fallback. The `debootstrap` tool can build a minimal Debian armel rootfs from a Linux host, or a pre-built tarball can be used.
+
+**Risk:** Debian armel is a "soft-float" port, which means it does not use the VFP hardware for floating-point operations. This will be slower than a hard-float port. However, for terminal-based tools, the performance difference is negligible.
+
+### SliTaz ARMv6
+
+SliTaz has an ARMv6 port and is extremely small (base system under 50 MB). It uses a lightweight desktop and is designed for resource-constrained devices. However, it is less actively maintained than Alpine or Debian, and its package repository is much smaller.
+
+**Verdict:** Worth testing if Alpine and Debian both fail, but not the first choice.
+
+### Linux Deploy and similar Android apps
+
+Linux Deploy supports Android 2.1+ and can install multiple distributions via chroot. It is a mature tool from the early Android era and may work on the Totoro. The advantage is that it handles the rootfs download, extraction, mounting, and chroot setup automatically. If it works, it saves considerable manual effort.
+
+**Risk:** Linux Deploy's ARMv6 support is uncertain. It may default to ARMv7 or armhf assumptions that are incompatible with the Totoro. Test it early, but do not depend on it.
+
+### PRoot as a no-root fallback
+
+PRoot is a userspace implementation of `chroot`, `mount --bind`, and `binfmt_misc` that requires no root privileges. It uses `ptrace` to intercept syscalls and translate paths, which means it works even when the kernel's chroot implementation is limited or when the user does not have root. The performance penalty is significant (perhaps 2–5× slower), but for a terminal environment, it may be acceptable.
+
+**Verdict:** A viable fallback if real chroot fails to execute dynamic binaries.
+
+### Static ARMv6 binaries as a minimal alternative
+
+If dynamic linking proves impossible, the project can still build a useful environment using statically linked ARMv6 binaries. BusyBox can be compiled statically for ARMv6, and tools like `dropbear` (SSH), `tcpdump`, `nmap`, and `python` have static build options. This would be a much more limited environment than a full distribution, but it would work within the kernel's constraints.
+
+**Verdict:** The minimum viable fallback if all else fails.
+
+---
+
+## 10. Revised Roadmap
+
+### Phase 1: Validate (1–2 weeks)
+
+1. **Test dynamic ELF execution** — Download Alpine armhf and Debian armel minirootfs. Extract to SD card. Enter chroot. Run `busybox` and package manager. (Decision: chroot viable or not.)
+2. **Measure available RAM** — Check `/proc/meminfo` with and without chroot. (Decision: which tools are feasible.)
+3. **Test Linux Deploy** — Install and attempt a chroot. (Decision: use existing tool or manual setup.)
+4. **Inventory kernel capabilities** — Check config, syscalls, filesystems. (Decision: which distribution and packages will work.)
+
+### Phase 2: Build (2–4 weeks)
+
+5. **Choose distribution** — Based on Phase 1 results, select Alpine armhf, Debian armel, or static BusyBox.
+6. **Create persistent rootfs** — Extract to SD card (recommended for space) or a loop image on `/data`.
+7. **Install core tools** — SSHd (dropbear or openssh), shell, package manager, one useful tool (Python, nmap, or gcc).
+8. **Configure networking** — Ensure the chroot can use Android's Wi-Fi/3G connection.
+9. **Test SSH access** — Connect from a laptop and run commands.
+
+### Phase 3: Demonstrate (1 week)
+
+10. **Choose a use case** — SSH server, network diagnostic tool, or development environment.
+11. **Document the setup** — Write a reproducible guide for setting up the chroot on the Totoro.
+12. **Demonstrate on device** — Perform the chosen task on the physical Totoro and document the result.
+
+### Phase 4: Enhance (optional, ongoing)
+
+13. **Add boot persistence** — Script to start chroot and services after Android boot.
+14. **Expand tool set** — Add tools as needed for the chosen use case.
+15. **Explore GUI** — Only if the user requests it and terminal environment is working well.
+
+### What to stop doing
+
+- Stop investigating independent boot. It is not achievable on this hardware without years of research.
+- Stop building custom kernels. It is not necessary for the chroot approach.
+- Stop searching for mainline Linux support. It does not exist.
+- Stop planning for distributions that don't support ARMv6 (Ubuntu, Fedora, etc.).
+
+---
+
+## 11. Open Questions for the Project Owner
+
+1. **What is the primary intended use case?** The architecture recommendation (minimal chroot vs. more complete environment) depends on whether the user wants a headless server, a terminal-based development environment, or something else.
+
+2. **How much RAM is actually available after Android boots?** This is a device-specific measurement that will determine which tools are feasible. It has not been recorded in the repository.
+
+3. **Is the SD card always present, or is there a requirement to work without it?** A chroot on SD card is easier to manage and has more space. A chroot on `/data` is faster but limited to ~162 MB.
+
+4. **What is the acceptable performance level?** A 832 MHz ARM11 with 290 MB RAM is slow by modern standards. Is the user willing to accept slow performance for the benefit of having Linux on the phone?
+
+5. **Is there any specific software that must run?** If the user has a particular tool in mind (e.g., a specific Python library, a compiler, a network tool), that constrains the distribution and kernel compatibility requirements.
+
+6. **What is the recovery readiness status?** Has a complete backup of boot, recovery, EFS, and PIT been made and verified? This determines how much risk can be taken with any future operation.
+
+---
+
+## What I would validate first—and why
+
+**The single highest-value next experiment is to test whether a dynamically linked ARMv6 Linux binary can execute in a chroot on the Totoro.**
+
+This is the critical path. Everything else depends on this answer. If dynamic binaries work, the project can proceed with Alpine or Debian armel, install packages, run SSHd, and deliver a genuinely useful Linux environment. If they don't work, the entire architecture of the project must change—falling back to PRoot, static binaries, or abandoning the Linux-userspace approach entirely.
+
+The experiment is low-risk (writes only to a test directory on the SD card), fast (can be completed in an hour), and unambiguous (either `busybox` runs or it doesn't). It answers the one question that determines whether the project's current direction is viable or needs a fundamental pivot.
+
+**Procedure:** Download the Alpine Linux minirootfs armhf tarball, extract it to `/sdcard/chroot-test/`, enter the chroot as root, and run `/bin/busybox echo "test"` followed by `/sbin/apk --version`. If both commands produce output, the path forward is clear. If either fails, the project must immediately reassess its architecture before investing further effort.
+
+Do this before writing any more documentation, planning any more milestones, or investigating any other technical direction. The answer to this single question determines the shortest safe path to a useful Totoro.
