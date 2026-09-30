@@ -2,75 +2,158 @@
 
 ## Purpose
 
-This document tracks one of the shortest practical routes to **turn the Totoro into something useful and cool** while keeping the working Android system and stock kernel intact.
+This document is the active implementation track for turning the Totoro into something useful and cool without replacing Android or the stock kernel.
 
-The immediate target is a minimal Linux userspace entered through Android chroot, with a reliable shell and eventually host access. This is not independent OS boot, but it can still be a successful project outcome if it gives the physical Totoro a genuinely useful experience. Independent Linux boot remains the preferred technical destination when it is practical.
+The immediate target is not a “Linux distribution.” It is a **verified ARMv6 Linux userspace capability**, followed by the smallest persistent rootfs and one useful service. Independent Linux boot is conditional and outside the active critical path.
+
+See `integrated-external-review-2026-09-30.md` for the five-review synthesis.
 
 ## Verified handset baseline
 
 - GT-S5360 / totoro / BCM21553.
 - Android 2.3.6, GINGERBREAD.JPLC1; PDA S5360JPLC1; CSC S5360OJPLC1; baseband S5360XXLK3.
-- CPU reports ARMv6-compatible architecture 6TEJ, VFP and EDSP. Full implementer/part/variant/revision capture remains a D1 item; avoid inferring a specific core model from v6l alone.
+- CPU reports ARMv6-compatible architecture 6TEJ with VFP and EDSP. Exact implementer/part/variant/revision is still treated as unresolved unless tied to primary handset evidence.
 - Linux 2.6.35.7, GCC 4.4.3, PREEMPT, build dated 2012-03-16.
-- Root verified through su -c id → uid=0(root).
-- Basic static BusyBox chroot execution verified; output included CHROOT_EXEC_OK and uid=0 gid=0.
-- /data is Samsung RFS, RW, with approximately 162–163 MiB free at the latest documented measurement.
-- SD is VFAT and was observed mounted noexec.
-- /proc/self/ns was not exposed in the observed environment; this alone does not establish that all namespace functionality is impossible.
-
-Detailed observations: 01_PRESERVATION/evidence/post-root-jplc1-device-inventory-2026-09-29.md.
+- Root verified through `su -c id` → `uid=0(root)`.
+- Basic static BusyBox chroot execution verified; output included `CHROOT_EXEC_OK` and `uid=0 gid=0`.
+- `/data` is Samsung RFS, RW, with approximately 162–163 MiB free at the latest documented measurement.
+- SD is VFAT and was observed mounted `noexec`.
+- `/proc/self/ns` was not exposed in the observed environment; this alone does not establish that all namespace functionality is impossible.
 
 ## Verified loop-backed ext2 capability
 
-A 4 MiB image was created under /data/local/tmp, formatted ext2, attached using /dev/block/loop0, mounted read-write, and successfully used for file write/read. It was then cleanly unmounted and detached, and temporary artifacts were removed.
+A 4 MiB image was created under `/data/local/tmp`, formatted ext2, attached using `/dev/block/loop0`, mounted read-write, and successfully used for file write/read. It was then cleanly unmounted and detached, and temporary artifacts were removed.
 
-This proves loop-backed ext2 creation, attachment, RW mounting, file I/O and teardown on the actual handset. It does **not** prove execution of an ELF binary from that mount. The earlier script attempt was invalid because of its BusyBox shebang invocation.
+This proves loop-backed ext2 creation, attachment, RW mounting, file I/O and teardown on the actual handset.
 
-Full procedure and outputs: 01_PRESERVATION/evidence/loop-backed-ext2-capability-2026-09-29.md.
+It does **not** prove execution of an ELF binary from that mount. The earlier script attempt was invalid because of its BusyBox shebang invocation.
 
-## Current stage: D1 read-only inventory
+## Integrated engineering direction
 
-Before further implementation, capture a compact read-only capability and partition inventory from an interactive ADB shell. This refines the earlier plan because dump targets must be mapped before acquiring partition images.
+The review synthesis changes the order of work:
 
-Capture, where available:
-- /proc/cpuinfo, /proc/meminfo, /proc/version, /proc/cmdline;
-- /proc/partitions, /proc/filesystems, /proc/devices, /proc/iomem, /proc/fb;
-- relevant /dev/block, /sys/class/graphics, /sys/class/android_usb, power-supply and kernel-interface metadata;
-- /proc/config.gz only if present, plus relevant, reviewed kernel log excerpts.
+1. **Decision-critical read-only baseline**
+   - exact CPU identity if unresolved;
+   - actual available RAM;
+   - network state/interfaces;
+   - pty availability;
+   - relevant mount flags.
 
-Use interactive ADB, the repeatable method in prior testing. Capture output privately on the development computer. Review and redact serial numbers, IMEI, credentials, keys, network identifiers and other specimen-specific sensitive values before sharing or committing. Avoid indiscriminate publication of full getprop or dmesg output.
+2. **Static ARMv6 payload**
+   - audit provenance/checksum and ELF attributes on the host;
+   - execute from `/data/local/tmp`;
+   - capture exact result.
 
-Interpretation cautions:
-- A missing /proc/config.gz does not prove a feature is disabled.
-- A sysfs directory, device node, or configuration string does not prove that a capability works.
-- Map BML/STL nodes to named partitions only where evidence supports the mapping; leave unresolved entries unknown.
-- Do not run stop, mount, attach loop devices, write files, or flash as part of D1.
+3. **Dynamic musl payload**
+   - test one exact binary from a reversible location;
+   - distinguish loader, ABI, syscall/libc and memory failures.
 
-D1 deliverable: reviewed transcript, measured memory, full CPU identity, provisional node-to-partition table, observed debug interfaces, and explicit unresolved questions.
+4. **Persistent SD rootfs**
+   - build on the host;
+   - use ext2 first;
+   - prove ELF execution from the mounted image;
+   - keep the rootfs minimal.
 
-## Next practical gates
+5. **Chroot integration**
+   - expose only the required `/proc`, `/sys`, `/dev` interfaces;
+   - never use `pivot_root`;
+   - do not add a second `devpts` mount without evidence;
+   - verify complete teardown.
 
-1. Complete D1 without state changes.
-2. In parallel, perform offline inspection of a small candidate executable: checksum/provenance, ARM ISA, EABI/float ABI, linkage/interpreter, libc and likely kernel requirements.
-3. After review, acquire preservation evidence only using confirmed partition identities and suitable read-only methods. Establish a realistic recovery route; dumps alone are not a restore procedure.
-4. Execute the smallest verified candidate binary in a reversible location, including an explicit ELF-from-loop-ext2 test.
-5. If it passes, create a deliberately small rootfs sized from actual measurements, then validate chroot mounts, shell, networking and host access one step at a time.
-6. If this already makes the Totoro useful and cool, stop and evaluate before adding native-boot complexity.
+6. **Access and service**
+   - test Dropbear/SSH;
+   - test `adb forward` as an early access path;
+   - test Wi-Fi/SSH when networking is confirmed;
+   - add one useful service.
 
-## Architecture policy
+7. **UX checkpoint**
+   - use the physical device;
+   - stop if it is already useful/cool.
 
-No distribution or boot method is pre-approved. Choose the simplest candidate that passes actual CPU, ABI, kernel and storage tests and gives us a useful device. Avoid full installations, desktops, compilers, unnecessary daemons and package caches. If a candidate fails, stop at the exact failure and diagnose before switching approaches.
+## Candidate end states
 
-The stock-kernel/custom-ramdisk method remains a plausible native-boot hypothesis, but must wait for partition/image identification, debug-path assessment and recovery confidence. Kernel rebuilds, mainline work, kexec and multiboot should be pursued only if evidence shows they are necessary or materially improve the result.
+The active implementation should optimize for one of these, chosen after the basic payload works:
 
-## Safety boundary
+- pocket Linux SSH node;
+- local browser dashboard;
+- offline reference/knowledge device;
+- archive/capture utility;
+- small network diagnostic tool;
+- Hermes-oriented thin client;
+- retro/offline Android experience as an independent quick win.
 
-No boot/recovery flash, PIT or partition-table write, BML/STL write, EFS/modem write, repartitioning, or userdata wipe is part of the current stage. Any future state-changing experiment requires a separate written plan, verified inputs, rollback assessment and explicit approval.
+The Linux environment does not need a desktop, compiler, package cache or broad distribution to count as successful.
 
-## Current status
+## Compatibility rules
 
-**Passed:** root, basic chroot execution, loop-backed ext2 RW mount/file I/O/clean teardown.
+Do not accept a distro architecture label as proof.
 
-**Open:** D1 inventory refresh, complete partition-node mapping, recovery partition identity, verified full JPLC1 restore set and restore procedure, candidate ELF compatibility, ELF execution from loop ext2, networking and SSH.
+For every candidate executable record:
+- provenance and checksum;
+- ARM architecture/ISA attributes;
+- EABI/float ABI;
+- dynamic interpreter, if any;
+- static vs dynamic linkage;
+- libc;
+- relevant kernel requirements.
 
-**Immediate next action:** run D1 as a strictly read-only interactive ADB capture; review the redacted output before planning dumps or implementation.
+Interpret failures literally:
+- `Illegal instruction` → investigate ISA/instruction-set mismatch;
+- `Exec format error` → investigate ELF/ABI/architecture;
+- `not found` for an existing dynamic ELF → investigate interpreter/loader;
+- `ENOSYS`/syscall failures → investigate kernel/libc mismatch;
+- segfault/OOM → investigate binary compatibility and memory pressure.
+
+Do not substitute another distribution until the failure class is understood.
+
+## Storage policy
+
+Use:
+1. `/data/local/tmp` for the first small payloads;
+2. SD-backed loop image for persistent rootfs;
+3. internal `/data` only where its limited free space is justified.
+
+The SD VFAT mount being `noexec` is not itself a conclusion about an ext2 loop mount. Prove execution on the separate ext2 mount.
+
+Ext2 is the first filesystem candidate because it has already been demonstrated on the handset. Ext3 is an alternative only if a measured requirement appears.
+
+## Minimal chroot safety model
+
+The Android kernel and global mount table remain shared.
+
+Therefore:
+- do not use `pivot_root`;
+- avoid assumptions about mount namespaces;
+- bind only interfaces that are actually required;
+- never create a second `devpts` by default;
+- tear down `/proc`, `/sys`, `/dev` bindings and the rootfs mount in a controlled order;
+- detach the loop device only after all mounts are gone;
+- verify with mount/loop listings before removing the SD card.
+
+## Preservation boundary
+
+Nothing in this active path requires:
+- PIT writes;
+- BML/STL writes;
+- EFS/modem writes;
+- boot/recovery flashing;
+- repartitioning;
+- userdata wipe.
+
+Any future boot-critical operation needs a separate written plan, verified inputs, recovery assessment and explicit approval.
+
+Review-reported claims about exact CPU part, restore-set completeness or EFS readback are not promoted to project facts until primary evidence is linked and reviewed.
+
+## Immediate procedure
+
+**Step 1 — baseline:** capture only the decision-critical read-only data.
+
+**Step 2 — static payload:** host-side audit, push to `/data/local/tmp`, execute, record.
+
+**Step 3 — dynamic payload:** if Step 2 passes, run one dynamic musl test and record.
+
+**Step 4 — persistent rootfs:** only after Steps 2–3, build the smallest SD/ext2 image and test chroot execution.
+
+**Step 5 — usefulness:** add Dropbear or one small service and demonstrate a real task.
+
+The first success target is therefore **not “boot Linux.” It is “run useful Linux code safely on the real Totoro.”**
