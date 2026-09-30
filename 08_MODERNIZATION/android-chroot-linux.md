@@ -2,9 +2,9 @@
 
 ## Purpose
 
-This document tracks the fastest reliable route to a useful Linux userspace on the physical Samsung Galaxy Y GT-S5360 while keeping the working Android system and stock kernel intact.
+This document tracks one of the shortest practical routes to **turn the Totoro into something useful and cool** while keeping the working Android system and stock kernel intact.
 
-The immediate target is a minimal Linux root filesystem entered through Android chroot, with a reliable shell and eventually host access. This is **not** independent OS boot. Launching Linux without Android is a separate, gated native-boot objective.
+The immediate target is a minimal Linux userspace entered through Android chroot, with a reliable shell and eventually host access. This is not independent OS boot, but it can still be a successful project outcome if it gives the physical Totoro a genuinely useful experience. Independent Linux boot remains the preferred technical destination when it is practical.
 
 ## Verified handset baseline
 
@@ -55,12 +55,13 @@ D1 deliverable: reviewed transcript, measured memory, full CPU identity, provisi
 3. After review, acquire preservation evidence only using confirmed partition identities and suitable read-only methods. Establish a realistic recovery route; dumps alone are not a restore procedure.
 4. Execute the smallest verified candidate binary in a reversible location, including an explicit ELF-from-loop-ext2 test.
 5. If it passes, create a deliberately small rootfs sized from actual measurements, then validate chroot mounts, shell, networking and host access one step at a time.
+6. If this already makes the Totoro useful and cool, stop and evaluate before adding native-boot complexity.
 
 ## Architecture policy
 
-No distribution or boot method is pre-approved. Choose the simplest candidate that passes actual CPU, ABI, kernel and storage tests. Avoid full installations, desktops, compilers, unnecessary daemons and package caches. If a candidate fails, stop at the exact failure and diagnose before switching approaches.
+No distribution or boot method is pre-approved. Choose the simplest candidate that passes actual CPU, ABI, kernel and storage tests and gives us a useful device. Avoid full installations, desktops, compilers, unnecessary daemons and package caches. If a candidate fails, stop at the exact failure and diagnose before switching approaches.
 
-The stock-kernel/custom-ramdisk method remains a plausible native-boot hypothesis, but must wait for partition/image identification, debug-path assessment and recovery confidence. Kernel rebuilds, mainline work, kexec and multiboot should be pursued only if evidence shows they are necessary or materially reduce risk.
+The stock-kernel/custom-ramdisk method remains a plausible native-boot hypothesis, but must wait for partition/image identification, debug-path assessment and recovery confidence. Kernel rebuilds, mainline work, kexec and multiboot should be pursued only if evidence shows they are necessary or materially improve the result.
 
 ## Safety boundary
 
