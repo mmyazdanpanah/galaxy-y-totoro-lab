@@ -2,9 +2,9 @@
 
 **Current stage:** read-only capability inventory and recovery-risk reduction, followed by the smallest userspace compatibility test.
 
-**Project goal:** launch a new OS on the physical Samsung Galaxy Y GT-S5360 (Totoro), ultimately without Android running. A chroot Linux userspace hosted by Android is an intermediate milestone, not independent OS boot.
+**Project goal:** **turn the Totoro into something useful and cool.** The preferred technical destination is a useful Linux environment that can boot independently of Android, but a simpler Android-assisted or alternative architecture is also a success if it produces a genuinely useful experience without unnecessary project length or complexity.
 
-**Working strategy:** pursue the fastest reliable route, preserve the known-working stock system, and add complexity only when a measured blocker requires it. The stock-kernel/custom-ramdisk route is a hypothesis for native boot, not a proven or approved implementation.
+**Working strategy:** pursue the shortest reliable route to a useful device, preserve the known-working stock system, and add complexity only when a measured blocker requires it. Native boot is a preferred destination, not a requirement that overrides practicality.
 
 ## Verified physical-device state — 2026-09-29
 
@@ -29,6 +29,7 @@ Detailed handset and loop evidence is linked from 08_MODERNIZATION/android-chroo
 3. **Offline compatibility audit.** Inspect a small candidate executable for ISA, EABI/float ABI, interpreter/libc and likely kernel requirements. A distribution architecture label alone is insufficient.
 4. **Small live executable test.** Run only a verified minimal candidate in a reversible location. Record exact output and errors. ELF execution from loop ext2 remains unverified.
 5. **Minimal chroot integration.** After compatibility passes, build a small rootfs, then test required interfaces, networking and SSH incrementally.
+6. **Useful-device milestone.** Stop and celebrate once we have a genuinely useful/cool Totoro experience, even if the implementation is not the final independent-boot architecture.
 
 Offline audit can proceed in parallel with D1. Do not perform a recovery-slot test, flash, partition write, or other boot-critical modification as part of D1.
 
@@ -44,6 +45,7 @@ Before any boot-critical write, require verified matching images, a node-to-part
 
 - **Active practical path:** retain Android and the stock kernel; prove a minimal Linux userspace binary, then a small chroot and USB/ADB-assisted access.
 - **Native-boot research:** investigate stock-kernel/custom-ramdisk feasibility only after partition identity, image structure, debug path and recovery confidence are established.
+- **Alternative UX paths:** keep open any simpler approach that makes the physical Totoro genuinely useful or fun.
 - **Avoid for now:** kernel rebuilds, mainline porting, overclock/AVS work, repartitioning, large distributions, unnecessary services and broad package installations.
 
 ## Next action
