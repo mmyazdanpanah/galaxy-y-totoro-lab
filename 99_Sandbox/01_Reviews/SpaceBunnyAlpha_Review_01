@@ -1,0 +1,444 @@
+I'll start by reviewing the actual repository, then form conclusions from the evidence rather than assumptions.
+
+Repository is accessible. Let me pull the rest of the key documents and the file tree.
+
+Now the core modernization docs and the raw device evidence.
+
+Now the raw device evidence — CPU, memory, partitions, and the compatibility assessments.
+
+Strong evidence so far. Let me read the remaining key assessments and preservation gates, then do external verification.
+
+Now external verification on the key technical uncertainties.
+
+Key finding emerging. Let me verify the kernel's actual filesystem support and a few remaining hardware questions.
+
+Two more verification batches — then I'll have what I need.
+
+One more pass on the artifacts already in the repo, to check provenance of the CM11 boot image.
+
+Final check — the physical controls and screen, since my end-use concepts depend on them.
+
+I read the repository directly (README, STATUS, ROADMAP, AGENTS, `08_MODERNIZATION/*`, `01_PRESERVATION/*` including the post-root device inventory, `03_PARTITIONS/partition-map.md`, `10_RESEARCH/rootfs-candidate-assessment`, `10_RESEARCH/external-source-audit`, the `cmx11-totoro` provenance files, and the raw `cpuinfo.txt` / `proc-filesystems.txt` / `proc-devices.txt`). The recursive tree listing was truncated mid-stream, so I did **not** read `00_SPECIMEN`, `02_FIRMWARE`, `04_RECOVERY`, `05_ANDROID`, `06_KERNEL`, `07_BUILD`, `09_EXPERIMENTS`, or the remaining `10_RESEARCH` files. No device or repository changes were made.
+
+---
+
+# 1. Executive conclusion
+
+**The plan is directionally sound and unusually disciplined, but it is aimed at the wrong target, starting from the wrong place, and it is missing the two things that decide whether this project succeeds: on-device usability and fun.**
+
+Seven findings, in order of importance:
+
+1. **Independent Linux boot is not a "preferred destination" on this hardware — it is a dead end, and it should be formally closed rather than "gated."** The Totoro's GPU is a proprietary Broadcom VideoCore IV exposed only as the char device `v3d` (major 251, confirmed in your own `/proc/devices`). There is no mainline Mesa V3D support for BCM21553, no mainline LCD/framebuffer driver, and Wi-Fi is a Broadcom BCM4330 SDIO combo chip with only a Broadcom blob driver. `console=ttyS0,115200n8` is your only realistic output, and it needs a soldered TTL adapter on unexposed test points. **Even in the success case, native boot yields a headless, display-less, network-less SSH box on 290 MB of RAM — strictly less useful than what the chroot gives you today, at the cost of the one working Android install you have.** This is the opposite of the "shortest safe path."
+
+2. **The shortest safe path to a real Linux on the Totoro is much shorter than the plan assumes, and it does not involve a chroot, a loop device, a root filesystem image, or a distribution.** The phone already has a static BusyBox 1.17.2 at `/system/xbin/busybox` and root. Put a **statically linked ARMv6 `dropbear`** on the SD card, run it from `/data/local/tmp`, and SSH in over Wi-Fi. That is a genuine root Linux shell on the physical Totoro, reachable from a laptop, in roughly fifteen minutes, with a rollback of one `rm`. The plan's first gate ("offline-audit a candidate executable… then build a minimal rootfs") skips straight past the cheapest thing that could possibly work.
+
+3. **The plan's storage decision is wrong and should be reversed before anything is built.** `M1-boot-experiment.md` Gate 4 says "try `/data/local/alpine` first." `/data` is Samsung RFS with ~162 MB free, shared with Android, and RFS is a Samsung-proprietary filesystem with weak POSIX semantics. Your SD card has ~14 GB free and loop-backed ext2 is *already proven* on this device. The rootfs belongs in a **loop-mounted ext2/ext3 image on the SD card**.
+
+4. **The D1 "read-only capability inventory" gate is over-scoped and partly redundant, and it is blocking the real work.** Your BML/STL node-to-partition map is *already fully established* by the kernel command line + `/proc/partitions` + the live PIT, all three of which agree: `bml7`=boot, `bml8`=boot_backup, `bml9`=system, `bml10`=cache, `bml11`=userdata, `bml12`=efs, `bml13`=sysparm_dep, `bml14`=umts_cal, `bml15`=cal. D1 should shrink from a broad capability sweep to about eight commands whose results actually change a decision.
+
+5. **There is no on-device user interface anywhere in the plan.** The proposed access path is `adb forward tcp:2222` → `sshd`, which requires a tethered Mac. That is a *development* path, not a *use* path. A device that can only be used while plugged into a laptop is not "useful." Wi-Fi SSH and/or an HTTP UI viewed in the stock Android browser must be part of the plan from day one.
+
+6. **Nothing in the plan is fun.** Every milestone is infrastructure. Meanwhile the Totoro's actual standout attributes — 3" 240×320 multi-touch capacitive screen, 832 MHz CPU, 384 MB RAM, 2 MP camera, Wi-Fi, BT 3.0, GPS, 3.5 mm jack, 1200 mAh battery, SD slot — map directly onto Gingerbread-era native emulators, which are ARMv6 and light. **Android 2.3.6 is arguably the *best* OS this device will ever run for that purpose.** A zero-risk emulator demonstration is the fastest possible route to "useful and cool," and it is absent from the roadmap.
+
+7. **A hazard is sitting in your repository.** `10_RESEARCH/sources/cmx11-totoro/boot.img` (SHA-256 `9c65ac10…`) is not stock CM11. Per its own README it is a third-party XDA ROM by `raisul2010` shipping a **custom overclocking "Samurai Kernel"** from an unrelated GitHub account — and that README states **"System partition increased to 45MB,"** i.e. it is built for a *different PIT* than the 235 MB `system` partition your live PIT reports. Flashing that boot image would be a hard-fail or brick on this specimen, using a device whose EFS is the one component you cannot back up. **Quarantine it with an explicit DO-NOT-FLASH note.**
+
+Two smaller defects worth fixing now: `01_PRESERVATION/EFS-LIMITATION.md` states EFS "is identified with the `bml15` partition" — your own PIT and cmdline say `bml15` is `cal` (radio calibration) and `efs` is `bml12`. And the hardware is sometimes described as having a D-pad; **it does not** — GSMArena and multiple reviews confirm a single physical Home key plus *capacitive* Menu/Back. That constrains emulator control design.
+
+---
+
+# 2. Current evidence audit
+
+## Verified on the device (trustworthy — I read the raw captures)
+
+| Item | Value | Source |
+|---|---|---|
+| SoC | BCM21553 "ThunderbirdEDN31" | `cpuinfo.txt` |
+| CPU | implementer `0x41`, arch `6TEJ`, **part `0xb36`, rev 5** | `cpuinfo.txt` |
+| Features | `swp half thumb fastmult vfp edsp java` — **no vfpv3, no ARMv7** | `cpuinfo.txt` |
+| BogoMIPS | 832.90 | `cpuinfo.txt` |
+| Kernel | 2.6.35.7, GCC 4.4.3, PREEMPT, 2012-03-16 | STATUS/cmdline |
+| Kernel cmdline | `mem=362M`, `console=ttyS0,115200n8`, full 15-partition mtdparts map | post-root inventory |
+| Filesystems | `ext2`, `ext3`, `cramfs`, `vfat`, `msdos`, `jffs2`, `yaffs/yaffs2`, `rfs`, `j4fs`, `tmpfs`, `ramfs` — **no ext4, no overlayfs, no btrfs** | `proc-filesystems.txt` |
+| Devices | `fb`(29), `input`(13), `v3d`(251), `lcd`(243), `camera`(246), `bcm_gps`(199), `bcm_kril`(201), `bcm_alsa_pcg`(206), `bcm_rpc`(205), `memalloc`(230), `ttyGS`(252), `BcmHeadset`(250), `mtd`(90), `bml`(137), `stl`(138), `loop`(7), `mmc`(179), `device-mapper`(254) | `proc-devices.txt` |
+| Root | `su -c id` → uid=0 | post-root inventory |
+| Chroot | BusyBox chroot → `CHROOT_EXEC_OK`, uid=0 | post-root inventory |
+| Loop ext2 | 4 MiB ext2 on `/data/local/tmp`, `loop0`, RW, I/O, clean teardown | loop capability evidence |
+| Namespaces | `/proc/self/ns` **absent** | post-root inventory |
+| PIT | 15 entries, OneNAND, 4096 B, SHA-256 `06d5b4f0…` | `partition-map.md` |
+
+**Two new resolutions from the raw CPU data that the repo explicitly refused to guess at:** `CPU part 0xb36` is **ARM1176JZF-S rev 5** (ARMv6**ZK**, VFPv2, Thumb-2 capable), *not* ARM1136 as several spec sites claim. The correct compile target is `-march=armv6 -mtune=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard`, which is exactly what a Buildroot armv6 hard-float config produces. Please record this; the repo's own note ("do not infer a specific core model from `v6l` alone") can now be discharged.
+
+**Two decisive negative results from the raw data:**
+
+- **`ext4` is absent.** Any rootfs must be ext2/ext3 (or vfat, or tmpfs/ramfs). Your ext2 choice is correct and necessary; use **ext3** for the writable rootfs (same on-disk format plus a journal — important on a handheld that loses power), ext2 for the seed image.
+- **`/proc/self/ns` is absent → no mount namespaces.** This has three consequences the plan does not currently reflect: (a) `mount --bind` inside the chroot is a **global** Android mount-table change; (b) mounting a *second* `devpts` inside the chroot creates new PTY numbers and will break any Android terminal — you want a **bind of the host `/dev`** so ptys, `/dev/urandom`, and `/dev/ttyS0` are shared; (c) **`pivot_root` is a booby trap.** BusyBox 1.17.2 on this device has `pivot_root`, and without PID/mount namespaces it pivots the *whole system* — Android would end up rooted in your rootfs. Add an explicit prohibition.
+
+## Assumptions that are actually contested
+
+- **"Alpine armhf" is not ARMv6-safe by assumption.** Alpine's matrix does confirm `armhf` = "32 bit ARM with hard-float ABI — **for ARMv6 devices**" since v3.0. But [musl's own supported-platforms page](https://wiki.musl-libc.org/supported-platforms) states "Linux kernel >=2.6.39 is necessary for POSIX conformant behaviour, older kernels will work with varying degrees of non-conformance." Your kernel is 2.6.35.7. The repo treats this correctly as an open risk. I agree — and I think it is *more* risk than warranted for a first step.
+- **"RAM ~290 MiB"** is GSMArena's "user available" figure. Physical RAM is 384 MB; `mem=362M` is what the kernel gets. The number that matters for sizing is a live `/proc/meminfo` reading — and note that **`MemAvailable` did not exist until Linux 3.14**, so it will not be in your output. You must compute `MemFree + Buffers + Cached` yourself, ideally at idle and again with Android's heavy apps closed.
+- **`10_RESEARCH/work/stock-preservation/JPLC1/` predates the loop test** (it contains a `proc-mtd.txt` that is header-only). Treat it as the pre-root baseline, not current state, exactly as STATUS already warns.
+
+## Important unknowns that survive
+
+1. Free RAM at idle (hard blocker on rootfs sizing).
+2. Whether the loop mount is `exec` when the backing file lives on the `noexec` SD mount (strongly expected yes, but *unverified* — this is a core project claim still marked open).
+3. Whether Wi-Fi association and a routable IP work from a root shell on this device (`/proc/net/route` showed nothing during the earlier capture, never explained).
+4. Real CPU frequency behaviour (the Watson kernel author's "832 MHz crisis" notes suggest DVFS behaviour is pathological here — irrelevant to you, but it explains why the device feels slow).
+5. EFS raw backup. Your `EFS-LIMITATION.md` conclusion (no safe stock readback; do not guess a block mapping) is correct and I endorse closing that research line.
+
+---
+
+# 3. Possible end-use concepts
+
+### A. "Totoro Shell" — a real UNIX workstation in your pocket
+
+- **What you do:** carry a phone that is a working root Linux box. `ssh` into it from a laptop, tablet, or another phone over Wi-Fi. Run shell pipelines, `awk`/`sed`, `vi`, `git`-style text work, scripts, `nc`, a tiny HTTP client. The phone sits on your desk as a tiny always-on Linux machine.
+- **Requires:** root ✓, static ARM binaries ✓ (BusyBox proven), Wi-Fi ✓ (assuming E0 confirms association), a reachable SSH client on another device, **no display work at all**.
+- **Needs Linux?** Yes — but the "Linux" requirement is satisfied by BusyBox + a static SSH daemon. No distribution, no chroot, no loop device.
+- **Works with stock Android?** Completely. Android is never touched.
+- **Obstacles:** Wi-Fi association from a root shell; finding/building a trustworthy static `dropbear`; security (do not expose a root shell — use keys, bind to `wlan0`, never bridge the hotspot).
+- **Minimum demo:** from the laptop, `ssh root@<phone-ip> 'uname -a; busybox | head -1'` returns `2.6.35.7` and `BusyBox v1.17.2`; `echo hi > /data/local/tmp/x` persists; a five-stage pipeline returns correct output.
+
+### B. "Totoro Node" — the chroot as a Wi-Fi service with the phone as its screen
+
+- **What you do:** the chroot runs `busybox httpd` plus `crond` and a handful of scripts. You control it from any browser — including the phone's own stock Android browser pointed at `http://127.0.0.1:8080/`, which fits 240×320 if you design for it. A live dashboard of uptime, free RAM, SD usage, Wi-Fi signal, a button that runs a script, a file drop-box, a "Totoro says hi" page, an IRC/BBS bridge with real Linux clients.
+- **Requires:** chroot with a minimal rootfs (Concept A's plumbing plus ~30 MB), `busybox httpd` (static, ~1 MB), `crond`. **Zero new APKs** — the stock browser is the UI.
+- **Needs Linux?** Yes, and this is where a *root filesystem* genuinely earns its keep, because you want a real `/etc`, a real `crontab`, real relative paths.
+- **Works with stock Android?** Yes. `httpd` binds to localhost or `wlan0`; Android keeps the display, touchscreen, Wi-Fi radio, audio and power management.
+- **Obstacles:** no mount namespaces, so the bind mounts are global (manageable); RAM headroom; `busybox httpd` has no CGI unless you build with `FEATURE_HTTPD_CGI` — a host-side rebuild of static BusyBox solves this in minutes.
+- **Minimum demo:** `curl -s http://<phone-ip>/` from the laptop returns a page containing live uptime and free-RAM values; tapping a link in the phone's own browser runs a script and shows the result on the 3" screen.
+
+### C. "Retro handheld" — the Totoro as an emulator device *(no Linux whatsoever)*
+
+- **What you do:** NES, Game Boy/Game Boy Advance, SNES, Master System/Genesis, arcade subsets, DOSBox, ScummVM. ROMs and tools live on the 14 GB SD card.
+- **Requires:** Gingerbread-era native ARMv6 emulator APKs and homebrew/public-domain/licensed ROMs. **Nothing else.** No rooting required.
+- **Needs Linux?** No.
+- **Works with stock Android?** Yes — and this is the point. Emulators of this era are native ARM binaries, small, and extremely light. A 4.x/ART ROM would be *worse* for this purpose, and the unofficial CM11 option discussed below is heavier still. **Android 2.3.6 is the correct OS for this job.**
+- **Obstacles:** **no D-pad** — the Galaxy Y has one physical Home key and two *capacitive* Menu/Back keys. Emulators need on-screen virtual controls, which work well on a *capacitive multi-touch* panel (better than they would on a resistive one). Screen is 240×320, so use a small font and a compact control overlay. PlayStation emulation is impractical without a D-pad.
+- **Minimum demo:** one NES ROM launched from the SD card, full-speed audio and video, on-screen d-pad responsive to multi-touch, no dropped frames over 5 minutes.
+
+### D. "Pocket lab" — a self-contained ARMv6 build/run box
+
+- **What you do:** carry a machine that can compile and run small programs offline. A statically linked ARMv6 `tcc` in the chroot lets you edit and compile a C file and run it on the spot — the classic "phone-sized UNIX" experience, and genuinely novel on hardware this old.
+- **Requires:** a chroot plus a cross-built static `tcc` (tiny, ~1 MB) — or, more ambitiously, a static ARMv6 GCC.
+- **Needs Linux?** Yes.
+- **Works with stock Android?** Yes.
+- **Obstacles:** `tcc` targeting ARMv6 hard-float must be built with the right `arm-linux-musleabi` triplet and `-march=armv6`; fully static linking is required since there is no device libc. This is a *stretch* goal, correctly sequenced last.
+- **Minimum demo:** `echo 'int main(){puts("hi");}' > t.c && tcc t.c -o t && ./t` inside the chroot, printing `hi`.
+
+### Recommendation
+
+**A → C → B → D.** A gives you a useful, real Linux artifact fastest. C gives you the "cool" factor at zero risk and zero engineering. B turns the Linux into something you'll actually use daily. D is optional garnish. Nothing in this sequence requires a boot-critical write.
+
+---
+
+# 4. Architecture comparison
+
+| Approach | ARMv6/BCM21553 fit | Uses stock kernel | RAM/storage fit | Install complexity | Device risk | Reversible | Time to demo | Useful outcome |
+|---|---|---|---|---|---|---|---|---|
+| **V0: static binaries on Android, no chroot** | ✅ static ARM = no ABI risk | ✅ | ✅ ~2 MB | Trivial | **None** | `rm` | **15–60 min** | Root SSH shell over Wi-Fi |
+| **V1: chroot, BusyBox-static rootfs, SD loop ext3** | ✅ static | ✅ | ✅ ~20–40 MB | Low | Very low | `umount`+`losetup -d` | 2–4 h | Real UNIX env with own `/etc` |
+| **V1b: same, on tmpfs instead of SD image** | ✅ | ✅ | ⚠️ consumes RAM; ~64 MB realistic | Low | Very low (RAM only) | `umount` | 1–2 h | Same, faster, non-persistent |
+| **V2: chroot + full distro (Alpine armhf / Buildroot uClibc-ng)** | ⚠️ Alpine=ARMv6 ✓ but musl wants ≥2.6.39; uClibc-ng explicitly supports 2.6.x | ✅ | ⚠️ +40–100 MB | Medium | Low | `umount`+`losetup -d` | 1–3 d | Package manager, more programs |
+| **Android role change (Concept C)** | ✅ | ✅ | ✅ | Trivial | **None** | n/a | **1–3 h** | Retro handheld; immediate "cool" |
+| **Custom ROM (CM11 KitKat, community)** | ✅ *proven* — androidarmv6 shipped stable CM11 for totoro | ❌ replaces kernel | ⚠️ KitKat/ART on ARMv6 was slow; known OMX/SIM-lock/video bugs | High | **High** — boot+system write, unknown EFS, 2014-era artifacts | ⚠️ only via Odin/Heimdall + JPLC1 restore | 1–3 d + recovery prep | Modern-ish Android: Play apps, better tools |
+| **Stock kernel + custom ramdisk (native Linux boot)** | ⚠️ keeps drivers, but `loke` acceptance unproven | ✅ kernel only | ⚠️ ~30 MB free at best | Very high | **High** — boot image write | ⚠️ via Odin + `boot_backup` | Weeks–months | Text-mode phone shell; no framework |
+| **Mainline Linux / custom kernel** | ❌ no mainline fb, V3D, or BCM4330 support exists | ❌ | ⚠️ | Extreme | **Very high** | ⚠️ | Months, uncertain | Headless SSH box |
+
+**Read the table this way:** the rows that succeed fastest are the ones that change nothing. The row with the most research invested in it (native boot) is the one whose best case is a text-mode shell on a phone you already have a better version of.
+
+**On "lightweight Linux userspace alongside Android" (option 2 in your brief):** this is essentially V0, and I think the plan underrates it. It deserves to be a first-class track with its own milestone, not a stepping stone to a "real" rootfs. A BusyBox + `dropbear` + `busybox httpd` static payload is a genuine Linux userspace. The chroot is a convenience (a real `/etc`, relative paths, per-project state) and a *later* refinement, not a prerequisite.
+
+**On the ROM-swap option:** I want to flag it because the repo does not evaluate it, and because it is genuinely feasible — [androidarmv6 built a stable, daily-driver CM11 (Android 4.4.4) specifically for `samsung-totoro`](https://github.com/androidarmv6/android_device_samsung_totoro), with Wi-Fi, BT, GPS, camera and RIL fixed ([XDA dev thread](https://xdaforums.com/t/devs-only-cyanogenmod-11-for-samsung-bcm21553-development-discussion.2766229/)). That is real, device-specific, community-validated evidence — not a similar device. It is *not* a Linux environment, so it does not serve the north star directly, but it is a legitimate high-payoff option and a possible prerequisite for a better chroot experience (better terminal apps, more RAM headroom). It is a boot-critical write against a device whose EFS you cannot back up, so it belongs behind the full preservation gate, with an explicit "do we accept bricking this phone?" conversation. It is **not** the next step.
+
+---
+
+# 5. Recommended next experiments
+
+Ordered by decision value per unit of risk. All E0 items are strictly read-only.
+
+### E0 — Targeted read-only capture (~10 minutes, no state change)
+
+Run from an interactive `adb shell` with `su`:
+
+```sh
+# RAM budget. NOTE: MemAvailable does not exist before Linux 3.14.
+su -c 'cat /proc/meminfo'
+su -c 'busybox free'
+
+# Loop devices and the SD block node
+su -c 'ls -l /dev/block/loop* /dev/block/vold/179:1'
+su -c 'losetup -a'
+
+# Settle the filesystem / namespace / framebuffer questions for good
+su -c 'cat /proc/config.gz' | gunzip 2>/dev/null | egrep 'CONFIG_(EXT2_FS|EXT3_FS|EXT4_FS|TMPFS|NAMESPACES|BLK_DEV_LOOP|FB|FB_CONSOLE|DEVTMPFS|SECCOMP)='
+
+# Wi-Fi state and routability
+su -c 'ifconfig wlan0; route -n'
+su -c 'getprop | grep -i wifi'
+su -c 'dumpsys wifi | head -40'
+
+# Storage
+su -c 'df -h /data /mnt/sdcard'
+su -c 'stat -f /mnt/sdcard'
+
+# Curiosity that may pay off later (USB gadget serial)
+su -c 'ls -l /dev/ttyGS* ; ls /sys/class/android_usb/'
+```
+
+| # | Question | Why it matters | Read-only? | Outcome → decision |
+|---|---|---|---|---|
+| E0.1 | How much RAM is genuinely free at idle? | Sizes the entire rootfs plan; validates or kills tmpfs | ✅ | `<80 MB` → SD-backed ext3 only. `>120 MB` → tmpfs variant becomes attractive. |
+| E0.2 | Do free loop devices exist? | V1 depends on it | ✅ | None free → use `/dev/loop0` explicitly; ensure the earlier test detached cleanly. |
+| E0.3 | Is `CONFIG_EXT4_FS` present? | `/proc/filesystems` says no; confirm definitively | ✅ | Absent → ext2/ext3 is the only option; stop considering ext4/overlay recipes. |
+| E0.4 | Is `CONFIG_NAMESPACES` present? | Confirms the no-isolation constraint | ✅ | Absent → write the `pivot_root` prohibition into AGENTS.md before anyone tries it. |
+| E0.5 | Is `CONFIG_FB_CONSOLE` present? | Determines whether a native boot would have *any* display | ✅ | Absent → strengthens the case for closing Track B outright. |
+| E0.6 | Is `wlan0` up with a routable IP? | Gates V0, and therefore the whole plan | ✅ | Down → E0 becomes "get Wi-Fi associated", which is a precondition for everything. |
+| E0.7 | Is the SD still 14 GB free and `noexec`? | Confirms the storage target | ✅ | Confirms V1-over-`/data` recommendation. |
+| E0.8 | Does `/dev/ttyGS*` exist and respond? | Possible no-APK serial/SSH path | ✅ | Functional → extra access option. |
+
+**Why this replaces the full D1:** D1's value was mainly to map partitions before dumping them. The partitions are already mapped (§2). The remaining D1 items (`/proc/iomem`, `/proc/fb`, full sysfs survey) are archaeology, not decisions. Run the eight commands above; archive the transcript; move on.
+
+### E1 — Host-side static-binary audit (zero device risk)
+
+Do this **before** touching the phone, and aim it at the *right* target:
+
+1. **Cross-build `dropbear` static for armv6 hard-float.** Use musl or uClibc-ng with `--enable-static --disable-zlib --disable-lastlog --disable-utmp`, `CFLAGS="-march=armv6 -mtune=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard"`, host `--host=arm-linux-musleabi`. Do **not** download random prebuilt ARM binaries — one of the ones you'd find (`mzpqnxow/arm-dropbear-static`) is a third-party musl build of unknown ISA baseline, and the wrong choice here is a silent `Illegal instruction`.
+2. **Verify offline** with `readelf -h` (must be `ARM`, `EABI5`), `readelf -A` (expect `Tag_CPU_arch: v6`, `Tag_FP_arch: VFPv2` or absent, `Tag_ABI_VFP_args: VFP registers`), and `file` (must say `statically linked`).
+3. **Rehearse the same procedure for a static `busybox httpd`** with `FEATURE_HTTPD_CGI`, and optionally a static `tcc`.
+
+- **Why it matters:** this is the "offline compatibility audit" gate the plan calls for, redirected at a payload that has *no libc risk at all*. Static + ARMv6 + EABI5 is a set of three checks you can satisfy by construction.
+- **Decision impact:** if the cross-toolchain cannot produce a v6-hardfloat static binary, V0 and V1 are blocked and you must fall back to a Buildroot-built uClibc-ng rootfs (E4). Finding this out on your laptop costs nothing; finding it out on the Totoro costs a failed milestone.
+
+### E2 — V0: static `dropbear` on the phone, no chroot, no loop device (**the first state-changing step**)
+
+```sh
+# host: push to the SD card (the safest writable location with 14 GB free)
+adb push dropbear /data/local/tmp/dropbear
+adb shell su -c 'chmod 755 /data/local/tmp/dropbear'
+adb shell su -c '/data/local/tmp/dropbear -h'      # expect usage text, NOT "not found"
+```
+
+Then start it, bound to Wi-Fi only:
+
+```sh
+adb shell su -c '/data/local/tmp/dropbear -F -E -s -p 2222 -r /dev/ptmx -R 10.0.0.0/8 &'
+```
+
+- **Pass criteria:** `-h` prints usage; `dropbear -F` stays running; `ssh -p 2222 root@<wlan0-ip>` from the laptop yields a root shell whose `uname -a` reports `2.6.35.7`.
+- **Risk:** essentially none. Writes only to `/data/local/tmp`. Android is untouched.
+- **Rollback:** `kill` the process, `rm /data/local/tmp/dropbear`. Done.
+- **Stop condition:** if the binary reports `Illegal instruction` or `Exec format error`, **stop and diagnose the ISA/ABI** — do not try a different binary at random. Record the exact error.
+- **Note on security:** this is a root shell over a wireless link. Use key auth (`-R` file for authorized keys via `/data/local/tmp/.ssh/authorized_keys`, `-w` to disable password auth), never expose it to the internet, and remember the phone can host its own hotspot — a phone-side hotspot plus laptop-side SSH needs no router at all.
+
+### E3 — V1: minimal chroot on the SD card, loop-mounted ext3
+
+Only after E2 succeeds. This is where the "ELF execution from loop mount" question gets answered for real.
+
+```sh
+# 1. create a 256 MiB ext3 image on the SD card
+su -c 'dd if=/dev/zero of=/mnt/sdcard/totoro-rootfs.img bs=1M count=256'
+su -c 'mkfs.ext3 -L totoro /mnt/sdcard/totoro-rootfs.img'
+
+# 2. attach and mount (note: -o exec; /mnt/sdcard itself is noexec, but this mount is not)
+su -c 'losetup /dev/block/loop0 /mnt/sdcard/totoro-rootfs.img'
+su -c 'mount -t ext3 -o exec /dev/block/loop0 /mnt/rootfs'
+
+# 3. populate a BusyBox-static rootfs
+#    bin/busybox (static, from /system/xbin or your host build)
+#    /sbin/* + /bin/* symlinks to busybox applets
+#    minimal /etc/{passwd,group,profile,resolv.conf}
+#    /root, /tmp (1777), /home, /var/{log,run,spool}
+
+# 4. bind the HOST device tree (NOT a second devpts) - no namespaces on this kernel
+su -c 'mount --bind /dev   /mnt/rootfs/dev'
+su -c 'mount --bind /proc  /mnt/rootfs/proc'
+su -c 'mount --bind /sys   /mnt/rootfs/sys'
+#    ^ all three are GLOBAL mount-table entries on this kernel. `mount` will show them.
+#    ^ NEVER use pivot_root here.
+
+# 5. test, from a root adb shell
+su -c '/system/xbin/busybox chroot /mnt/rootfs /bin/sh -c "id; uname -a; df -h; echo x > /tmp/t; cat /tmp/t"'
+su -c '/system/xbin/busybox chroot /mnt/rootfs /bin/sh -c "cat /proc/meminfo | head -3; ifconfig wlan0"'
+```
+
+- **Pass criteria:** all of `id`, `uname`, `df`, a file write/read, `/proc/meminfo` and `wlan0` succeed *inside* the chroot; a pipeline such as `busybox awk 'BEGIN{print 1.5*2.5}' | busybox sed 's/.*/GOT_IT/'` returns `GOT_IT`.
+- **Risk:** low, with two named hazards. (a) **Never remove the SD card while the loop mount is live** — you will corrupt the image. (b) The three bind mounts are global; always tear them down.
+- **Rollback:**
+  ```sh
+  su -c 'umount /mnt/rootfs/proc; umount /mnt/rootfs/sys; umount /mnt/rootfs/dev; umount /mnt/rootfs'
+  su -c 'losetup -d /dev/block/loop0'
+  su -c 'rm /mnt/sdcard/totoro-rootfs.img'
+  ```
+- **Stop condition:** if a *static* binary fails to execute from the loop mount, the problem is the mount (exec flag, loop offset on vfat), not the distribution. Debug that before going further — it is a much smaller problem.
+
+### E4 — E3 + dropbear and `busybox httpd` in the chroot
+
+Move E2's `dropbear` and a `FEATURE_HTTPD_CGI` BusyBox into the rootfs, start them on entry, confirm SSH and HTTP from both the laptop *and* the phone's own browser at `127.0.0.1`.
+
+### E5 — E4 + a real userspace *(only if and when you want more programs)*
+
+Build a rootfs **on your host** with Buildroot targeting `armv6` / `arm1176jzf-s` / VFP hard-float / uClibc-ng (which explicitly supports 2.6.x kernels), or assemble one from the Alpine minirootfs plus a fixed list of `.apk` files **extracted on the host** (`apk` files are ordinary gzipped tarballs). This deliberately avoids running `apk` on the device in the critical path — no resolver, no network, no `/etc/apk/repositories` to go wrong.
+
+**Treat Alpine armhf as a fallback, not the primary candidate.** Alpine's armhf port is genuinely ARMv6 (confirmed in their matrix), but musl documents a 2.6.39 baseline for POSIX conformance and you are on 2.6.35.7. Alpine armhf has also been "best effort" since 3.13. uClibc-ng is the lower-risk libc for a 2.6.35 kernel. Neither is proven — but do not spend a milestone proving the riskier one first.
+
+### E-NEG — Host-side audit of `cmx11-totoro/boot.img` (zero device risk)
+
+Do not flash it. Record in the repo, next to the file, the reasons: third-party XDA ROM, custom OC "Samurai Kernel" from an unrelated account, and a README stating **"System partition increased to 45MB"** — i.e. built against a PIT whose `system` partition is not 235 MB like yours. Mark it `DO NOT FLASH — wrong partition geometry, unvetted kernel, unbackable EFS`. This is a five-minute documentation task that prevents a catastrophic future mistake.
+
+---
+
+# 6. Shortest path to a real-device demonstration
+
+### Mandatory milestones
+
+**M0 — Retro handheld demo (no Linux, no risk).** *Earliest point the user can enjoy something real.*
+- **Goal:** one emulator running a homebrew/public-domain ROM smoothly on the 3" screen.
+- **Inputs:** one Gingerbread-compatible emulator APK; one legal ROM; the SD card.
+- **Work:** sideload, configure on-screen multi-touch controls, tune the 240×320 scaling.
+- **Pass:** 5 minutes of continuous play, no dropped frames, audio in sync.
+- **Risk/rollback:** none. Uninstall the APK.
+- **Stop:** if no usable emulator runs within a couple of hours, drop it — it is optional garnish, not a gate on anything.
+
+**M1 — Read-only baseline (E0).**
+- **Pass:** eight commands captured, reviewed, redacted, committed; free-RAM figure recorded; no state change (`mount` output identical before and after).
+- **Risk:** none. **Stop:** never.
+
+**M2 — Root shell over Wi-Fi (E2).** *First genuinely useful Linux on the Totoro.*
+- **Goal:** a real root UNIX shell on the physical phone over the air.
+- **Inputs:** E1-verified static `dropbear`; Wi-Fi association.
+- **Pass:** laptop SSHes in on port 2222; `uname -a` → `2.6.35.7`; a file written from the shell persists across an `adb shell` round trip; survives an Android screen-off/screen-on cycle.
+- **Risk:** none to Android. **Rollback:** kill + `rm`.
+- **Stop:** if `dropbear` fails to execute, stop and diagnose ISA/ABI; do not substitute binaries blindly.
+
+**M3 — Minimal chroot (E3).**
+- **Goal:** a self-contained Linux rootfs on the SD card.
+- **Pass:** the five-line acceptance test in E3.3/E3.5, including a working pipeline and readable `/proc` and `wlan0` *inside* the chroot.
+- **Risk:** SD-removal corruption; leaked global bind mounts. Both mitigated by an explicit unmount/teardown script and by checking `mount` after teardown.
+- **Rollback:** the four-line teardown above.
+- **Stop:** if a static binary won't run from the loop mount, fix the mount. Do not proceed to a distribution.
+
+**M4 — Service on the phone (E4).**
+- **Goal:** `dropbear` + `busybox httpd` running inside the chroot.
+- **Pass:** SSH from the laptop **and** `http://127.0.0.1:8080/` rendering a real page in the phone's own stock browser.
+- **This is the milestone that makes the Totoro a device rather than a demo.**
+
+**M5 — One real service.**
+- **Goal:** a thing you would actually use — a status dashboard, a cron job, an IRC/BBS bridge, a file drop box.
+- **Pass:** it survives 24 hours and a reboot, and is reachable by someone other than you.
+
+### Optional enhancements
+E5 (real distribution), D (on-device `tcc`), and a *separately gated and separately approved* ROM-swap evaluation.
+
+### Not on this path
+Native boot, mainline, custom kernel, kexec, repartitioning, EFS/modem writes, UART hardware, CPUfreq/AVS.
+
+---
+
+# 7. Risks, recovery, and preservation gates
+
+**The irreducible risk: EFS.** Your `EFS-LIMITATION.md` is correct — there is no safe stock readback, and guessing a block mapping to force one is exactly the kind of action that bricks phones. Therefore:
+
+> **Any operation that could plausibly damage the radio permanently (a bad boot image, a PIT/partition-table write, a modem-region write) must be treated as irreversible for this specimen.**
+
+This is not a reason to avoid preservation work; it is a reason to accept that the device is **effectively single-use for anything boot-critical**. Given that, the expected value of any boot-chain experiment collapses, which is the formal argument for closing Track B.
+
+**Gates that must be true before *any* write beyond `/data` and the SD card:**
+
+1. Exact BML node ↔ partition identity, cross-checked between kernel cmdline, `/proc/partitions`, and the live PIT. ✅ *Already satisfied* — record it and stop re-deriving it.
+2. A verified, hashed, full JPLC1 restore set. ✅ *Already satisfied* (four archives + PIT, dual-verified on external USB).
+3. A written host-side restore runbook that a competent person could follow at 3 a.m.
+4. Explicit, recorded user acceptance that the phone may be bricked.
+5. A rehearsed, non-destructive proof that the flash path works (never a "no-op flash" described as read-only — a no-op flash is a write).
+
+**Gates specific to the chroot track (much lower bar):**
+
+- No writes to any `/dev/block/*` node, ever. Loop devices are fine; raw BML/STL is not.
+- Never `pivot_root` (no namespaces ⇒ it would re-root Android).
+- Bind-mount only `/dev`, `/proc`, `/sys`. Never mount a second `devpts`.
+- Always tear down loop mounts before SD removal, and verify with `losetup -a` and `mount`.
+- Never let `/data` fill. The 162 MB is the Android margin; keep the rootfs on the SD.
+
+**Artifact hygiene:** quarantine `10_RESEARCH/sources/cmx11-totoro/boot.img`; fix the `bml15`/EFS error in `EFS-LIMITATION.md`.
+
+---
+
+# 8. Premature or unnecessary work
+
+**Stop / formally close:**
+
+- **Track B (independent/native boot) in its current form.** It is a "preferred destination" that is *worse on every user-facing axis* than the chroot, gated behind work whose completion still yields a headless box. Move `06_KERNEL`, `07_BUILD`, boot-image reconstruction, UART/SBL and CPUfreq/AVS to a clearly-labelled `archive/` or "historical research — not on the active path." The material is genuinely good; its *placement on the active roadmap* is the problem.
+- **Kernel rebuilds, mainline porting, kexec, multiboot.** No mainline V3D, no mainline display driver, no mainline BCM4330 Wi-Fi exist. A mainline kernel on this device is a serial console on a desk.
+- **D1 as currently scoped.** §5 replaces it.
+- **"Resolve supported BML/STL node-to-partition mappings" as an open roadmap item.** It is done. Close it.
+- **Broad distributions as a first step.** Alpine armhf is a *candidate*, not a starting point. E5, not M3.
+- **`apk` on the device in the critical path.** Assemble the rootfs on the host instead.
+- **A second `devpts` inside the chroot.** Bind `/dev` instead.
+- **More preservation archaeology** (`/proc/iomem`, full sysfs, boot-image geometry) unless it feeds a decision.
+
+**Keep, but de-prioritise:** EFS research (correctly closed), modem/baseband archaeology (irrelevant to the goal), the `sbl.bin`/`loke` boot chain (interesting, not on the path).
+
+---
+
+# 9. Overlooked alternatives
+
+1. **No chroot at all.** V0 above. The plan's mental model is "rootfs → chroot → usefulness," and the chroot is optional. A static `dropbear` + `busybox httpd` + `crond` run directly from `/data/local/tmp` is a real Linux userspace. This is the single biggest shortcut available and it is not in the plan.
+2. **tmpfs rootfs.** `tmpfs` is in `/proc/filesystems` and is already in use by Android (`/dev`, `/mnt/asec`, `/mnt/obb`). A `tmpfs -o size=64m` chroot is faster than any loop image, needs no image file, and evaporates on reboot — which is *ideal* for a stateless "totoro node" and *terrible* for persistent state. Worth one experiment once M1 reports the free-RAM number.
+3. **The stock Android browser as the UI.** Zero APKs to obtain, sideload, or trust. `busybox httpd` + a few CGI scripts gives a perfectly good, genuinely-Linux-powered control panel on a 240×320 screen. Nobody in the plan has proposed this.
+4. **The phone's own Wi-Fi hotspot as the access fabric.** The laptop joins the Totoro's soft AP; `ssh` straight to `wlan0`. No router, no NAT, works anywhere. Cleaner than `adb forward`, which the plan currently proposes and which requires a tether.
+5. **The `ttyGS` char device (major 252).** Possibly a functional USB gadget serial. Worth 30 seconds in E0; could give a no-APK access path.
+6. **Emulators as the primary "cool" deliverable.** The single largest gap. Gingerbread-era ARMv6 emulators are native, tiny, and fast. And note the asymmetry: **the unofficial CM11 route makes this device *worse* for gaming** (ART on ARMv6, known OMX issues) while making it better for app availability. That trade-off should be stated explicitly before anyone flashes anything.
+7. **No USB OTG — confirmed, and it closes a whole avenue early.** Specs list `USB OTG: No`, and the XDA consensus is that the BCM21553's DWC controller was only ever brought up in device mode; enabling host mode required a custom kernel and a Y-cable resistor hack, with `cat /sys/devices/lm-2/mode` reportedly panicking the stock kernel. So: **no USB storage, no USB input devices, no USB serial adapters, no gadget mode.** Plan around it now rather than discovering it in week three.
+8. **Community device-specific work exists and is usable as *evidence* even when unusable as an artifact.** `sonickles9/watson-kernel-totoro` (BCM21553, Gingerbread MTD, DVFS notes), `androidarmv6/android_device_samsung_totoro` (CM11 device tree), `villavic/Samsung_GT-S5367` (`board-totoro.c` — genuine BCM21553 machine init, GPIO, and the `BCM1160` machine ID used for `BCM21553 ThunderbirdEDN31`). These are **totoro-specific**, not generic-ARMv6 approximations — much stronger evidence than the plan's `10_RESEARCH` gives credit for. Also relevant: [postmarketOS has dropped ARMv6/armhf](https://lists.alpinelinux.org/~alpine/devel/%3C20200528104748.4d37ede5@ncopa-desktop.copa.dup.pw%3E) infrastructure, independently corroborating your audit note, and a totoro postmarketOS page exists but is gated. Conclusion unchanged: **do not plan on postmarketOS.**
+9. **The `/data/local/tmp` write test you already passed is a distribution channel.** If a payload runs, it can be updated by `adb push` without reflashing anything.
+
+---
+
+# 10. Revised roadmap
+
+**Replace the current D1 → offline audit → chroot → … sequence with:**
+
+| # | Action | Risk | Effort |
+|---|---|---|---|
+| 1 | Quarantine `cmx11-totoro/boot.img` with a DO-NOT-FLASH note; fix the `bml15`/EFS error | none | 15 min |
+| 2 | Record `CPU part 0xb36 = ARM1176JZF-S rev 5 (ARMv6ZK, VFPv2)`; close the "resolve BML/STL mappings" item — it is done | none | 15 min |
+| 3 | Add the `pivot_root` prohibition and the bind-`/dev` rule to `AGENTS.md` | none | 15 min |
+| 4 | **M1 / E0:** the eight-command read-only capture. Commit a redacted transcript | none | 30 min |
+| 5 | **M0:** one emulator, one legal ROM, 5 minutes of smooth play. *Enjoy it.* | none | 1–3 h |
+| 6 | **E1 (host):** cross-build static `dropbear` (+ `busybox httpd`, `tcc`) for armv6 hard-float; verify with `readelf -A` | none | 1–2 h |
+| 7 | **M2 / E2:** static `dropbear` on the phone; root SSH over Wi-Fi. **← first useful Linux** | negligible | 1 h |
+| 8 | **M3 / E3:** 256 MiB ext3 image on the SD card, loop-mounted, BusyBox-static rootfs, bind `/dev`+`/proc`+`/sys`, five-line acceptance test | low | 3 h |
+| 9 | **M4 / E4:** `dropbear` + `httpd` inside the chroot; verify from laptop *and* the phone's own browser | low | 2 h |
+| 10 | **M5:** build one real service you would actually use | low | as desired |
+| 11 | Only then: E5 (Buildroot uClibc-ng armv6 rootfs) if you want a package manager and more programs | low | 1–3 d |
+| 12 | `archive/` Tracks 06/07/08-B, boot-image work, CPUfreq/AVS, EFS research | — | — |
+| 13 | ROM-swap evaluation: **only** after 1–11, only with explicit brick acceptance | high | separate doc |
+
+---
+
+# 11. Open questions for the project owner
+
+1. **What do you actually want to do with the Totoro?** Reading/playing/being-online, versus a genuine UNIX machine you can `ssh` into, versus a teaching specimen. The answer decides whether M5 is a web dashboard or a build box, and whether you need E5 at all.
+2. **Is this phone expendable if it bricks?** EFS is unbackable by your own documented finding, so a boot-critical write is effectively irreversible. If the answer is "yes, I have spares," CM11 becomes a real option worth evaluating. If "no," Tracks B and the ROM swap stay closed forever, and I think that is the correct call regardless.
+3. **Is the phone's Wi-Fi hotspot an acceptable access mechanism, or do you need it on your home network?** This decides the V0/V1 access design and whether `dropbear` binds to `wlan0` only.
+4. **Do you have a spare device with an SSH client, and how often is a laptop actually attached?** The plan's current `adb forward` proposal answers "attached, often" — which, if untrue, makes the current plan unusable as a daily driver.
+5. **Is "it is Linux" a goal in itself, or only a means?** If the latter, V0 plus a BusyBox payload is the destination and the project can be substantially shorter than planned. If the former, say so explicitly and I will re-plan around a real rootfs — but that still does not require native boot.
+
+---
+
+# What I would validate first—and why
+
+**Drop a statically linked ARMv6 `dropbear` on the Totoro and SSH into a root shell over Wi-Fi — after a ten-minute read-only check of free RAM and Wi-Fi state, and nothing else.**
+
+Specifically: run E0.1 and E0.6, then E1, then E2. Nothing else.
+
+**Why this one experiment, above all others:**
+
+- **It is the shortest path to a genuinely useful result.** It converts a rooted 2011 phone into a real UNIX machine reachable over the air, in under an hour of work.
+- **Its risk is essentially zero.** It writes one file to `/data/local/tmp` and starts a process. Rollback is `kill` and `rm`. It touches no partition, no `/system`, no boot chain, no EFS.
+- **It carries the most information per minute.** It simultaneously proves: static ARMv6 binaries execute on this CPU; the SD card is a viable payload location; Wi-Fi association and a routable IP work from a root shell (an item your earlier capture left unexplained); the whole "does a real Linux program run here" question, which currently gates five separate roadmap items.
+- **It de-risks everything downstream.** If a static hard-float ARMv6 binary runs from `/data/local/tmp`, it runs from a loop-mounted ext3 image on the SD card, and the chroot milestone becomes plumbing rather than a compatibility gamble. If it *fails*, you learn that in ten minutes on the host, not after a weekend of rootfs assembly.
+- **It is the step the plan skipped.** The plan's first technical gate is an audit of an Alpine armhf binary — a payload carrying a real, documented kernel-version risk (musl wants ≥2.6.39; you are on 2.6.35.7). Starting with a static binary removes that risk from the critical path entirely and defers the distribution question until after you already have something you use every day.
+
+Everything else in this review — the chroot, the web UI, the retro handheld, even the decision to close native boot — follows more easily once you can type into a real shell on the Totoro from your laptop. That is the shortest safe, reliable, verifiable path, and it starts with a single static binary.
