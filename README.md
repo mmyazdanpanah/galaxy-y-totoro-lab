@@ -4,11 +4,17 @@ Research, preservation, reconstruction, and modernization of the Samsung Galaxy 
 
 ## Project goal
 
-The long-term goal is to launch a new operating system on the physical Totoro, ideally booting a Linux environment without Android. A Linux userspace inside Android through chroot is a valuable, lower-risk intermediate milestone, but is not an independent OS boot.
+**Ultimate goal: turn the Totoro into something useful and cool.**
+
+The main technical target is a useful Linux-based environment that can eventually boot independently of Android. But we do not need to force one specific architecture or spend a long time chasing “pure Linux” if a simpler alternative gives the real phone a genuinely good user experience.
+
+A chroot or Android-assisted Linux setup can therefore be a successful practical outcome. Independent Linux boot is the preferred technical destination, not a reason to make the project unnecessarily long or complicated.
 
 ## Current strategy
 
-Use the fastest reliable path without unnecessary complexity: preserve the working stock Android kernel and boot chain, complete a read-only capability inventory, establish a credible recovery baseline, and validate the smallest compatible Linux userspace on the device. Native boot remains an evidence-gated objective; speculative kernel or mainline work must not block practical progress. No distribution or boot strategy is assumed to be final.
+Use the shortest, safest and least complicated path to a useful device. Preserve the working stock Android kernel and boot chain, complete the read-only capability inventory, establish a credible recovery baseline, and validate the smallest compatible Linux userspace. Try native boot when the evidence supports it, but do not let speculative kernel or mainline work block practical progress.
+
+Success means three things: it runs on the real Totoro, it is genuinely useful/fun to use, and we reached it without unnecessary risk or complexity.
 
 ## Verified milestones
 
@@ -34,4 +40,4 @@ See STATUS.md for current gates and 08_MODERNIZATION/plan.md for the simplified 
 
 ## Guiding rule
 
-**Observe → preserve → smallest reversible step → test → record.**
+**Make the Totoro useful first. Keep the path short. Observe → preserve → smallest reversible step → test → record.**
