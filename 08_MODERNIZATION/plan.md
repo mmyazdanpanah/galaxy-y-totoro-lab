@@ -10,15 +10,15 @@ Independent Linux boot remains interesting, but it is **not the active critical 
 
 ## Integrated strategy
 
-The five external reviews have been consolidated in `integrated-external-review-2026-09-30.md`. Their useful common ground is:
+The five external reviews have been consolidated in `integrated-external-review-2026-09-30.md`. The project has now converted the first major recommendation into physical-device evidence:
 
     Preserve working Android
             ↓
     Decision-critical read-only baseline
             ↓
-    Static ARMv6 ELF test
+    Static ARMv6 ELF test                    ← PASSED
             ↓
-    Dynamic musl compatibility test
+    Dynamic musl compatibility test         ← ACTIVE
             ↓
     Small SD-backed ext2 rootfs
             ↓
@@ -29,8 +29,6 @@ The five external reviews have been consolidated in `integrated-external-review-
     Richer userspace only if justified
             ↓
     Native boot only if a concrete blocker requires it
-
-This ordering maximizes information gained per experiment while keeping rollback simple.
 
 ## Track A — active Linux userspace
 
@@ -45,36 +43,54 @@ Capture only what is needed to interpret the next experiment:
 
 Use interactive ADB. Redact specimen-sensitive identifiers before sharing or committing.
 
-### A2. Static ARMv6 payload
+### A2. Static ARMv6 payload — PASSED
 
-On the host:
-- verify provenance and checksum;
-- inspect ARM architecture, EABI/float ABI, linkage and interpreter;
-- ensure the binary is actually built for the Totoro's ARMv6 capabilities.
+A host-built static ARMv6 Linux EABI payload has now executed on the physical Totoro from `/data/local/tmp`.
 
-On the phone:
-- push to `/data/local/tmp`;
-- execute as root;
-- record exact stdout/stderr and exit status.
+Verified:
+- ELF32 little-endian ARM;
+- EABI5;
+- ARMv6 / `arm1136jf-s` attributes;
+- no `PT_INTERP`;
+- static linkage;
+- native execution against the stock 2.6.35.7 kernel;
+- ordinary Linux syscalls;
+- real filesystem round-trip I/O.
 
-This is the first decisive Linux-userspace test. Do not build a full rootfs before it passes.
+Representative results:
+- `totoro-exit42` returned status 42;
+- `totoro-diag` returned status 0 after Linux diagnostic syscalls;
+- `totoro-fsdiag` returned status 0 after file create/write/read/unlink.
 
-### A3. Dynamic userspace
+This is the first decisive Linux-userspace milestone.
 
-After a static payload passes, test one dynamic musl-based ARMv6 binary.
+### A3. Musl compatibility — ACTIVE
 
-The purpose is to distinguish:
-- static ELF execution;
-- dynamic loader compatibility;
-- libc/kernel syscall compatibility;
-- ABI problems;
-- memory pressure.
+The host-side musl environment is now built far enough to isolate the remaining dependency.
 
-If it fails, diagnose the exact failure before changing distributions.
+Completed:
+- configured musl for `arm-linux-gnueabi`;
+- built with ARMv6, ARM mode and soft-float;
+- installed a dedicated musl sysroot;
+- compiled a C test object against that sysroot;
+- reached direct LLD linking of musl `libc.a`.
+
+Current issue:
+- the direct LLD link reports missing ARM EABI compiler-runtime helpers such as `__aeabi_dmul`, `__aeabi_uidiv` and related symbols;
+- the installed Homebrew LLVM package does not contain the needed ARM builtins archive;
+- this is classified as a host-side compiler-runtime integration issue, not as a handset compatibility failure.
+
+Next:
+1. build matching LLVM 22.1.8 compiler-rt ARM builtins in `/tmp`;
+2. link one minimal static musl ARMv6 test;
+3. audit ELF attributes;
+4. push over wireless ADB;
+5. execute on the physical Totoro;
+6. only then test a dynamic musl loader.
 
 ### A4. Persistent minimal rootfs
 
-Only after A2/A3:
+Only after the musl compatibility gate:
 - build on the host;
 - keep it minimal;
 - put the persistent image on the SD card;
@@ -125,7 +141,7 @@ If reopened, require:
 4. early-boot debug path;
 5. explicit user approval for any boot-critical write.
 
-Only after those gates may stock-kernel/custom-ramdisk work be considered. A rebuilt kernel, mainline port, kexec, multiboot, UART/SBL work or ROM swap requires its own evidence and justification.
+Only after those gates may stock-kernel/custom-ramdisk work be considered. A rebuilt kernel, mainline, kexec, multiboot, UART/SBL work or ROM swap requires its own evidence and justification.
 
 ## Useful alternative outcomes
 
@@ -141,15 +157,29 @@ A useful Android-only outcome is still a success if it is genuinely useful/cool.
 
 ## Current evidence
 
-Verified:
+### Verified on the physical Totoro
+
 - GT-S5360 / BCM21553, Android 2.3.6 JPLC1, Linux 2.6.35.7;
 - root access;
 - basic static BusyBox chroot execution;
-- loop-backed ext2 creation, attachment, RW mount, file I/O and clean teardown.
+- loop-backed ext2 creation, attachment, RW mount, file I/O and clean teardown;
+- custom host-built static ARMv6 Linux EABI ELF execution from `/data/local/tmp`;
+- native Linux syscall execution;
+- real filesystem round-trip I/O;
+- no boot-chain or stock-kernel modification from these experiments.
 
-Still open:
-- exact CPU part identity tied to primary evidence, if not already captured;
-- static custom ARMv6 ELF execution;
+### Verified on the host
+
+- Homebrew LLVM 22.1.8 targeting `arm-linux-gnueabi`;
+- musl configured and built for ARMv6/ARM/soft-float;
+- installed musl sysroot;
+- C compilation against musl succeeds;
+- direct LLD link reaches musl `libc.a` and exposes the remaining ARM EABI compiler-runtime dependency.
+
+### Still open
+
+- ARM compiler-runtime builtins integration;
+- static musl binary execution on Totoro;
 - dynamic userspace compatibility;
 - ELF execution from loop-mounted ext2;
 - actual available RAM under normal Android load;
@@ -198,13 +228,14 @@ The exact failure determines the next branch.
 
 ## Immediate next action
 
-**Do not build Alpine/Debian or a full rootfs yet.**
+**Finish compiler-rt integration.**
 
-Run:
+Then run:
 
-1. decision-critical read-only baseline;
-2. host-side static ARMv6 ELF audit;
-3. execute one static binary from `/data/local/tmp`;
-4. record exact output and exit status.
+1. build one minimal static musl-linked ARMv6 executable;
+2. audit ELF32/EABI/ARMv6/soft-float/static/`PT_INTERP`;
+3. push over wireless ADB;
+4. execute on the physical Totoro and record exact output/status;
+5. use the result to decide the dynamic loader test.
 
-If it passes, run one dynamic musl compatibility test. Only after that build the smallest persistent rootfs.
+Do not build Alpine/Debian or a full rootfs yet.
