@@ -15,20 +15,35 @@ The active critical path is now the smallest safe Linux-userspace demonstration.
 - [ ] Obtain and verify a matching full JPLC1 restore set and credible restore procedure before any boot-critical experiment
 - [ ] Back up untracked preservation/research evidence to protected separate storage
 
-## Phase 1 — smallest Linux payload
+## Phase 1 — smallest Linux payload — PASSED
 
-- [ ] Offline-audit one static ARMv6 ELF for provenance, ISA, EABI/float ABI, linkage and interpreter
-- [ ] Execute the verified static payload from `/data/local/tmp`
-- [ ] Record exact output, exit status and failure mode if any
-- [ ] **Milestone:** a verified custom ARMv6 Linux userspace payload executes on the real Totoro
+- [x] Offline-audit a host-built static ARMv6 ELF for ISA, EABI, linkage and interpreter
+- [x] Execute the verified static payload from `/data/local/tmp`
+- [x] Verify native Linux syscall execution
+- [x] Verify real filesystem round-trip I/O
+- [x] Record exact output and exit status
+- [x] **Milestone:** a verified custom ARMv6 Linux userspace payload executes on the real Totoro
 
-## Phase 2 — dynamic userspace
+Physical-device evidence includes:
+- `totoro-exit42` → `STATUS=42`;
+- `totoro-diag` → `TOToro native Linux diagnostic: Linux`, `STATUS=0`;
+- `totoro-fsdiag` → `File round-trip: TOToro_FS_SYSCALL_OK`, `Kernel: Linux`, `STATUS=0`;
+- temporary filesystem test file confirmed absent after cleanup.
 
-- [ ] Offline-audit one dynamic musl-based ARMv6 binary
-- [ ] Execute it from a reversible location
-- [ ] Determine whether loader/libc/kernel compatibility is sufficient
-- [ ] If it fails, diagnose the exact class: ISA, ABI, loader, syscall/libc or memory
+## Phase 2 — dynamic userspace / musl compatibility
+
+- [x] Configure musl for `arm-linux-gnueabi`
+- [x] Build musl with ARMv6, ARM mode and soft-float settings
+- [x] Install a host-side musl sysroot
+- [x] Compile a C test object against the musl sysroot
+- [ ] Supply the matching ARM EABI compiler-runtime builtins
+- [ ] Produce one minimal static musl-linked ARMv6 executable
+- [ ] Offline-audit ELF32/EABI/ARMv6/soft-float/static/`PT_INTERP`
+- [ ] Execute the static musl binary on the physical Totoro
+- [ ] Test one dynamic musl binary and diagnose loader/libc/kernel compatibility
 - [ ] **Milestone:** one dynamic Linux userspace binary runs reliably
+
+Current blocker: Homebrew LLVM does not ship the required ARM compiler-runtime archive in the installed package. Matching LLVM 22.1.8 compiler-rt source is being fetched in `/tmp/compiler-rt-totoro` for an exact-version ARM EABI builtins build.
 
 ## Phase 3 — persistent minimal rootfs
 
