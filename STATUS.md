@@ -19,6 +19,45 @@
 - No boot, recovery, modem, EFS, PIT, repartitioning, or userdata wipe/write has been performed. The root installation did modify `/system`.
 - Live PIT SHA-256: `06d5b4f05588fa8f06d29f46c7e5056002fdfcbd15901520d651b4ee87a9a538`.
 
+## Major new verified milestone — static musl userspace on physical Totoro
+
+A real host-built, statically linked musl ARMv6 Linux userspace program executed successfully on the physical Galaxy Y.
+
+Artifact: `totoro-musl-test`  
+SHA-256: `15c6fb0828a2933d64270b33d585879b99e01d59e0f00fa81fc0cd6962aec4d5`  
+Size: 57,916 bytes
+
+The ELF was audited as ARMv6/EABI5, soft-float, statically linked, with no `PT_INTERP` or dynamic section. It was transferred over TCP ADB at `172.20.10.2:5555`; the device hash matched exactly before execution.
+
+Physical result:
+
+```
+TOToro musl userspace
+Kernel: Linux
+Release: 2.6.35.7
+Machine: armv6l
+MUSL_ARMV6_OK
+STATUS=0
+```
+
+This verifies native musl libc startup/runtime, malloc/free, string operations, uname and clean process exit on the stock Linux 2.6.35.7 kernel. No boot-critical storage, kernel, or boot-chain changes were made.
+
+## Current gates
+
+- M1 — decision-critical baseline: remaining narrow evidence only.
+- M2 — static ARMv6 ELF: PASSED.
+- M3 — static musl userspace: PASSED.
+- M4 — dynamic musl compatibility: NEXT.
+- M5 — persistent SD-backed ext2 rootfs.
+- M6 — minimal network service.
+- M7 — real UI milestone: local web dashboard rendered by the Totoro's existing Android browser, with touch interaction.
+- M8 — useful/cool checkpoint and preservation.
+- Native boot remains conditional on a concrete user-facing blocker.
+
+## Immediate path to a real UI
+
+The near-term target is deliberately not a Linux desktop. Build one dynamic musl test, then a minimal persistent ext2 userspace, then a tiny HTTP service. The phone's existing Android browser can render the service locally, giving us a genuine physical-screen/touch UI without first solving GPU, framebuffer, window-system, or desktop-stack problems.
+
 ## Major new verified milestone — native ARMv6 Linux userspace
 
 The project has now passed the original decisive static-userspace gate on the physical Totoro.
