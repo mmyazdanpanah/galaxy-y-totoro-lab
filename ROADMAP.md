@@ -30,7 +30,16 @@ Physical-device evidence includes:
 - `totoro-fsdiag` → `File round-trip: TOToro_FS_SYSCALL_OK`, `Kernel: Linux`, `STATUS=0`;
 - temporary filesystem test file confirmed absent after cleanup.
 
-## Phase 2 — dynamic userspace / musl compatibility
+## Phase 2 — musl userspace — PASSED
+
+- [x] Configure and build musl for ARMv6/ARM/soft-float
+- [x] Build LLVM 22.1.8 ARM compiler-rt builtins
+- [x] Produce and audit static musl ARMv6 ELF
+- [x] Transfer over wireless ADB and verify SHA-256
+- [x] Execute on physical Totoro with `STATUS=0`
+- [x] **Milestone:** real static musl userspace executes on the stock kernel
+
+## Phase 3 — dynamic userspace compatibility — NEXT
 
 - [x] Configure musl for `arm-linux-gnueabi`
 - [x] Build musl with ARMv6, ARM mode and soft-float settings
@@ -45,7 +54,7 @@ Physical-device evidence includes:
 
 Current blocker: Homebrew LLVM does not ship the required ARM compiler-runtime archive in the installed package. Matching LLVM 22.1.8 compiler-rt source is being fetched in `/tmp/compiler-rt-totoro` for an exact-version ARM EABI builtins build.
 
-## Phase 3 — persistent minimal rootfs
+## Phase 4 — persistent minimal rootfs
 
 - [ ] Build the smallest rootfs on the host; avoid package caches and unnecessary services
 - [ ] Store the persistent image on SD rather than consuming scarce internal RFS space
@@ -55,7 +64,7 @@ Current blocker: Homebrew LLVM does not ship the required ARM compiler-runtime a
 - [ ] Never use `pivot_root`; treat global bind mounts carefully and verify teardown
 - [ ] **Milestone:** repeatable enter/exit of a small Linux rootfs without altering boot-critical storage
 
-## Phase 4 — first useful service
+## Phase 5 — first useful network service
 
 - [ ] Test Dropbear or another appropriately small SSH server
 - [ ] Test `adb forward` as an early host-access path
@@ -63,21 +72,35 @@ Current blocker: Homebrew LLVM does not ship the required ARM compiler-runtime a
 - [ ] Add one small service: local dashboard, archive/status service, network utility or Hermes-oriented client
 - [ ] **Milestone:** a real person can use the Totoro for a concrete task
 
-## Phase 5 — UX checkpoint
+## Phase 6 — real UI milestone
+
+- [ ] Serve a small dashboard from the Totoro
+- [ ] Open it using the existing Android browser
+- [ ] Show live kernel/uptime/memory/network state
+- [ ] Add at least one useful touch interaction
+- [ ] **Milestone:** the physical phone presents and accepts a real touch-usable UI
+
+## Phase 7 — useful/cool checkpoint
+
+- [ ] Test the experience end-to-end
+- [ ] Preserve the working state if it is already useful/cool
+- [ ] Document the concrete limitation before adding complexity
+
+## Phase 8 — richer userspace fallback
 
 - [ ] Test the experience on the physical device, not just from the host
 - [ ] Decide whether it is already useful/cool
 - [ ] If yes, stop and preserve the working state
 - [ ] If no, document the concrete limitation before adding complexity
 
-## Phase 6 — richer userspace fallback
+## Phase 8 — richer userspace fallback
 
 - [ ] If a richer environment is needed, test a purpose-built Buildroot/uClibc-ng or otherwise kernel-constrained rootfs
 - [ ] Keep the rootfs small and ARMv6-specific
 - [ ] Add only tools justified by the chosen use case
 - [ ] Re-test memory and stability after each major addition
 
-## Phase 7 — conditional native-boot research
+## Phase 9 — conditional native-boot research
 
 Only reopen this phase if a concrete requirement cannot be met by the Android-assisted design.
 
