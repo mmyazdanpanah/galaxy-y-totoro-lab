@@ -6,11 +6,11 @@ The active critical path is now the smallest safe Linux-userspace demonstration.
 
 ## Phase 0 — preservation and evidence
 
-- [x] Record core physical/software identity and live partition evidence (2026-09-29)
+- [x] Record core physical/software identity and live partition evidence
 - [x] Verify root access on the physical handset
 - [x] Verify basic static BusyBox chroot execution
 - [x] Verify loop-backed ext2 creation, RW mount, file I/O and clean teardown
-- [ ] Capture only decision-critical D1/M1 read-only data: exact CPU identity if unresolved, actual RAM, network state, pty and mount flags
+- [ ] Capture only decision-critical D1/M1 read-only data still needed for later decisions
 - [ ] Verify any remaining BML/STL mapping or recovery claims against primary evidence
 - [ ] Obtain and verify a matching full JPLC1 restore set and credible restore procedure before any boot-critical experiment
 - [ ] Back up untracked preservation/research evidence to protected separate storage
@@ -24,12 +24,6 @@ The active critical path is now the smallest safe Linux-userspace demonstration.
 - [x] Record exact output and exit status
 - [x] **Milestone:** a verified custom ARMv6 Linux userspace payload executes on the real Totoro
 
-Physical-device evidence includes:
-- `totoro-exit42` → `STATUS=42`;
-- `totoro-diag` → `TOToro native Linux diagnostic: Linux`, `STATUS=0`;
-- `totoro-fsdiag` → `File round-trip: TOToro_FS_SYSCALL_OK`, `Kernel: Linux`, `STATUS=0`;
-- temporary filesystem test file confirmed absent after cleanup.
-
 ## Phase 2 — musl userspace — PASSED
 
 - [x] Configure and build musl for ARMv6/ARM/soft-float
@@ -39,34 +33,42 @@ Physical-device evidence includes:
 - [x] Execute on physical Totoro with `STATUS=0`
 - [x] **Milestone:** real static musl userspace executes on the stock kernel
 
-## Phase 3 — dynamic userspace compatibility — NEXT
+## Phase 3 — dynamic userspace compatibility — PASSED
 
 - [x] Configure musl for `arm-linux-gnueabi`
 - [x] Build musl with ARMv6, ARM mode and soft-float settings
-- [x] Install a host-side musl sysroot
-- [x] Compile a C test object against the musl sysroot
-- [ ] Supply the matching ARM EABI compiler-runtime builtins
-- [ ] Produce one minimal static musl-linked ARMv6 executable
-- [ ] Offline-audit ELF32/EABI/ARMv6/soft-float/static/`PT_INTERP`
-- [ ] Execute the static musl binary on the physical Totoro
-- [ ] Test one dynamic musl binary and diagnose loader/libc/kernel compatibility
-- [ ] **Milestone:** one dynamic Linux userspace binary runs reliably
+- [x] Build matching LLVM 22.1.8 ARM EABI compiler-rt builtins
+- [x] Produce a dynamic musl ARMv6 executable and runtime
+- [x] Audit ELF32/EABI/ARMv6/soft-float/`PT_INTERP`/dynamic linkage
+- [x] Transfer the dynamic rootfs over wireless ADB
+- [x] Verify executable, `libc.so`, loader and tarball SHA-256 on the physical device
+- [x] Execute the dynamic musl binary on the physical Totoro
+- [x] **Milestone:** one dynamic Linux userspace binary runs reliably on the stock kernel
 
-Current blocker: Homebrew LLVM does not ship the required ARM compiler-runtime archive in the installed package. Matching LLVM 22.1.8 compiler-rt source is being fetched in `/tmp/compiler-rt-totoro` for an exact-version ARM EABI builtins build.
+Physical result:
 
-## Phase 4 — persistent minimal rootfs
+```
+TOTORO_DYNAMIC_MUSL_OK
+armv6l
+STATUS=0
+```
 
-- [ ] Build the smallest rootfs on the host; avoid package caches and unnecessary services
+## Phase 4 — persistent minimal rootfs — NEXT
+
+- [ ] Build the smallest persistent rootfs on the host; avoid package caches and unnecessary services
 - [ ] Store the persistent image on SD rather than consuming scarce internal RFS space
 - [ ] Use ext2 first because loop-backed ext2 is already proven on the handset
-- [ ] Prove ELF execution from the mounted image
-- [ ] Validate minimal chroot shell and only required /proc, /sys and /dev access
+- [ ] Prove ELF execution from the mounted ext2 image
+- [ ] Make the dynamic musl loader and `libc.so` part of the persistent rootfs
+- [ ] Validate minimal chroot shell and only required `/proc`, `/sys` and `/dev` access
+- [ ] Validate repeatable attach/mount/chroot/exit/unmount/detach cycles
 - [ ] Never use `pivot_root`; treat global bind mounts carefully and verify teardown
-- [ ] **Milestone:** repeatable enter/exit of a small Linux rootfs without altering boot-critical storage
+- [ ] **Milestone:** repeatable entry/exit of a small Linux rootfs without altering boot-critical storage
 
 ## Phase 5 — first useful network service
 
-- [ ] Test Dropbear or another appropriately small SSH server
+- [ ] Test a small HTTP server/service first because it directly supports the UI path
+- [ ] Test Dropbear or another appropriately small SSH server if interactive access is useful
 - [ ] Test `adb forward` as an early host-access path
 - [ ] Test Wi-Fi/SSH as the preferred untethered path if networking is confirmed
 - [ ] Add one small service: local dashboard, archive/status service, network utility or Hermes-oriented client
@@ -85,13 +87,6 @@ Current blocker: Homebrew LLVM does not ship the required ARM compiler-runtime a
 - [ ] Test the experience end-to-end
 - [ ] Preserve the working state if it is already useful/cool
 - [ ] Document the concrete limitation before adding complexity
-
-## Phase 8 — richer userspace fallback
-
-- [ ] Test the experience on the physical device, not just from the host
-- [ ] Decide whether it is already useful/cool
-- [ ] If yes, stop and preserve the working state
-- [ ] If no, document the concrete limitation before adding complexity
 
 ## Phase 8 — richer userspace fallback
 
