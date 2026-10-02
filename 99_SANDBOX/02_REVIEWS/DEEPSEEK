@@ -1,0 +1,68 @@
+Planning Milestone U2 is the critical next step now that U1 has proven direct framebuffer and touchscreen access. The core challenge is that the usual Linux GUI stacks (X11, Wayland) are either too heavy or impractical to build as static musl binaries for this device. The project's own UI principles already point toward a framebuffer-native approach. This answer evaluates the realistic options and proposes a concrete architecture for a retro Pocket-PC experience on the Totoro.
+
+### 🧭 The Constraints That Shape the Decision
+
+Before comparing toolkits, it is worth restating the hard limits that will dictate the viable path:
+
+*   **Hardware**: ARMv6 (BCM21553), single-core, ~290 MB RAM, no GPU acceleration.
+*   **Display**: 240×320 TFT, likely 16-bit color (RGB565).
+*   **Input**: Resistive touchscreen via evdev, already proven for exclusive access.
+*   **Software**: Static musl binaries, persistent ext2 rootfs, no X11 or Wayland server available, and a strong preference for minimal, reversible changes.
+
+Any candidate stack must be buildable with a musl cross-compiler, fit within a few megabytes of RAM, and render directly to `/dev/fb0` while reading touch events from `/dev/input/eventX`.
+
+### 📊 Evaluating the Candidate GUI Stacks
+
+The following table summarizes the main options, based on the project's constraints and the available research.
+
+| Option | Type | Musl/Static Feasibility | Touch Support | Desktop-Like Features | Verdict for U2 |
+|---|---|---|---|---|---|
+| **LVGL (LittlevGL)** | Embedded GUI library | High (pure C, no external deps) | Yes (evdev, resistive) | Widgets, styles, but no window manager by default | **Best foundation**: build a custom desktop shell on top. |
+| **Nano-X (Microwindows)** | Framebuffer window system | Medium (patches needed for musl) | Yes (via drivers) | Windowing, widgets, but older API | Viable, but larger and less actively maintained. |
+| **ming-wm** | Framebuffer WM | High (simple C) | No (keyboard-only) | Retro tile/window manager, no widgets | Inspirational for WM logic; not touch-ready. |
+| **Matchbox + X11** | X11 WM + desktop | Very Low (X11 + musl static is painful) | Yes (via X) | Full desktop, but heavy | Not suitable for static musl target. |
+| **SDL 1.2** | Media library | Medium (deprecated, but framebuffer backend exists) | Yes (evdev) | Low-level; you build everything | Possible, but more work than LVGL. |
+| **DirectFB** | Graphics library | Low (does not build with musl) | Yes | Windowing, but upstream is dead | **Reject** (musl incompatibility). |
+
+The key insight is that **LVGL** is the only modern, actively maintained, pure-C library that was designed exactly for this class of device (240×320, limited RAM, framebuffer, touchscreen). It can be compiled as a static library with musl, and it provides the rendering, input, and widget primitives needed to build a desktop-like environment. Nano-X is a historical alternative that also targets framebuffer devices, but its musl support is less clean and its development is largely stagnant. ming-wm is interesting for its retro aesthetic, but it is keyboard-driven and lacks the touch-oriented UI components required here. X11-based solutions are effectively ruled out by the static musl requirement and the device's limited RAM.
+
+### 🏗️ Proposed U2 Architecture: A Framebuffer-Native Desktop Shell
+
+Instead of trying to port a conventional desktop environment, the most pragmatic route is to build a **minimal, custom desktop shell** using LVGL as the rendering and input layer. This aligns with the project's principle of "incremental graphics stack" and "borrow infrastructure, not identity".
+
+The architecture would have three layers:
+
+1.  **LVGL Core (Foundation)**: Handles all drawing to `/dev/fb0` and reads touch events from `/dev/input/eventX`. LVGL's framebuffer driver can be configured for a single buffer (or a small partial buffer) to save RAM. Its `evdev` input driver will parse touch coordinates and gestures.
+
+2.  **Desktop Shell (Application Layer)**: A custom C program that uses LVGL to render:
+    *   **Launcher / Home Screen**: A grid of large, touch-friendly icons for available "apps" (Terminal, Files, Settings, Text Editor, etc.).
+    *   **Taskbar / Status Bar**: A persistent bar at the top or bottom showing a clock, battery (if available), and buttons to switch between running "windows" or return to the launcher.
+    *   **Window Manager (Lightweight)**: Since LVGL does not have a built-in window manager, implement a simple one: each "window" is an LVGL container with a title bar and a close button. Only one window is shown at a time (full-screen), or a simple overlapping tiling scheme can be used. Touch-drag can move windows if desired.
+    *   **Core Apps**: Start with a terminal emulator (using an existing tiny terminal library like `libvterm` or a custom one), a file browser, and a system info screen. These can all be LVGL widgets.
+
+3.  **Retro Aesthetic Layer**: To achieve the "Pocket-PC" feel, define a custom LVGL theme that mimics late-90s/early-2000s UIs: beveled buttons, a grey/blue color palette, pixelated fonts (e.g., using LVGL's built-in fonts or a small bitmap font), and a "Start"-like button. This satisfies the "retro" goal without the overhead of a full desktop environment.
+
+### 🗺️ Implementation Roadmap for U2
+
+Here is a concrete, step-by-step plan to bring up this shell:
+
+1.  **Build LVGL for ARMv6/musl**: Cross-compile LVGL as a static library. Disable features that are not needed (e.g., animations, complex fonts) to keep the binary small. Configure the framebuffer driver to use `/dev/fb0` at 240×320, RGB565.
+
+2.  **Integrate evdev Touch Input**: Write a small input driver that opens the touchscreen evdev device and feeds coordinates and pressure events into LVGL's input device structure. Test with a simple LVGL demo (e.g., a button that changes color when tapped) to verify end-to-end input.
+
+3.  **Implement the Desktop Shell Skeleton**: Create a main loop that initializes LVGL, creates a home screen with icons, and a taskbar. At this stage, the icons can simply be placeholders that open a blank full-screen window.
+
+4.  **Build the First App: Terminal**: Port or write a minimal terminal emulator. This is the most useful "app" for a pocket computer and will validate the window management and text rendering. A simple serial console or a `busybox sh` child process can be used.
+
+5.  **Add File Browser and Settings**: Implement a simple file browser using LVGL's list widget, and a settings screen for brightness (if controllable) or system information.
+
+6.  **Polish the Retro Theme**: Apply the retro theme consistently. Test performance: ensure the UI remains responsive at 240×320 on the ARMv6 CPU. Use LVGL's `lv_timer_handler` efficiently and avoid full-screen redraws where possible.
+
+### ⚠️ Risks and Mitigations
+
+*   **Performance**: LVGL is lightweight, but the ARMv6 CPU is slow. Mitigate by using a small draw buffer, disabling anti-aliasing and shadows, and minimizing redraws. The partial buffer mode (e.g., 1/10 of screen) is ideal for this.
+*   **Memory**: Even LVGL can consume RAM if not configured carefully. Use `LV_MEM_SIZE` tuned to the device (e.g., 64–128 KB) and avoid dynamic allocation in the shell where possible.
+*   **Touch Calibration**: Resistive touchscreens can be noisy. LVGL's `evdev` driver supports calibration, but you may need to implement a simple calibration routine (e.g., tapping crosshairs) and store the transform matrix in a config file.
+*   **Fallback**: If LVGL proves too limited for complex windows, Nano-X could be revisited, but it would require more porting effort. The LVGL approach is lower risk because it gives full control over the UI layer.
+
+In summary, **LVGL is the recommended foundation for U2**. It is the only option that cleanly satisfies the musl static, framebuffer, touch, and retro-desktop requirements without pulling in a full display server. By building a custom shell on top of it, you can achieve a genuinely usable Pocket-PC experience that is both resource-efficient and aesthetically appropriate for the Totoro.
