@@ -1,19 +1,21 @@
 #include <errno.h>
 #include <fcntl.h>
-#include <linux/fb.h>
-#include <linux/input.h>
+#include "uapi/totoro-linux-uapi.h"
 #include <poll.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
-#include <sys/utsname.h>
 #include <unistd.h>
 
 #define FBDEV "/dev/graphics/fb0"
 #define INPUTDEV "/dev/input/event4"
 #define LCDFB_IOCTL_UPDATE_LCD 0x46ffu
+#ifndef FBIOPAN_DISPLAY
+#define FBIOPAN_DISPLAY 0x4606u
+#endif
+#define EVIOCGRAB 0x40044590UL
 
 struct lcd_dirty_rows { unsigned int top, bottom; };
 
@@ -54,25 +56,69 @@ static void screen(struct fbmap*f,int on){
 }
 static int button(int x,int y){return x>=28&&x<212&&y>=184&&y<254;}
 
+static int pan_to(struct fbmap *f, struct fb_var_screeninfo *var,
+                  unsigned int yoffset)
+{
+    struct fb_var_screeninfo v = *var;
+    v.yoffset = yoffset;
+    v.activate = var->activate;
+
+    if (ioctl(f->fd, FBIOPAN_DISPLAY, &v) < 0)
+        return -1;
+
+    *var = v;
+    f->yoffset = yoffset;
+    return 0;
+}
+
 int main(void){
     struct fb_fix_screeninfo fix; struct fb_var_screeninfo var; struct fbmap f={-1,0,0,0,0,0,0};
-    struct utsname u; int in=-1,on=0,x=-1,y=-1;
+    int in=-1,on=0,x=-1,y=-1;
+    int touch_down=0, button_handled=0;
     f.fd=open(FBDEV,O_RDWR); if(f.fd<0){perror(FBDEV);return 2;}
     if(ioctl(f.fd,FBIOGET_FSCREENINFO,&fix)<0||ioctl(f.fd,FBIOGET_VSCREENINFO,&var)<0){perror("FBIOGET");return 3;}
     if(var.xres!=240||var.yres!=320||var.bits_per_pixel!=32||fix.line_length!=960){fprintf(stderr,"unexpected framebuffer\n");return 4;}
     f.width=var.xres; f.height=var.yres; f.stride=fix.line_length; f.yoffset=var.yoffset; f.len=(size_t)f.stride*var.yres_virtual;
     f.mem=mmap(0,f.len,PROT_READ|PROT_WRITE,MAP_SHARED,f.fd,0); if(f.mem==MAP_FAILED){perror("mmap");return 5;}
     in=open(INPUTDEV,O_RDONLY); if(in<0){perror(INPUTDEV);return 6;}
-    uname(&u);
+
+    if(pan_to(&f,&var,0)<0){
+        perror("FBIOPAN_DISPLAY yoffset=0");
+        close(in);
+        munmap(f.mem,f.len);
+        close(f.fd);
+        return 7;
+    }
+
+    {
+        int grab=1;
+        if(ioctl(in,EVIOCGRAB,&grab)<0){
+            perror("EVIOCGRAB");
+            close(in);
+            return 7;
+        }
+    }
     printf("TOTORO_NATIVE_UI\nFB %ux%u virtual_y=%u bpp=%u stride=%u yoffset=%u\nTOUCH %s\n",var.xres,var.yres,var.yres_virtual,var.bits_per_pixel,fix.line_length,var.yoffset,INPUTDEV);
-    screen(&f,0); if(refresh(&f)<0){perror("LCDFB_IOCTL_UPDATE_LCD");return 7;}
+    screen(&f,0); if(refresh(&f)<0){perror("LCDFB_IOCTL_UPDATE_LCD");return 9;}
     for(;;){
         struct pollfd p={in,POLLIN,0}; struct input_event e;
         int pr=poll(&p,1,1000); if(pr<0){if(errno==EINTR)continue;perror("poll");break;} if(!pr)continue;
         if(read(in,&e,sizeof(e))!=(ssize_t)sizeof(e))continue;
         if(e.type==EV_ABS&&e.code==ABS_MT_POSITION_X){x=e.value;if(x<0)x=0;if(x>239)x=239;}
         else if(e.type==EV_ABS&&e.code==ABS_MT_POSITION_Y){y=e.value;if(y<0)y=0;if(y>319)y=319;}
-        else if(e.type==EV_SYN&&e.code==SYN_REPORT){if(x>=0&&y>=0&&button(x,y)){on=!on;printf("TOUCH x=%d y=%d state=%s\n",x,y,on?"ON":"OFF");screen(&f,on);if(refresh(&f)<0)break;}x=y=-1;}
+        else if(e.type==EV_ABS&&e.code==ABS_MT_TOUCH_MAJOR){
+            touch_down=(e.value>0);
+            if(!touch_down)button_handled=0;
+        }
+        else if(e.type==EV_SYN&&e.code==SYN_REPORT){
+            if(touch_down&&!button_handled&&x>=0&&y>=0&&button(x,y)){
+                button_handled=1;
+                on=!on;
+                printf("TOUCH x=%d y=%d state=%s\n",x,y,on?"ON":"OFF");
+                screen(&f,on);
+                if(refresh(&f)<0)break;
+            }
+        }
     }
     munmap(f.mem,f.len);close(in);close(f.fd);return 0;
 }
