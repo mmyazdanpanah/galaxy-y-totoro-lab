@@ -53,19 +53,32 @@ armv6l
 STATUS=0
 ```
 
-## Phase 4 — persistent minimal rootfs — NEXT
+Phase 4 physical acceptance evidence:
 
-- [ ] Build the smallest persistent rootfs on the host; avoid package caches and unnecessary services
-- [ ] Store the persistent image on SD rather than consuming scarce internal RFS space
-- [ ] Use ext2 first because loop-backed ext2 is already proven on the handset
-- [ ] Prove ELF execution from the mounted ext2 image
-- [ ] Make the dynamic musl loader and `libc.so` part of the persistent rootfs
-- [ ] Validate minimal chroot shell and only required `/proc`, `/sys` and `/dev` access
-- [ ] Validate repeatable attach/mount/chroot/exit/unmount/detach cycles
-- [ ] Never use `pivot_root`; treat global bind mounts carefully and verify teardown
-- [ ] **Milestone:** repeatable entry/exit of a small Linux rootfs without altering boot-critical storage
+- Persistent image: `/mnt/sdcard/totoro-rootfs-phase4-01.ext2`, 32 MiB ext2.
+- Pristine host image SHA-256: `4d84d6fb09d74b7049c0d0d77e8b59e1aba6f453c1bcf72eccaa5afde3ac6cc4`.
+- Dynamic executable SHA-256: `48c56b75aeba489ec8b2101402dc8e3d5f5639c4271d4c34d5fda2d1ae7c0753`.
+- Loader/libc SHA-256: `6a86294f527a1ad6539ac7643badd1986cfca012f5edfe52a541be3da00a4191`.
+- Two complete attach/mount/chroot/execute/unmount/detach cycles passed with `STATUS=0`.
+- Final teardown checks reported `MOUNT_GONE` and `LOOP_DETACHED`.
+- Post-cycle image SHA-256: `b2bec9c8ab005f9fe99aad752b724d7fa0a1c106fc0c8dbe583e2aaffcbdc4f0`.
+- Host-side `e2fsck -fn` completed all five passes without structural errors.
 
-## Phase 5 — first useful network service
+The post-cycle hash is retained as a filesystem-state artifact; the pristine image hash remains the canonical build artifact.
+
+## Phase 4 — persistent minimal rootfs — PASSED
+
+- [x] Build the smallest persistent rootfs on the host; avoid package caches and unnecessary services
+- [x] Store the persistent image on SD rather than consuming scarce internal RFS space
+- [x] Use ext2 first because loop-backed ext2 is already proven on the handset
+- [x] Prove dynamic ELF execution from the mounted ext2 image
+- [x] Make the dynamic musl loader and `libc.so` part of the persistent rootfs
+- [x] Validate controlled chroot entry and dynamic execution from the persistent rootfs
+- [x] Validate repeatable attach/mount/chroot/exit/unmount/detach cycles
+- [x] Never use `pivot_root`; verify mount/loop teardown
+- [x] **Milestone:** repeatable entry/exit of a small Linux rootfs without altering boot-critical storage
+
+## Phase 5 — first useful network service — NEXT
 
 - [ ] Test a small HTTP server/service first because it directly supports the UI path
 - [ ] Test Dropbear or another appropriately small SSH server if interactive access is useful
