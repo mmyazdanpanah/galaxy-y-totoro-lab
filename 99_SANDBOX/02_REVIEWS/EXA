@@ -1,0 +1,62 @@
+sonickles9/watson-kernel-totoro
+github.com
+
+This is a kernel I developed for my Galaxy Y with the following ... -MTD support for Gingerbread (Thanks Samsung Epic 4G! Although it only works on TouchWiz (I tried it with SL v2 and v2.1 and it works, but under NougatME(CM7) I got no success and loads of segfaults), it works ALMOST perfectly. See bugs for details )
+Enabling graphical applications on embedded Linux systems
+microwindows.org
+
+has support for 1, 2, 4, 8, 16, 24, and 32 bits per pixel displays, with support for palettized and truecolor display color implementations, as well as grayscale. With both APIs, all colors are specified in the portable RGB format, and the system has routines to convert to the nearest available color, or shade of gray
+mur44ev/postmarketos-sm-t561-gpu
+github.com
+
+> **Short version:** build the exact SC8830 API600 Mali module for the running `3.10.17` kernel, use matching Android 7.1.2 Mali/gralloc blobs through ARMv7 libhybris, and present GLES buffers through the patched X11 backend. Never use the vendor fbdev backend while Xorg is running. ... | | Result | |---|---|
+Improve cross-platform abstractions for embedded Linux backends
+github.com
+
+all need to fit into the runtime. If PocketJS later supports `evdev`, touchscreens, multitouch, ... PocketJS already has PSP GE, the WASM rasterizer, wgpu, and now an SDL2 software host. For embedded Linux, future targets may include: - SDL2 software - DRM/KMS dumb buffer - fbdev - GLES - wgpu where available
+Weston on framebuffer?
+lore.freedesktop.org
+
+. I turned on the Weston config option in buildroot (2015.5) and managed to get something that didn't work to begin with, the OS abstraction stuff requires support for posix_fadvise but for some reason that didn't work with ulibc but I hacked around that. libinput didn't like eudev and didn't want to recognize a USB
+CalvinHou/minigui-android
+github.com
+
+MiniGUI aims to provide a fast, stable, full-featured, and cross-platform windowing and GUI support system, which is especially fit for embedded systems or IoT devices based-on Linux/uClinux, eCos, and other traditional RTOSes, such as VxWorks, ThreadX, Nucleus, pSOS, uC/OS-II, and OSE.
+directfb2/directfb2.github.io
+github.com
+
+running on _DirectFB_ graphics backend are based on _**libdirectfb.so** library_. Compositing windowing system is performed by the default _**libdirectfb.so** window manager module_ with _**libdirectfbwm_default.so** plugin_. Cooperation between various process is achieved through the _**fusion.ko** kernel module_.
+autumnos-mobile-1.0/AutixSurf.md
+github.com
+
+AutixSurf is a lightweight, high-performance Surface Manager and Display Server specifically engineered for AutumnOS. Designed as a modern alternative to heavy window managers like SurfaceFlinger or complex Wayland implementations, AutixSurf is optimized for resource-constrained embedded systems.
+Readme.md
+github.com
+
+, X11, SDL 2, Allegro 5, Windows, VGA and an X11 based framebuffer emulator.** Support for cross-compiler toolchains on **x86, x86_64, ARM, M68K, PowerPC and MIPS**, big- and little-endian, and other processors. ## Library design The Nano-X Window System has a layered design. At the lowest level there are
+av2xn/DOAN
+github.com
+
+Download Android Platform Tools for: Windows | macOS | Linux Download script.sh (the startup script that launches Xfce) Download Magisk Debian Chroot (supports other roots too, not only Magisk) > *Tip: Make sure to grant execute permission (`chmod +x`) before using the Android Platform Tools on macOS/Linux.*
+
+
+For the Galaxy Y (ARMv6, Linux 2.6.35), avoid heavy stacks like X11, Wayland/Weston, or Chromium, which are too resource-intensive for this hardware 12. Instead, prioritize lightweight, framebuffer-native architectures that minimize memory overhead and dependency complexity. Recommended architecture: Use a direct-to-framebuffer GUI toolkit. Microwindows (Nano-X) is highly appropriate as it supports Linux 2.6, provides Win32/X11-like APIs, and includes immediate-mode GUI support via Nuklear 3. Alternatively, MiniGUI is a mature, high-performance choice specifically designed for resource-constrained embedded Linux systems 4. For your U2 prototype, implement a simple application using the Microwindows Nano-X API. This allows you to leverage your existing evdev touchscreen and framebuffer drivers without the overhead of a display server 3. Focus on a static-linked binary using musl to ensure portability and stability within your existing rootfs 5.
+github.com
+microwindows.org
+github.com
+github.com
+lore.freedesktop.org
+github.com
+github.com
+github.com
+github.com
+github.com
+
+
+
+"content": {
+"microwindows_minigui_suitability": "Microwindows or MiniGUI are ideal for low-memory ARMv6 embedded systems.",microwindows.org+1
+"avoid_heavy_stacks": "Avoid X11/Wayland/Weston; they are too heavy for ARMv6 framebuffer.",microwindows.org+1
+"ui_architecture_recommendation": "Use a lightweight, direct-to-framebuffer GUI toolkit like MiniGUI or Microwindows.",microwindows.org+1
+"prototype_strategy_u2": "Prototype with MiniGUI-Standalone or Microwindows using direct framebuffer access."microwindows.org+1
+}
