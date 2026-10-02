@@ -1,6 +1,6 @@
 # Status
 
-**Current stage:** dynamic ARMv6 musl userspace compatibility verified on the physical Totoro → persistent minimal rootfs/service/UI path.
+**Current stage:** Phase 4 persistent SD-backed ext2 rootfs verified on the physical Totoro → Phase 5 minimal network service.
 
 **Project goal:** **turn the Totoro into something useful and cool.** A useful Android-assisted Linux environment or other reversible hybrid outcome is fully successful. Independent Linux boot is now a conditional research branch, not the active critical path.
 
@@ -109,7 +109,7 @@ This milestone demonstrates a persistent, removable Linux userspace substrate wi
 - M3 — static musl userspace: PASSED.
 - M4 — dynamic musl compatibility: **PASSED — Phase 3 complete.**
 - M5 — persistent SD-backed ext2 rootfs: **PASSED — Phase 4 complete.**
-- M6 — minimal network service: pending M5.
+- M6 — minimal network service: **NEXT**.
 - M7 — real UI milestone: local web dashboard rendered by the Totoro's existing Android browser, with touch interaction.
 - M8 — useful/cool checkpoint and preservation.
 - Native boot remains conditional on a concrete user-facing blocker.
@@ -127,9 +127,7 @@ This milestone demonstrates a persistent, removable Linux userspace substrate wi
 
 ## Immediate path to a real UI
 
-The next engineering task is a **persistent minimal rootfs**, not another compatibility experiment.
-
-Build the smallest persistent Linux userspace on removable storage, using ext2 because loop-backed ext2 is already proven on the handset. Use the now-verified dynamic musl runtime as the userspace foundation. Then validate repeatable mount/chroot/exit/teardown before adding a tiny network service.
+The next engineering task is the **first tiny network service** on the verified persistent rootfs. Prefer a small HTTP service because it directly supports the eventual browser dashboard.
 
 The target remains a browser-rendered local dashboard using the existing Android browser, giving the physical Totoro a real touch UI without first solving GPU, framebuffer, window-system, or desktop-stack problems.
 
