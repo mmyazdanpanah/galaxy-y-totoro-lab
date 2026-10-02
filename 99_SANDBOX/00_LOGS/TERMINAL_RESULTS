@@ -1,182 +1,744 @@
-mostafa@MMostafa ~ % echo '=== GRALLOC SYMBOLS ==='
-
-/opt/homebrew/opt/llvm/bin/llvm-nm -D \
-  /tmp/totoro-hw/gralloc.default.so 2>/dev/null | \
-  grep -E \
-  'fb_device_open|mapFrameBufferLocked|gralloc_lock|gralloc_unlock|mapBuffer|terminateBuffer|gralloc_alloc|gralloc_free|gralloc_register|gralloc_unregister'
-
-echo
-echo '=== GRALLOC ARM/THUMB DISASSEMBLY ==='
+mostafa@MMostafa ~ % echo '=== GRALLOC MAP FRAMEBUFFER ==='
 
 /opt/homebrew/opt/llvm/bin/llvm-objdump \
   -d \
   --print-imm-hex \
-  --disassembler-options=force-thumb \
-  --start-address=0x1200 \
-  --stop-address=0x1950 \
+  --arch-name=arm \
+  --start-address=0x12d0 \
+  --stop-address=0x1680 \
   /tmp/totoro-hw/gralloc.default.so
 
 echo
-echo '=== GRALLOC UNDEFINED SYMBOLS ==='
+echo '=== GRALLOC FB DEVICE OPEN ==='
 
-/opt/homebrew/opt/llvm/bin/llvm-nm -D \
-  /tmp/totoro-hw/gralloc.default.so 2>/dev/null | \
-  grep ' U '
-
-echo
-echo '=== GRALLOC RELOCATIONS ==='
-
-/opt/homebrew/opt/llvm/bin/llvm-readelf \
-  -r /tmp/totoro-hw/gralloc.default.so
-=== GRALLOC SYMBOLS ===
-000017c8 T _Z12gralloc_lockPK16gralloc_module_tPK15native_handle_tiiiiiPPv
-00001680 T _Z14fb_device_openPK11hw_module_tPKcPP11hw_device_t
-000017b0 T _Z14gralloc_unlockPK16gralloc_module_tPK15native_handle_t
-00001828 T _Z15terminateBufferPK16gralloc_module_tP16private_handle_t
-00001310 T _Z20mapFrameBufferLockedP16private_module_t
-000018e0 T _Z23gralloc_register_bufferPK16gralloc_module_tPK15native_handle_t
-000018ac T _Z25gralloc_unregister_bufferPK16gralloc_module_tPK15native_handle_t
-0000189c T _Z9mapBufferPK16gralloc_module_tP16private_handle_t
-
-=== GRALLOC ARM/THUMB DISASSEMBLY ===
+/opt/homebrew/opt/llvm/bin/llvm-objdump \
+  -d \
+  --print-imm-hex \
+  --arch-name=arm \
+  --start-address=0x1640 \
+  --stop-address=0x17f0 \
+  /tmp/totoro-hw/gralloc.default.so
+=== GRALLOC MAP FRAMEBUFFER ===
 
 /tmp/totoro-hw/gralloc.default.so:	file format elf32-littlearm
-/opt/homebrew/opt/llvm/bin/llvm-objdump: error: '/tmp/totoro-hw/gralloc.default.so': Unrecognized disassembler option: force-thumb
 
-=== GRALLOC UNDEFINED SYMBOLS ===
-         U _ZdlPv
-         U _Znwj
-         U __aeabi_fadd
-         U __aeabi_fdiv
-         U __aeabi_fmul
-         U __aeabi_i2f
-         U __aeabi_lmul
-         U __aeabi_ui2f
-         U __aeabi_uidiv
-         U __aeabi_uldivmod
-         U __aeabi_unwind_cpp_pr0
-         U __android_log_print
-         U __cxa_finalize
-         U __errno
-         U __stack_chk_fail
-         U __stack_chk_guard
-         U close
-         U dup
-         U free
-         U getpid
-         U ioctl
-         U malloc
-         U memcpy
-         U memset
-         U mmap
-         U munmap
-         U open
-         U pthread_mutex_lock
-         U pthread_mutex_unlock
-         U snprintf
-         U strcmp
-         U strerror
+Disassembly of section .text:
 
-=== GRALLOC RELOCATIONS ===
+00000d40 <__fixunssfsi>:
+    12d0: 98044790     	stmdals	r4, {r4, r7, r8, r9, r10, lr}
+    12d4: 6801683d     	stmdavs	r1, {r0, r2, r3, r4, r5, r11, sp, lr}
+    12d8: 47a81c30     	<unknown>
+    12dc: b00b2000     	andlt	r2, r11, r0
+    12e0: 46c0bdf0     	<unknown>
+    12e4: 03141592     	tsteq	r4, #612368384
+    12e8: 00000733     	andeq	r0, r0, r3, lsr r7
+    12ec: 00000739     	andeq	r0, r0, r9, lsr r7
+    12f0: 00004601     	andeq	r4, r0, r1, lsl #12
+    12f4: 000006d5     	ldrdeq	r0, r1, [r0], -r5
+    12f8: 000007e9     	andeq	r0, r0, r9, ror #15
+    12fc: 2800b510     	stmdahs	r0, {r4, r8, r10, r12, sp, pc}
+    1300: f7ffd001     	<unknown>
+    1304: 2000ecba     	strhhs	lr, [r0], -r10
+    1308: 46c0bd10     	<unknown>
+    130c: 00000000     	andeq	r0, r0, r0
 
-Relocation section '.rel.plt' at offset 0xa50 contains 30 entries:
- Offset     Info    Type                Sym. Value  Symbol's Name
-00002108  00000116 R_ARM_JUMP_SLOT        00000000   strcmp
-0000210c  00000216 R_ARM_JUMP_SLOT        00000000   malloc
-00002110  00000316 R_ARM_JUMP_SLOT        00000000   memset
-00002114  00000716 R_ARM_JUMP_SLOT        00000000   __android_log_print
-00002118  00000616 R_ARM_JUMP_SLOT        00000000   __aeabi_uidiv
-0000211c  00000816 R_ARM_JUMP_SLOT        00000000   ioctl
-00002120  00000a16 R_ARM_JUMP_SLOT        00000000   close
-00002124  00000b16 R_ARM_JUMP_SLOT        00000000   _ZdlPv
-00002128  00000c16 R_ARM_JUMP_SLOT        00000000   open
-0000212c  00000d16 R_ARM_JUMP_SLOT        00000000   dup
-00002130  00000e16 R_ARM_JUMP_SLOT        00000000   _Znwj
-00002134  00000f16 R_ARM_JUMP_SLOT        00000000   getpid
-00002138  00001016 R_ARM_JUMP_SLOT        00000000   mmap
-0000213c  00001216 R_ARM_JUMP_SLOT        00000000   pthread_mutex_lock
-00002140  00001316 R_ARM_JUMP_SLOT        00000000   pthread_mutex_unlock
-00002144  00001416 R_ARM_JUMP_SLOT        00000000   free
-00002148  00001a16 R_ARM_JUMP_SLOT        00000000   __errno
-0000214c  00001b16 R_ARM_JUMP_SLOT        00000000   memcpy
-00002150  00002416 R_ARM_JUMP_SLOT        00000000   snprintf
-00002154  00001c16 R_ARM_JUMP_SLOT        00000000   __aeabi_lmul
-00002158  00001d16 R_ARM_JUMP_SLOT        00000000   __aeabi_uldivmod
-0000215c  00001e16 R_ARM_JUMP_SLOT        00000000   __aeabi_ui2f
-00002160  00001f16 R_ARM_JUMP_SLOT        00000000   __aeabi_fmul
-00002164  00002016 R_ARM_JUMP_SLOT        00000000   __aeabi_fdiv
-00002168  00002116 R_ARM_JUMP_SLOT        00000000   __aeabi_fadd
-0000216c  00002316 R_ARM_JUMP_SLOT        00000000   __aeabi_i2f
-00002170  00002516 R_ARM_JUMP_SLOT        00000000   strerror
-00002174  00002616 R_ARM_JUMP_SLOT        00000000   __stack_chk_fail
-00002178  00002816 R_ARM_JUMP_SLOT        00000000   munmap
-0000217c  00002a16 R_ARM_JUMP_SLOT        00000000   __cxa_finalize
+00001310 <_Z20mapFrameBufferLockedP16private_module_t>:
+    1310: 4dc1b5f0     	stclmi	p5, c11, [r1, #960]
+    1314: 447d4cc1     	ldrbtmi	r4, [sp], #-3265
+    1318: 592ab0d9     	stmdbpl	r10!, {r0, r3, r4, r6, r7, r12, sp, pc}
+    131c: 30b01c07     	adcslo	r1, r0, r7, lsl #24
+    1320: 95056811     	strls	r6, [r5, #-0x811]
+    1324: 68039157     	stmdavs	r3, {r0, r1, r2, r4, r6, r8, r12, pc}
+    1328: 2b002000     	blhs	0x9330 <__dso_handle+0x6fe0> @ imm = #0x8000
+    132c: e162d000     	<unknown>
+    1330: ac334bbb     	<unknown>
+    1334: 1c26447b     	stcne	p4, c4, [r6], #-492
+    1338: c623cb23     	strtgt	r12, [r3], -r3, lsr #22
+    133c: 6822ad47     	stmdavs	r2!, {r0, r1, r2, r6, r8, r10, r11, sp, pc}
+    1340: d1002a00     	<unknown>
+    1344: 2140e143     	<unknown>
+    1348: 1c282300     	stcne	p3, c2, [r8], #-0
+    134c: eca6f7ff     	stc	p7, c15, [r6], #1020
+    1350: 21021c28     	<unknown>
+    1354: f7ff2200     	<unknown>
+    1358: 3404ec66     	strlo	lr, [r4], #-3174
+    135c: 30019003     	andlo	r9, r1, r3
+    1360: 9803d0ed     	stmdals	r3, {r0, r2, r3, r5, r6, r7, r12, lr, pc}
+    1364: da002800     	ble	0xb36c <__dso_handle+0x901c> @ imm = #0xa000
+    1368: 9803e131     	stmdals	r3, {r0, r4, r5, r8, sp, lr, pc}
+    136c: aa3649ad     	bge	0xd93a28 <__dso_handle+0xd916d8> @ imm = #0xd926b4
+    1370: ec46f7ff     	mcrr	p7, #0xf, pc, r6, c15
+    1374: d1003001     	<unknown>
+    1378: ac0be129     	<unknown>
+    137c: 9803218c     	stmdals	r3, {r2, r3, r7, r8, sp}
+    1380: 1c2201c9     	stcne	p1, c0, [r2], #-804
+    1384: ec3cf7ff     	ldc	p7, c15, [r12], #-1020
+    1388: d1003001     	<unknown>
+    138c: 6866e11f     	stmdavs	r6!, {r0, r1, r2, r3, r4, r8, sp, lr, pc} ^
+    1390: 00752300     	rsbseq	r2, r5, r0, lsl #6
+    1394: 61231c22     	<unknown>
+    1398: 65636163     	strbvs	r6, [r3, #-0x163]!
+    139c: 980360e5     	stmdals	r3, {r0, r2, r5, r6, r7, sp, lr}
+    13a0: 932e49a1     	<unknown>
+    13a4: 9330932f     	teqls	r0, #-1140850688
+    13a8: ec2af7ff     	stc	p7, c15, [r10], #-1020
+    13ac: 92022201     	andls	r2, r2, #268435456
+    13b0: d10a3001     	<unknown>
+    13b4: 499d6860     	ldmibmi	sp, {r5, r6, r11, sp, lr}
+    13b8: 60e04a9d     	<unknown>
+    13bc: 447a4479     	ldrbtmi	r4, [r10], #-1145
+    13c0: 24002005     	strhs	r2, [r0], #-5
+    13c4: ec10f7ff     	<unknown>
+    13c8: aa0b9402     	bge	0x2e63d8 <__dso_handle+0x2e4088> @ imm = #0x2e5008
+    13cc: 68d16853     	ldmvs	r1, {r0, r1, r4, r6, r11, sp, lr} ^
+    13d0: 42810058     	addmi	r0, r1, #88
+    13d4: 9d02d20c     	stcls	p2, c13, [r2, #-48]
+    13d8: 220160d3     	andhs	r6, r1, #211
+    13dc: 49954395     	ldmibmi	r5, {r0, r2, r4, r7, r8, r9, lr}
+    13e0: 90004a95     	<unknown>
+    13e4: 447a4479     	ldrbtmi	r4, [r10], #-1145
+    13e8: 95022005     	strls	r2, [r2, #-0x5]
+    13ec: ebfcf7ff     	bl	0xfff3f3f0 <__dso_handle+0xfffffffffff3d0a0> @ imm = #-0xc2004
+    13f0: 268cac0b     	strhs	r10, [r12], r11, lsl #24
+    13f4: 01f19803     	mvnseq	r9, r3, lsl #16
+    13f8: f7ff1c22     	<unknown>
+    13fc: 3001ec02     	andlo	lr, r1, r2, lsl #24
+    1400: e0e4d100     	rsc	sp, r4, r0, lsl #2
+    1404: 6f226f61     	svcvs	#0x226f61
+    1408: 18886ea3     	stmne	r8, {r0, r1, r5, r7, r9, r10, r11, sp, lr}
+    140c: 68666ee2     	stmdavs	r6!, {r1, r5, r6, r7, r9, r10, r11, sp, lr} ^
+    1410: 18d19d0b     	ldmne	r1, {r0, r1, r3, r8, r10, r11, r12, pc} ^
+    1414: 2300194a     	<unknown>
+    1418: 21001980     	<unknown>
+    141c: ec44f7ff     	mcrr	p7, #0xf, pc, r4, c15
+    1420: 23006e62     	<unknown>
+    1424: ec40f7ff     	mcrr	p7, #0xf, pc, r0, c15
+    1428: 1c021c04     	<unknown>
+    142c: 430c1c0b     	<unknown>
+    1430: 4978d006     	ldmdbmi	r8!, {r1, r2, r12, lr, pc} ^
+    1434: f7ff4876     	<unknown>
+    1438: 9004ec3e     	andls	lr, r4, lr, lsr r12
+    143c: d1012800     	mrsle	r2, apsr
+    1440: 94044c7e     	strls	r4, [r4], #-3198
+    1444: 6dd8ab0b     	<unknown>
+    1448: dd022800     	stcle	p8, c2, [r2, #-0]
+    144c: 2b006d9b     	blhs	0x1cac0 <__dso_handle+0x1a770> @ imm = #0x1b66c
+    1450: 1c28dc20     	stcne	p12, c13, [r8], #-128
+    1454: ec34f7ff     	ldc	p7, c15, [r4], #-1020
+    1458: f7ff4979     	<unknown>
+    145c: 4979ec38     	ldmdbmi	r9!, {r3, r4, r5, r10, r11, sp, lr, pc} ^
+    1460: ec3af7ff     	ldc	p7, c15, [r10], #-1020
+    1464: 058921fc     	streq	r2, [r9, #0x1fc]
+    1468: ec3cf7ff     	ldc	p7, c15, [r12], #-1020
+    146c: ec68f7ff     	stcl	p7, c15, [r8], #-1020
+    1470: 25fcae0b     	ldrbhs	r10, [r12, #0xe0b]!
+    1474: 687065f0     	ldmdavs	r0!, {r4, r5, r6, r7, r8, r10, sp, lr} ^
+    1478: ec22f7ff     	stc	p7, c15, [r2], #-1020
+    147c: f7ff4970     	<unknown>
+    1480: 4970ec26     	ldmdbmi	r0!, {r1, r2, r5, r10, r11, sp, lr, pc} ^
+    1484: ec28f7ff     	stc	p7, c15, [r8], #-1020
+    1488: f7ff05a9     	<unknown>
+    148c: f7ffec2c     	<unknown>
+    1490: 65b0ec58     	ldrvs	lr, [r0, #0xc58]!
+    1494: 9b0bad0b     	blls	0x2ec8c8 <__dso_handle+0x2ea578> @ imm = #0x2eb42c
+    1498: 6daa6de8     	stcvs	p13, c6, [r10, #928]!
+    149c: ae36686c     	cdpge	p8, #0x3, c6, c6, c12, #0x3
+    14a0: 92069008     	andls	r9, r6, #8
+    14a4: 495f9803     	ldmdbmi	pc, {r0, r1, r11, r12, pc} ^
+    14a8: 93091c32     	<unknown>
+    14ac: f7ff9407     	<unknown>
+    14b0: 3001eba8     	andlo	lr, r1, r8, lsr #23
+    14b4: e08ad100     	add	sp, r10, r0, lsl #2
+    14b8: 29006971     	stmdbhs	r0, {r0, r4, r5, r6, r8, r11, sp, lr}
+    14bc: e086d100     	add	sp, r6, r0, lsl #2
+    14c0: 99021c3c     	stmdbls	r2, {r2, r3, r4, r5, r10, r11, r12}
+    14c4: 1c3834b4     	ldcne	p4, c3, [r8], #-720
+    14c8: 22a06021     	adchs	r6, r0, #33
+    14cc: 30d01c29     	sbcslo	r1, r0, r9, lsr #24
+    14d0: ebdef7ff     	bl	0xff7bf4d4 <__dso_handle+0xffffffffff7bd184> @ imm = #-0x842004
+    14d4: 005a23b8     	ldrheq	r2, [r10], #-56
+    14d8: 18b81c31     	ldmne	r8!, {r0, r4, r5, r10, r11, r12}
+    14dc: f7ff2244     	<unknown>
+    14e0: 20daebd8     	ldrsbhs	lr, [r10], #184
+    14e4: 98090044     	stmdals	r9, {r2, r6}
+    14e8: ebeaf7ff     	bl	0xffabf4ec <__dso_handle+0xffffffffffabd19c> @ imm = #-0x542004
+    14ec: f7ff4954     	<unknown>
+    14f0: 9002ebee     	andls	lr, r2, lr, ror #23
+    14f4: f7ff9808     	<unknown>
+    14f8: 1c01ebe4     	<unknown>
+    14fc: f7ff9802     	<unknown>
+    1500: 21dcebec     	bicshs	lr, r12, r12, ror #23
+    1504: 98075138     	stmdals	r7, {r3, r4, r5, r8, r12, lr}
+    1508: f7ff004c     	<unknown>
+    150c: 494cebda     	stmdbmi	r12, {r1, r3, r4, r6, r7, r8, r9, r11, sp, lr, pc} ^
+    1510: ebdcf7ff     	bl	0xff73f514 <__dso_handle+0xffffffffff73d1c4> @ imm = #-0x8c2004
+    1514: 98069002     	stmdals	r6, {r1, r12, pc}
+    1518: ebd2f7ff     	bl	0xff4bf51c <__dso_handle+0xffffffffff4bd1cc> @ imm = #-0xb42004
+    151c: 98021c01     	stmdals	r2, {r0, r10, r11, r12}
+    1520: ebdaf7ff     	bl	0xff6bf524 <__dso_handle+0xffffffffff6bd1d4> @ imm = #-0x942004
+    1524: 513823de     	ldrsbpl	r2, [r8, -lr]!
+    1528: 005c9804     	subseq	r9, r12, r4, lsl #16
+    152c: ebe0f7ff     	bl	0xff83f530 <__dso_handle+0xffffffffff83d1e0> @ imm = #-0x7c2004
+    1530: f7ff4945     	<unknown>
+    1534: 4945ebd2     	stmdbmi	r5, {r1, r4, r6, r7, r8, r9, r11, sp, lr, pc} ^
+    1538: 68ea5138     	stmvs	r10!, {r3, r4, r5, r8, r12, lr} ^
+    153c: 1c046af0     	<unknown>
+    1540: 18634354     	stmdane	r3!, {r2, r4, r6, r8, r9, lr} ^
+    1544: 03040b18     	<unknown>
+    1548: 94029803     	strls	r9, [r2], #-2051
+    154c: eb70f7ff     	bl	0x1c3f550 <__dso_handle+0x1c3d200> @ imm = #0x1c3dffc
+    1550: 202c9004     	eorhs	r9, r12, r4
+    1554: eb72f7ff     	bl	0x1cbf558 <__dso_handle+0x1cbd208> @ imm = #0x1cbdffc
+    1558: 493d9a04     	ldmdbmi	sp!, {r2, r9, r11, r12, pc}
+    155c: 60c21c04     	sbcvs	r1, r2, r4, lsl #24
+    1560: 20006101     	andhs	r6, r0, r1, lsl #2
+    1564: 9b026160     	blls	0x99aec <__dso_handle+0x9779c> @ imm = #0x98580
+    1568: 61a361e0     	<unknown>
+    156c: f7ff6220     	<unknown>
+    1570: 220ceb6c     	andhs	lr, r12, #108, #22
+    1574: 21072301     	<unknown>
+    1578: 60636022     	rsbvs	r6, r3, r2, lsr #32
+    157c: 626060a1     	rsbvs	r6, r0, #161
+    1580: 30b01c38     	adcslo	r1, r0, r8, lsr r12
+    1584: 60049004     	andvs	r9, r4, r4
+    1588: 68e86869     	stmvs	r8!, {r0, r3, r5, r6, r11, sp, lr} ^
+    158c: eb32f7ff     	bl	0xcbf590 <__dso_handle+0xcbd240> @ imm = #0xcbdffc
+    1590: 34b81c3c     	ldrtlo	r1, [r8], #3132
+    1594: 23012500     	<unknown>
+    1598: 1c3c6020     	ldcne	p0, c6, [r12], #-128
+    159c: 200034bc     	strhhs	r3, [r0], -r12
+    15a0: 9a036025     	bls	0xd963c <__dso_handle+0xd72ec> @ imm = #0xd8094
+    15a4: 92009902     	andls	r9, r0, #32768
+    15a8: 95012203     	strls	r2, [r1, #-0x203]
+    15ac: eb52f7ff     	bl	0x14bf5b0 <__dso_handle+0x14bd260> @ imm = #0x14bdffc
+    15b0: d1111c43     	tstle	r1, r3, asr #24
+    15b4: eb66f7ff     	bl	0x19bf5b8 <__dso_handle+0x19bd268> @ imm = #0x19bdffc
+    15b8: f7ff6800     	<unknown>
+    15bc: 4925eba0     	stmdbmi	r5!, {r5, r7, r8, r9, r11, sp, lr, pc}
+    15c0: 44794a25     	ldrbtmi	r4, [r9], #-2597
+    15c4: 1c03447a     	<unknown>
+    15c8: f7ff2006     	<unknown>
+    15cc: f7ffeb0e     	<unknown>
+    15d0: 6807eb5a     	stmdavs	r7, {r1, r3, r4, r6, r8, r9, r11, sp, lr, pc}
+    15d4: e00e4278     	and	r4, lr, r8, ror r2
+    15d8: 21e09d04     	mvnhs	r9, r4, lsl #26
+    15dc: 682c004b     	stmdavs	r12!, {r0, r1, r3, r6}
+    15e0: 210025e2     	<unknown>
+    15e4: 69326220     	ldmdbvs	r2!, {r5, r9, sp, lr}
+    15e8: 50fa006e     	rscspl	r0, r10, lr, rrx
+    15ec: 9a0251b8     	bls	0x95cd4 <__dso_handle+0x93984> @ imm = #0x946e0
+    15f0: eaf4f7ff     	b	0xffd3f5f4 <__dso_handle+0xffffffffffd3d2a4> @ imm = #-0x2c2004
+    15f4: 4a092000     	bmi	0x2495fc <__dso_handle+0x2472ac> @ imm = #0x248000
+    15f8: 9f579905     	svcls	#0x579905
+    15fc: 6833588e     	ldmdavs	r3!, {r1, r2, r3, r7, r11, r12, lr}
+    1600: d001429f     	<unknown>
+    1604: eb80f7ff     	bl	0xfe03f608 <__dso_handle+0xfffffffffe03d2b8> @ imm = #-0x1fc2004
+    1608: bdf0b059     	ldcllt	p0, c11, [r0, #356]!
+    160c: 46c046c0     	strbmi	r4, [r0], r0, asr #13
+    1610: a4c68000     	strbge	r8, [r6], #0
+    1614: 00038d7e     	andeq	r8, r3, lr, ror sp
+    1618: 00000de2     	andeq	r0, r0, r2, ror #27
+    161c: fffffffc     	<unknown>
+    1620: 00000cdc     	ldrdeq	r0, r1, [r0], -r12
+    1624: 00004602     	andeq	r4, r0, r2, lsl #12
+    1628: 00004601     	andeq	r4, r0, r1, lsl #12
+    162c: 00000559     	andeq	r0, r0, r9, asr r5
+    1630: 00000688     	andeq	r0, r0, r8, lsl #13
+    1634: 00000531     	andeq	r0, r0, r1, lsr r5
+    1638: 00000698     	<unknown>
+    163c: 0000ea60     	andeq	lr, r0, r0, ror #20
+    1640: 41cb3333     	bicmi	r3, r11, r3, lsr r3
+    1644: 43200000     	<unknown>
+    1648: 447a0000     	ldrbtmi	r0, [r10], #-0
+    164c: 00000fff     	strdeq	r0, r1, [r0], -pc
+    1650: 03141592     	tsteq	r4, #612368384
+    1654: 00000353     	andeq	r0, r0, r3, asr r3
+    1658: 000004f6     	strdeq	r0, r1, [r0], -r6
+    165c: 46c046c0     	strbmi	r4, [r0], r0, asr #13
+    1660: 1c05b570     	<unknown>
+    1664: 1c0435c0     	<unknown>
+    1668: f7ff1c28     	<unknown>
+    166c: 1c20eafa     	<unknown>
+    1670: fe4ef7ff     	mcr2	p7, #0x2, pc, c14, c15, #0x7
+    1674: 1c281c04     	stcne	p12, c1, [r8], #-16
+    1678: eaf8f7ff     	b	0xffe3f67c <__dso_handle+0xffffffffffe3d32c> @ imm = #-0x1c2004
+    167c: bd701c20     	ldcllt	p12, c1, [r0, #-128]!
 
-Relocation section '.rel.dyn' at offset 0xb40 contains 14 entries:
- Offset     Info    Type                Sym. Value  Symbol's Name
-00000d3c  00000017 R_ARM_RELATIVE                    
-0000200c  00000017 R_ARM_RELATIVE                    
-00002014  00000017 R_ARM_RELATIVE                    
-00002018  00000017 R_ARM_RELATIVE                    
-00002180  00000017 R_ARM_RELATIVE                    
-0000218c  00000017 R_ARM_RELATIVE                    
-00002190  00000017 R_ARM_RELATIVE                    
-00002194  00000017 R_ARM_RELATIVE                    
-00002198  00000017 R_ARM_RELATIVE                    
-00002204  00000017 R_ARM_RELATIVE                    
-00002208  00000017 R_ARM_RELATIVE                    
-0000220c  00000017 R_ARM_RELATIVE                    
-00002210  00000017 R_ARM_RELATIVE                    
-000020f8  00002715 R_ARM_GLOB_DAT         00000000   __stack_chk_guard
-mostafa@MMostafa ~ % echo '=== GRALLOC CONSTANT / STRING REFERENCES ==='
+=== GRALLOC FB DEVICE OPEN ===
 
-strings -a -t x /tmp/totoro-hw/gralloc.default.so | \
-  grep -Ei \
-  'FBIO|VSCREEN|page flipping|yres_virtual|framebuffer|gememalloc|/dev/graphics/fb0|/dev/fb|ioctl|mmap'
-=== GRALLOC CONSTANT / STRING REFERENCES ===
-69b ioctl
-6ff mmap
-704 _Z20mapFrameBufferLockedP16private_module_t
-1940 open(/dev/gememalloc)++
-1958 /dev/gememalloc
-1968 open(/dev/gememalloc)--
-1995 gralloc_alloc_buffer: Opened gememalloc
-1a2f FBIOPUT_VSCREENINFO failed
-1a4a FBIOPUT_VSCREENINFO failed, page flipping not supported
-1a82 page flipping not supported (yres_virtual=%d, requested=%d)
-1abe Error mapping the framebuffer (%s)
-1af8 /dev/fb%u
-1b15 Could not mmap %s
-mostafa@MMostafa ~ % echo
-echo '=== ALL /dev REFERENCES ==='
+/tmp/totoro-hw/gralloc.default.so:	file format elf32-littlearm
 
-strings -a -t x /tmp/totoro-hw/gralloc.default.so | \
-  grep -E '/dev/'
+Disassembly of section .text:
 
-=== ALL /dev REFERENCES ===
-1940 open(/dev/gememalloc)++
-1958 /dev/gememalloc
-1968 open(/dev/gememalloc)--
-1ae5 /dev/graphics/fb%u
-1af8 /dev/fb%u
+00001310 <_Z20mapFrameBufferLockedP16private_module_t>:
+    1640: 41cb3333     	bicmi	r3, r11, r3, lsr r3
+    1644: 43200000     	<unknown>
+    1648: 447a0000     	ldrbtmi	r0, [r10], #-0
+    164c: 00000fff     	strdeq	r0, r1, [r0], -pc
+    1650: 03141592     	tsteq	r4, #612368384
+    1654: 00000353     	andeq	r0, r0, r3, asr r3
+    1658: 000004f6     	strdeq	r0, r1, [r0], -r6
+    165c: 46c046c0     	strbmi	r4, [r0], r0, asr #13
+    1660: 1c05b570     	<unknown>
+    1664: 1c0435c0     	<unknown>
+    1668: f7ff1c28     	<unknown>
+    166c: 1c20eafa     	<unknown>
+    1670: fe4ef7ff     	mcr2	p7, #0x2, pc, c14, c15, #0x7
+    1674: 1c281c04     	stcne	p12, c1, [r8], #-16
+    1678: eaf8f7ff     	b	0xffe3f67c <__dso_handle+0xffffffffffe3d32c> @ imm = #-0x1c2004
+    167c: bd701c20     	ldcllt	p12, c1, [r0, #-128]!
+
+00001680 <_Z14fb_device_openPK11hw_module_tPKcPP11hw_device_t>:
+    1680: 4b34b5f0     	blmi	0xd2ee48 <__dso_handle+0xd2caf8> @ imm = #0xd2d7c0
+    1684: 447bb085     	ldrbtmi	r11, [r11], #-133
+    1688: 1c081c05     	<unknown>
+    168c: 92011c19     	andls	r1, r1, #6400
+    1690: ea98f7ff     	b	0xfe63f694 <__dso_handle+0xfffffffffe63d344> @ imm = #-0x19c2004
+    1694: d0021e07     	andle	r1, r2, r7, lsl #28
+    1698: 42762616     	rsbsmi	r2, r6, #23068672
+    169c: 6968e057     	stmdbvs	r8!, {r0, r1, r2, r4, r6, sp, lr, pc} ^
+    16a0: aa03492d     	bge	0xd3b5c <__dso_handle+0xd180c> @ imm = #0xd24b4
+    16a4: 44796804     	ldrbtmi	r6, [r9], #-2052
+    16a8: 47a01c28     	strmi	r1, [r0, r8, lsr #24]!
+    16ac: db4e1e06     	blle	0x1388ecc <__dso_handle+0x1386b7c> @ imm = #0x1387818
+    16b0: f7ff20d4     	<unknown>
+    16b4: 2100ea8e     	<unknown>
+    16b8: 4e2822d4     	mcrmi	p2, #0x1, r2, c8, c4, #0x6
+    16bc: 1c04447e     	<unknown>
+    16c0: ea8cf7ff     	b	0xfe33f6c4 <__dso_handle+0xfffffffffe33d374> @ imm = #-0x1cc2004
+    16c4: 4b261c22     	blmi	0x988754 <__dso_handle+0x986404> @ imm = #0x987088
+    16c8: 32904826     	addslo	r4, r0, #2490368
+    16cc: 4926447b     	stmdbmi	r6!, {r0, r1, r3, r4, r5, r6, r10, lr}
+    16d0: 63e66020     	<unknown>
+    16d4: 601360a5     	andsvs	r6, r3, r5, lsr #1
+    16d8: 44793208     	ldrbtmi	r3, [r9], #-520
+    16dc: 1c286011     	stcne	p0, c6, [r8], #-68
+    16e0: ffbef7ff     	<unknown>
+    16e4: db321e06     	blle	0xc88f04 <__dso_handle+0xc86bb4> @ imm = #0xc87818
+    16e8: 32e81c2a     	rsclo	r1, r8, #10752
+    16ec: 681021ce     	ldmdavs	r0, {r1, r2, r3, r6, r7, r8, sp}
+    16f0: 9000004b     	andls	r0, r0, r11, asr #32
+    16f4: 58e808c1     	stmpl	r8!, {r0, r6, r7, r11} ^
+    16f8: ea7cf7ff     	b	0x1f3f6fc <__dso_handle+0x1f3d3ac> @ imm = #0x1f3dffc
+    16fc: 1c2f6427     	stcne	p4, c6, [pc], #-156
+    1700: 1c2937d0     	stcne	p7, c3, [r9], #-832
+    1704: 31d4683b     	bicslo	r6, r4, r11, lsr r8
+    1708: 680a6463     	stmdavs	r10, {r0, r1, r5, r6, r10, sp, lr}
+    170c: 64a22305     	strtvs	r2, [r2], #773
+    1710: 9f0064e0     	svcls	#0x64e0
+    1714: d0002f20     	andle	r2, r0, r0, lsr #30
+    1718: 27da2304     	ldrbhs	r2, [r10, r4, lsl #6]
+    171c: 20dc0079     	sbcshs	r0, r12, r9, ror r0
+    1720: 00436523     	subeq	r6, r3, r3, lsr #10
+    1724: 21de586a     	bicshs	r5, lr, r10, ror #16
+    1728: 004a6562     	subeq	r6, r10, r2, ror #10
+    172c: 230158ef     	<unknown>
+    1730: 27e065a7     	strbhs	r6, [r0, r7, lsr #11]!
+    1734: 007958a8     	rsbseq	r5, r9, r8, lsr #17
+    1738: 20e265e0     	rschs	r6, r2, r0, ror #11
+    173c: 66636623     	strbtvs	r6, [r3], -r3, lsr #12
+    1740: 586a0043     	stmdapl	r10!, {r0, r1, r6} ^
+    1744: 58ef66a2     	stmpl	pc!, {r1, r5, r7, r9, r10, sp, lr} ^
+    1748: 9d0166e7     	stcls	p6, c6, [r1, #-924]
+    174c: b005602c     	andlt	r6, r5, r12, lsr #32
+    1750: bdf01c30     	ldcllt	p12, c1, [r0, #192]!
+    1754: 00000457     	andeq	r0, r0, r7, asr r4
+    1758: 0000026a     	andeq	r0, r0, r10, ror #4
+    175c: fffffc3d     	<unknown>
+    1760: fffffad9     	<unknown>
+    1764: 48574454     	ldmdami	r7, {r2, r4, r6, r10, lr} ^
+    1768: fffffadf     	<unknown>
+    176c: 1e03b510     	mcrne	p5, #0x0, r11, c3, c0, #0x0
+    1770: 681ad00d     	ldmdavs	r10, {r0, r2, r3, r12, lr, pc}
+    1774: d10a2a0c     	<unknown>
+    1778: 28076898     	stmdahs	r7, {r3, r4, r7, r11, sp, lr}
+    177c: 6859d107     	ldmdavs	r9, {r0, r1, r2, r8, r12, lr, pc} ^
+    1780: d1042901     	<unknown>
+    1784: 4a076919     	bmi	0x1dbbf0 <__dso_handle+0x1d98a0> @ imm = #0x1da464
+    1788: 42912000     	addsmi	r2, r1, #0
+    178c: 4906d008     	stmdbmi	r6, {r3, r12, lr, pc}
+    1790: 44794a06     	ldrbtmi	r4, [r9], #-2566
+    1794: 2006447a     	andhs	r4, r6, r10, ror r4
+    1798: ea26f7ff     	b	0x9bf79c <__dso_handle+0x9bd44c> @ imm = #0x9bdffc
+    179c: 42582316     	subsmi	r2, r8, #1476395008
+    17a0: 46c0bd10     	<unknown>
+    17a4: 03141592     	tsteq	r4, #612368384
+    17a8: 00000183     	andeq	r0, r0, r3, lsl #3
+    17ac: 00000189     	andeq	r0, r0, r9, lsl #3
+
+000017b0 <_Z14gralloc_unlockPK16gralloc_module_tPK15native_handle_t>:
+    17b0: 1c08b510     	<unknown>
+    17b4: ffdaf7ff     	<unknown>
+    17b8: 28002300     	stmdahs	r0, {r8, r9, sp}
+    17bc: 2316da01     	tsths	r6, #4096
+    17c0: 1c18425b     	<unknown>
+    17c4: 46c0bd10     	<unknown>
+
+000017c8 <_Z12gralloc_lockPK16gralloc_module_tPK15native_handle_tiiiiiPPv>:
+    17c8: 1c08b510     	<unknown>
+    17cc: f7ff1c0c     	<unknown>
+    17d0: 2800ffcd     	stmdahs	r0, {r0, r2, r3, r6, r7, r8, r9, r10, r11, r12, sp, lr, pc}
+    17d4: 2016da02     	andshs	sp, r6, r2, lsl #20
+    17d8: e0034240     	and	r4, r3, r0, asr #4
+    17dc: 6a229b05     	bvs	0x8a83f8 <__dso_handle+0x8a60a8> @ imm = #0x8a6c14
+    17e0: 601a2000     	andsvs	r2, r10, r0
+    17e4: 46c0bd10     	<unknown>
+    17e8: 694bb510     	stmdbvs	r11, {r4, r8, r10, r12, sp, pc} ^
+    17ec: 07da1c0c     	ldrbeq	r1, [r10, r12, lsl #24]
 mostafa@MMostafa ~ % /opt/homebrew/opt/llvm/bin/llvm-objdump \
   -d \
   --print-imm-hex \
-  --disassembler-options=force-thumb \
   --start-address=0x12d0 \
   --stop-address=0x1680 \
   /tmp/totoro-hw/gralloc.default.so
 
 /tmp/totoro-hw/gralloc.default.so:	file format elf32-littlearm
-/opt/homebrew/opt/llvm/bin/llvm-objdump: error: '/tmp/totoro-hw/gralloc.default.so': Unrecognized disassembler option: force-thumb
-mostafa@MMostafa ~ % /opt/homebrew/opt/llvm/bin/llvm-objdump \
+
+Disassembly of section .text:
+
+00000d40 <__fixunssfsi>:
+    12d0: 98044790     	stmdals	r4, {r4, r7, r8, r9, r10, lr}
+    12d4: 6801683d     	stmdavs	r1, {r0, r2, r3, r4, r5, r11, sp, lr}
+    12d8: 47a81c30     	<unknown>
+    12dc: b00b2000     	andlt	r2, r11, r0
+    12e0: 46c0bdf0     	<unknown>
+    12e4: 03141592     	tsteq	r4, #612368384
+    12e8: 00000733     	andeq	r0, r0, r3, lsr r7
+    12ec: 00000739     	andeq	r0, r0, r9, lsr r7
+    12f0: 00004601     	andeq	r4, r0, r1, lsl #12
+    12f4: 000006d5     	ldrdeq	r0, r1, [r0], -r5
+    12f8: 000007e9     	andeq	r0, r0, r9, ror #15
+    12fc: 2800b510     	stmdahs	r0, {r4, r8, r10, r12, sp, pc}
+    1300: f7ffd001     	<unknown>
+    1304: 2000ecba     	strhhs	lr, [r0], -r10
+    1308: 46c0bd10     	<unknown>
+    130c: 00000000     	andeq	r0, r0, r0
+
+00001310 <_Z20mapFrameBufferLockedP16private_module_t>:
+    1310: 4dc1b5f0     	stclmi	p5, c11, [r1, #960]
+    1314: 447d4cc1     	ldrbtmi	r4, [sp], #-3265
+    1318: 592ab0d9     	stmdbpl	r10!, {r0, r3, r4, r6, r7, r12, sp, pc}
+    131c: 30b01c07     	adcslo	r1, r0, r7, lsl #24
+    1320: 95056811     	strls	r6, [r5, #-0x811]
+    1324: 68039157     	stmdavs	r3, {r0, r1, r2, r4, r6, r8, r12, pc}
+    1328: 2b002000     	blhs	0x9330 <__dso_handle+0x6fe0> @ imm = #0x8000
+    132c: e162d000     	<unknown>
+    1330: ac334bbb     	<unknown>
+    1334: 1c26447b     	stcne	p4, c4, [r6], #-492
+    1338: c623cb23     	strtgt	r12, [r3], -r3, lsr #22
+    133c: 6822ad47     	stmdavs	r2!, {r0, r1, r2, r6, r8, r10, r11, sp, pc}
+    1340: d1002a00     	<unknown>
+    1344: 2140e143     	<unknown>
+    1348: 1c282300     	stcne	p3, c2, [r8], #-0
+    134c: eca6f7ff     	stc	p7, c15, [r6], #1020
+    1350: 21021c28     	<unknown>
+    1354: f7ff2200     	<unknown>
+    1358: 3404ec66     	strlo	lr, [r4], #-3174
+    135c: 30019003     	andlo	r9, r1, r3
+    1360: 9803d0ed     	stmdals	r3, {r0, r2, r3, r5, r6, r7, r12, lr, pc}
+    1364: da002800     	ble	0xb36c <__dso_handle+0x901c> @ imm = #0xa000
+    1368: 9803e131     	stmdals	r3, {r0, r4, r5, r8, sp, lr, pc}
+    136c: aa3649ad     	bge	0xd93a28 <__dso_handle+0xd916d8> @ imm = #0xd926b4
+    1370: ec46f7ff     	mcrr	p7, #0xf, pc, r6, c15
+    1374: d1003001     	<unknown>
+    1378: ac0be129     	<unknown>
+    137c: 9803218c     	stmdals	r3, {r2, r3, r7, r8, sp}
+    1380: 1c2201c9     	stcne	p1, c0, [r2], #-804
+    1384: ec3cf7ff     	ldc	p7, c15, [r12], #-1020
+    1388: d1003001     	<unknown>
+    138c: 6866e11f     	stmdavs	r6!, {r0, r1, r2, r3, r4, r8, sp, lr, pc} ^
+    1390: 00752300     	rsbseq	r2, r5, r0, lsl #6
+    1394: 61231c22     	<unknown>
+    1398: 65636163     	strbvs	r6, [r3, #-0x163]!
+    139c: 980360e5     	stmdals	r3, {r0, r2, r5, r6, r7, sp, lr}
+    13a0: 932e49a1     	<unknown>
+    13a4: 9330932f     	teqls	r0, #-1140850688
+    13a8: ec2af7ff     	stc	p7, c15, [r10], #-1020
+    13ac: 92022201     	andls	r2, r2, #268435456
+    13b0: d10a3001     	<unknown>
+    13b4: 499d6860     	ldmibmi	sp, {r5, r6, r11, sp, lr}
+    13b8: 60e04a9d     	<unknown>
+    13bc: 447a4479     	ldrbtmi	r4, [r10], #-1145
+    13c0: 24002005     	strhs	r2, [r0], #-5
+    13c4: ec10f7ff     	<unknown>
+    13c8: aa0b9402     	bge	0x2e63d8 <__dso_handle+0x2e4088> @ imm = #0x2e5008
+    13cc: 68d16853     	ldmvs	r1, {r0, r1, r4, r6, r11, sp, lr} ^
+    13d0: 42810058     	addmi	r0, r1, #88
+    13d4: 9d02d20c     	stcls	p2, c13, [r2, #-48]
+    13d8: 220160d3     	andhs	r6, r1, #211
+    13dc: 49954395     	ldmibmi	r5, {r0, r2, r4, r7, r8, r9, lr}
+    13e0: 90004a95     	<unknown>
+    13e4: 447a4479     	ldrbtmi	r4, [r10], #-1145
+    13e8: 95022005     	strls	r2, [r2, #-0x5]
+    13ec: ebfcf7ff     	bl	0xfff3f3f0 <__dso_handle+0xfffffffffff3d0a0> @ imm = #-0xc2004
+    13f0: 268cac0b     	strhs	r10, [r12], r11, lsl #24
+    13f4: 01f19803     	mvnseq	r9, r3, lsl #16
+    13f8: f7ff1c22     	<unknown>
+    13fc: 3001ec02     	andlo	lr, r1, r2, lsl #24
+    1400: e0e4d100     	rsc	sp, r4, r0, lsl #2
+    1404: 6f226f61     	svcvs	#0x226f61
+    1408: 18886ea3     	stmne	r8, {r0, r1, r5, r7, r9, r10, r11, sp, lr}
+    140c: 68666ee2     	stmdavs	r6!, {r1, r5, r6, r7, r9, r10, r11, sp, lr} ^
+    1410: 18d19d0b     	ldmne	r1, {r0, r1, r3, r8, r10, r11, r12, pc} ^
+    1414: 2300194a     	<unknown>
+    1418: 21001980     	smlabbhs	r0, r0, r9, r1
+    141c: ec44f7ff     	mcrr	p7, #0xf, pc, r4, c15
+    1420: 23006e62     	<unknown>
+    1424: ec40f7ff     	mcrr	p7, #0xf, pc, r0, c15
+    1428: 1c021c04     	<unknown>
+    142c: 430c1c0b     	<unknown>
+    1430: 4978d006     	ldmdbmi	r8!, {r1, r2, r12, lr, pc} ^
+    1434: f7ff4876     	<unknown>
+    1438: 9004ec3e     	andls	lr, r4, lr, lsr r12
+    143c: d1012800     	mrsle	r2, apsr
+    1440: 94044c7e     	strls	r4, [r4], #-3198
+    1444: 6dd8ab0b     	<unknown>
+    1448: dd022800     	stcle	p8, c2, [r2, #-0]
+    144c: 2b006d9b     	blhs	0x1cac0 <__dso_handle+0x1a770> @ imm = #0x1b66c
+    1450: 1c28dc20     	stcne	p12, c13, [r8], #-128
+    1454: ec34f7ff     	ldc	p7, c15, [r4], #-1020
+    1458: f7ff4979     	<unknown>
+    145c: 4979ec38     	ldmdbmi	r9!, {r3, r4, r5, r10, r11, sp, lr, pc} ^
+    1460: ec3af7ff     	ldc	p7, c15, [r10], #-1020
+    1464: 058921fc     	streq	r2, [r9, #0x1fc]
+    1468: ec3cf7ff     	ldc	p7, c15, [r12], #-1020
+    146c: ec68f7ff     	stcl	p7, c15, [r8], #-1020
+    1470: 25fcae0b     	ldrbhs	r10, [r12, #0xe0b]!
+    1474: 687065f0     	ldmdavs	r0!, {r4, r5, r6, r7, r8, r10, sp, lr} ^
+    1478: ec22f7ff     	stc	p7, c15, [r2], #-1020
+    147c: f7ff4970     	<unknown>
+    1480: 4970ec26     	ldmdbmi	r0!, {r1, r2, r5, r10, r11, sp, lr, pc} ^
+    1484: ec28f7ff     	stc	p7, c15, [r8], #-1020
+    1488: f7ff05a9     	<unknown>
+    148c: f7ffec2c     	<unknown>
+    1490: 65b0ec58     	ldrvs	lr, [r0, #0xc58]!
+    1494: 9b0bad0b     	blls	0x2ec8c8 <__dso_handle+0x2ea578> @ imm = #0x2eb42c
+    1498: 6daa6de8     	stcvs	p13, c6, [r10, #928]!
+    149c: ae36686c     	cdpge	p8, #0x3, c6, c6, c12, #0x3
+    14a0: 92069008     	andls	r9, r6, #8
+    14a4: 495f9803     	ldmdbmi	pc, {r0, r1, r11, r12, pc} ^
+    14a8: 93091c32     	<unknown>
+    14ac: f7ff9407     	<unknown>
+    14b0: 3001eba8     	andlo	lr, r1, r8, lsr #23
+    14b4: e08ad100     	add	sp, r10, r0, lsl #2
+    14b8: 29006971     	stmdbhs	r0, {r0, r4, r5, r6, r8, r11, sp, lr}
+    14bc: e086d100     	add	sp, r6, r0, lsl #2
+    14c0: 99021c3c     	stmdbls	r2, {r2, r3, r4, r5, r10, r11, r12}
+    14c4: 1c3834b4     	ldcne	p4, c3, [r8], #-720
+    14c8: 22a06021     	adchs	r6, r0, #33
+    14cc: 30d01c29     	sbcslo	r1, r0, r9, lsr #24
+    14d0: ebdef7ff     	bl	0xff7bf4d4 <__dso_handle+0xffffffffff7bd184> @ imm = #-0x842004
+    14d4: 005a23b8     	ldrheq	r2, [r10], #-56
+    14d8: 18b81c31     	ldmne	r8!, {r0, r4, r5, r10, r11, r12}
+    14dc: f7ff2244     	<unknown>
+    14e0: 20daebd8     	ldrsbhs	lr, [r10], #184
+    14e4: 98090044     	stmdals	r9, {r2, r6}
+    14e8: ebeaf7ff     	bl	0xffabf4ec <__dso_handle+0xffffffffffabd19c> @ imm = #-0x542004
+    14ec: f7ff4954     	<unknown>
+    14f0: 9002ebee     	andls	lr, r2, lr, ror #23
+    14f4: f7ff9808     	<unknown>
+    14f8: 1c01ebe4     	<unknown>
+    14fc: f7ff9802     	<unknown>
+    1500: 21dcebec     	bicshs	lr, r12, r12, ror #23
+    1504: 98075138     	stmdals	r7, {r3, r4, r5, r8, r12, lr}
+    1508: f7ff004c     	<unknown>
+    150c: 494cebda     	stmdbmi	r12, {r1, r3, r4, r6, r7, r8, r9, r11, sp, lr, pc} ^
+    1510: ebdcf7ff     	bl	0xff73f514 <__dso_handle+0xffffffffff73d1c4> @ imm = #-0x8c2004
+    1514: 98069002     	stmdals	r6, {r1, r12, pc}
+    1518: ebd2f7ff     	bl	0xff4bf51c <__dso_handle+0xffffffffff4bd1cc> @ imm = #-0xb42004
+    151c: 98021c01     	stmdals	r2, {r0, r10, r11, r12}
+    1520: ebdaf7ff     	bl	0xff6bf524 <__dso_handle+0xffffffffff6bd1d4> @ imm = #-0x942004
+    1524: 513823de     	ldrsbpl	r2, [r8, -lr]!
+    1528: 005c9804     	subseq	r9, r12, r4, lsl #16
+    152c: ebe0f7ff     	bl	0xff83f530 <__dso_handle+0xffffffffff83d1e0> @ imm = #-0x7c2004
+    1530: f7ff4945     	<unknown>
+    1534: 4945ebd2     	stmdbmi	r5, {r1, r4, r6, r7, r8, r9, r11, sp, lr, pc} ^
+    1538: 68ea5138     	stmvs	r10!, {r3, r4, r5, r8, r12, lr} ^
+    153c: 1c046af0     	<unknown>
+    1540: 18634354     	stmdane	r3!, {r2, r4, r6, r8, r9, lr} ^
+    1544: 03040b18     	<unknown>
+    1548: 94029803     	strls	r9, [r2], #-2051
+    154c: eb70f7ff     	bl	0x1c3f550 <__dso_handle+0x1c3d200> @ imm = #0x1c3dffc
+    1550: 202c9004     	eorhs	r9, r12, r4
+    1554: eb72f7ff     	bl	0x1cbf558 <__dso_handle+0x1cbd208> @ imm = #0x1cbdffc
+    1558: 493d9a04     	ldmdbmi	sp!, {r2, r9, r11, r12, pc}
+    155c: 60c21c04     	sbcvs	r1, r2, r4, lsl #24
+    1560: 20006101     	andhs	r6, r0, r1, lsl #2
+    1564: 9b026160     	blls	0x99aec <__dso_handle+0x9779c> @ imm = #0x98580
+    1568: 61a361e0     	<unknown>
+    156c: f7ff6220     	<unknown>
+    1570: 220ceb6c     	andhs	lr, r12, #108, #22
+    1574: 21072301     	<unknown>
+    1578: 60636022     	rsbvs	r6, r3, r2, lsr #32
+    157c: 626060a1     	rsbvs	r6, r0, #161
+    1580: 30b01c38     	adcslo	r1, r0, r8, lsr r12
+    1584: 60049004     	andvs	r9, r4, r4
+    1588: 68e86869     	stmvs	r8!, {r0, r3, r5, r6, r11, sp, lr} ^
+    158c: eb32f7ff     	bl	0xcbf590 <__dso_handle+0xcbd240> @ imm = #0xcbdffc
+    1590: 34b81c3c     	ldrtlo	r1, [r8], #3132
+    1594: 23012500     	<unknown>
+    1598: 1c3c6020     	ldcne	p0, c6, [r12], #-128
+    159c: 200034bc     	strhhs	r3, [r0], -r12
+    15a0: 9a036025     	bls	0xd963c <__dso_handle+0xd72ec> @ imm = #0xd8094
+    15a4: 92009902     	andls	r9, r0, #32768
+    15a8: 95012203     	strls	r2, [r1, #-0x203]
+    15ac: eb52f7ff     	bl	0x14bf5b0 <__dso_handle+0x14bd260> @ imm = #0x14bdffc
+    15b0: d1111c43     	tstle	r1, r3, asr #24
+    15b4: eb66f7ff     	bl	0x19bf5b8 <__dso_handle+0x19bd268> @ imm = #0x19bdffc
+    15b8: f7ff6800     	<unknown>
+    15bc: 4925eba0     	stmdbmi	r5!, {r5, r7, r8, r9, r11, sp, lr, pc}
+    15c0: 44794a25     	ldrbtmi	r4, [r9], #-2597
+    15c4: 1c03447a     	<unknown>
+    15c8: f7ff2006     	<unknown>
+    15cc: f7ffeb0e     	<unknown>
+    15d0: 6807eb5a     	stmdavs	r7, {r1, r3, r4, r6, r8, r9, r11, sp, lr, pc}
+    15d4: e00e4278     	and	r4, lr, r8, ror r2
+    15d8: 21e09d04     	mvnhs	r9, r4, lsl #26
+    15dc: 682c004b     	stmdavs	r12!, {r0, r1, r3, r6}
+    15e0: 210025e2     	smlatths	r0, r2, r5, r2
+    15e4: 69326220     	ldmdbvs	r2!, {r5, r9, sp, lr}
+    15e8: 50fa006e     	rscspl	r0, r10, lr, rrx
+    15ec: 9a0251b8     	bls	0x95cd4 <__dso_handle+0x93984> @ imm = #0x946e0
+    15f0: eaf4f7ff     	b	0xffd3f5f4 <__dso_handle+0xffffffffffd3d2a4> @ imm = #-0x2c2004
+    15f4: 4a092000     	bmi	0x2495fc <__dso_handle+0x2472ac> @ imm = #0x248000
+    15f8: 9f579905     	svcls	#0x579905
+    15fc: 6833588e     	ldmdavs	r3!, {r1, r2, r3, r7, r11, r12, lr}
+    1600: d001429f     	<unknown>
+    1604: eb80f7ff     	bl	0xfe03f608 <__dso_handle+0xfffffffffe03d2b8> @ imm = #-0x1fc2004
+    1608: bdf0b059     	ldcllt	p0, c11, [r0, #356]!
+    160c: 46c046c0     	strbmi	r4, [r0], r0, asr #13
+    1610: a4c68000     	strbge	r8, [r6], #0
+    1614: 00038d7e     	andeq	r8, r3, lr, ror sp
+    1618: 00000de2     	andeq	r0, r0, r2, ror #27
+    161c: fffffffc     	<unknown>
+    1620: 00000cdc     	ldrdeq	r0, r1, [r0], -r12
+    1624: 00004602     	andeq	r4, r0, r2, lsl #12
+    1628: 00004601     	andeq	r4, r0, r1, lsl #12
+    162c: 00000559     	andeq	r0, r0, r9, asr r5
+    1630: 00000688     	andeq	r0, r0, r8, lsl #13
+    1634: 00000531     	andeq	r0, r0, r1, lsr r5
+    1638: 00000698     	<unknown>
+    163c: 0000ea60     	andeq	lr, r0, r0, ror #20
+    1640: 41cb3333     	bicmi	r3, r11, r3, lsr r3
+    1644: 43200000     	<unknown>
+    1648: 447a0000     	ldrbtmi	r0, [r10], #-0
+    164c: 00000fff     	strdeq	r0, r1, [r0], -pc
+    1650: 03141592     	tsteq	r4, #612368384
+    1654: 00000353     	andeq	r0, r0, r3, asr r3
+    1658: 000004f6     	strdeq	r0, r1, [r0], -r6
+    165c: 46c046c0     	strbmi	r4, [r0], r0, asr #13
+    1660: 1c05b570     	<unknown>
+    1664: 1c0435c0     	<unknown>
+    1668: f7ff1c28     	<unknown>
+    166c: 1c20eafa     	<unknown>
+    1670: fe4ef7ff     	mcr2	p7, #0x2, pc, c14, c15, #0x7
+    1674: 1c281c04     	stcne	p12, c1, [r8], #-16
+    1678: eaf8f7ff     	b	0xffe3f67c <__dso_handle+0xffffffffffe3d32c> @ imm = #-0x1c2004
+    167c: bd701c20     	ldcllt	p12, c1, [r0, #-128]!
+mostafa@MMostafa ~ % echo '=== GRALLOC IOCTL CALL SITES ==='
+
+/opt/homebrew/opt/llvm/bin/llvm-objdump \
   -d \
   --print-imm-hex \
-  --disassembler-options=force-thumb \
-  --start-address=0x1640 \
-  --stop-address=0x17f0 \
-  /tmp/totoro-hw/gralloc.default.so
+  /tmp/totoro-hw/gralloc.default.so | \
+  grep -n -B12 -A12 -E 'blx.*ioctl|bl.*ioctl'
+=== GRALLOC IOCTL CALL SITES ===
+mostafa@MMostafa ~ % echo '=== GRALLOC OPEN/MAP CALL SITES ==='
 
-/tmp/totoro-hw/gralloc.default.so:	file format elf32-littlearm
-/opt/homebrew/opt/llvm/bin/llvm-objdump: error: '/tmp/totoro-hw/gralloc.default.so': Unrecognized disassembler option: force-thumb
+/opt/homebrew/opt/llvm/bin/llvm-objdump \
+  -d \
+  --print-imm-hex \
+  /tmp/totoro-hw/gralloc.default.so | \
+  grep -n -B10 -A10 -E \
+  'blx.*open|bl.*open|blx.*mmap|bl.*mmap'
+=== GRALLOC OPEN/MAP CALL SITES ===
+mostafa@MMostafa ~ % echo '=== MAP FRAMEBUFFER RAW BYTES ==='
+
+xxd -g4 -s 0x12d0 -l 0x3b0 /tmp/totoro-hw/gralloc.default.so
+=== MAP FRAMEBUFFER RAW BYTES ===
+000012d0: 90470498 3d680168 301ca847 00200bb0  .G..=h.h0..G. ..
+000012e0: f0bdc046 92151403 33070000 39070000  ...F....3...9...
+000012f0: 01460000 d5060000 e9070000 10b50028  .F.............(
+00001300: 01d0fff7 baec0020 10bdc046 00000000  ....... ...F....
+00001310: f0b5c14d c14c7d44 d9b02a59 071cb030  ...M.L}D..*Y...0
+00001320: 11680595 57910368 0020002b 00d062e1  .h..W..h. .+..b.
+00001330: bb4b33ac 7b44261c 23cb23c6 47ad2268  .K3.{D&.#.#.G."h
+00001340: 002a00d1 43e14021 0023281c fff7a6ec  .*..C.@!.#(.....
+00001350: 281c0221 0022fff7 66ec0434 03900130  (..!."..f..4...0
+00001360: edd00398 002800da 31e10398 ad4936aa  .....(..1....I6.
+00001370: fff746ec 013000d1 29e10bac 8c210398  ..F..0..)....!..
+00001380: c901221c fff73cec 013000d1 1fe16668  .."...<..0....fh
+00001390: 00237500 221c2361 63616365 e5600398  .#u.".#acace.`..
+000013a0: a1492e93 2f933093 fff72aec 01220292  .I../.0...*.."..
+000013b0: 01300ad1 60689d49 9d4ae060 79447a44  .0..`h.I.J.`yDzD
+000013c0: 05200024 fff710ec 02940baa 5368d168  . .$........Sh.h
+000013d0: 58008142 0cd2029d d3600122 95439549  X..B.....`.".C.I
+000013e0: 954a0090 79447a44 05200295 fff7fceb  .J..yDzD. ......
+000013f0: 0bac8c26 0398f101 221cfff7 02ec0130  ...&...."......0
+00001400: 00d1e4e0 616f226f a36e8818 e26e6668  ....ao"o.n...nfh
+00001410: 0b9dd118 4a190023 80190021 fff744ec  ....J..#...!..D.
+00001420: 626e0023 fff740ec 041c021c 0b1c0c43  bn.#..@........C
+00001430: 06d07849 7648fff7 3eec0490 002801d1  ..xIvH..>....(..
+00001440: 7e4c0494 0babd86d 002802dd 9b6d002b  ~L.....m.(...m.+
+00001450: 20dc281c fff734ec 7949fff7 38ec7949   .(...4.yI..8.yI
+00001460: fff73aec fc218905 fff73cec fff768ec  ..:..!....<...h.
+00001470: 0baefc25 f0657068 fff722ec 7049fff7  ...%.eph..".pI..
+00001480: 26ec7049 fff728ec a905fff7 2cecfff7  &.pI..(.....,...
+00001490: 58ecb065 0bad0b9b e86daa6d 6c6836ae  X..e.....m.mlh6.
+000014a0: 08900692 03985f49 321c0993 0794fff7  ......_I2.......
+000014b0: a8eb0130 00d18ae0 71690029 00d186e0  ...0....qi.)....
+000014c0: 3c1c0299 b434381c 2160a022 291cd030  <....48.!`.")..0
+000014d0: fff7deeb b8235a00 311cb818 4422fff7  .....#Z.1...D"..
+000014e0: d8ebda20 44000998 fff7eaeb 5449fff7  ... D.......TI..
+000014f0: eeeb0290 0898fff7 e4eb011c 0298fff7  ................
+00001500: ecebdc21 38510798 4c00fff7 daeb4c49  ...!8Q..L.....LI
+00001510: fff7dceb 02900698 fff7d2eb 011c0298  ................
+00001520: fff7daeb de233851 04985c00 fff7e0eb  .....#8Q..\.....
+00001530: 4549fff7 d2eb4549 3851ea68 f06a041c  EI....EI8Q.h.j..
+00001540: 54436318 180b0403 03980294 fff770eb  TCc...........p.
+00001550: 04902c20 fff772eb 049a3d49 041cc260  .., ..r...=I...`
+00001560: 01610020 6061029b e061a361 2062fff7  .a. `a...a.a b..
+00001570: 6ceb0c22 01230721 22606360 a1606062  l..".#.!"`c`.``b
+00001580: 381cb030 04900460 6968e868 fff732eb  8..0...`ih.h..2.
+00001590: 3c1cb834 00250123 20603c1c bc340020  <..4.%.# `<..4. 
+000015a0: 2560039a 02990092 03220195 fff752eb  %`......."....R.
+000015b0: 431c11d1 fff766eb 0068fff7 a0eb2549  C.....f..h....%I
+000015c0: 254a7944 7a44031c 0620fff7 0eebfff7  %JyDzD... ......
+000015d0: 5aeb0768 78420ee0 049de021 4b002c68  Z..hxB.....!K.,h
+000015e0: e2250021 20623269 6e00fa50 b851029a  .%.! b2in..P.Q..
+000015f0: fff7f4ea 0020094a 0599579f 8e583368  ..... .J..W..X3h
+00001600: 9f4201d0 fff780eb 59b0f0bd c046c046  .B......Y....F.F
+00001610: 0080c6a4 7e8d0300 e20d0000 fcffffff  ....~...........
+00001620: dc0c0000 02460000 01460000 59050000  .....F...F..Y...
+00001630: 88060000 31050000 98060000 60ea0000  ....1.......`...
+00001640: 3333cb41 00002043 00007a44 ff0f0000  33.A.. C..zD....
+00001650: 92151403 53030000 f6040000 c046c046  ....S........F.F
+00001660: 70b5051c c035041c 281cfff7 faea201c  p....5..(..... .
+00001670: fff74efe 041c281c fff7f8ea 201c70bd  ..N...(..... .p.
+mostafa@MMostafa ~ % echo '=== KNOWN FRAMEBUFFER IOCTL CONSTANTS ==='
+
+python3 - <<'PY'
+for x in [0x4600, 0x4601, 0x4602, 0x4604, 0x4605, 0x4606, 0x4607, 0x4608, 0x4609, 0x460A, 0x460B, 0x460F, 0x4610, 0x46FF]:
+    print(f"{x:#06x}  bytes_le={x.to_bytes(4,'little').hex()}")
+PY
+=== KNOWN FRAMEBUFFER IOCTL CONSTANTS ===
+0x4600  bytes_le=00460000
+0x4601  bytes_le=01460000
+0x4602  bytes_le=02460000
+0x4604  bytes_le=04460000
+0x4605  bytes_le=05460000
+0x4606  bytes_le=06460000
+0x4607  bytes_le=07460000
+0x4608  bytes_le=08460000
+0x4609  bytes_le=09460000
+0x460a  bytes_le=0a460000
+0x460b  bytes_le=0b460000
+0x460f  bytes_le=0f460000
+0x4610  bytes_le=10460000
+0x46ff  bytes_le=ff460000
+mostafa@MMostafa ~ % xxd -g1 /tmp/totoro-hw/gralloc.default.so | \
+  grep -Ei \
+  '0046|ff46|0047'
+00000460: 00 00 00 00 12 00 00 00 85 02 00 00 00 00 00 00  ................
+00000470: 00 00 00 00 12 00 00 00 92 02 00 00 00 00 00 00  ................
 mostafa@MMostafa ~ % 
