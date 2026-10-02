@@ -2,13 +2,35 @@
 
 Research, preservation, reconstruction, and modernization of the Samsung Galaxy Y GT-S5360 (totoro).
 
+## Project identity
+
+**Primary working identity:** **A tiny, native ARMv6 pocket computer built from a Samsung Galaxy Y.**
+
+**Optional product identity:** **Totoro-Pocket-PC** — a compact name for the eventual physical Linux-computing experience.
+
+These names describe an aspirational product direction, not a claim that the device is already an independent Linux computer. The present implementation remains Android-assisted and reversible.
+
+The UI direction is deliberately broader than a terminal or server. The long-term target is a **tiny desktop-like Linux experience** adapted to the Totoro's 240×320 display, touchscreen, limited memory and ARMv6 CPU. We will borrow mature Linux infrastructure and lessons from existing projects such as postmarketOS and historical Linux-on-phone work where useful, while keeping Totoro-specific hardware integration and the minimal shell under our control.
+
+The intended progression is:
+`verified Linux userspace → native framebuffer/touch UI → tiny desktop-like shell → useful pocket-PC applications`.
+
 ## Project goal
 
-**Ultimate goal: turn the Totoro into something useful and cool.**
+**Ultimate goal: turn the Totoro into something useful, cool, and recognizably computer-like.**
 
 The active strategy is now deliberately outcome-first: preserve the working Android system and stock kernel, prove the smallest compatible Linux userspace, and reach a useful physical-device experience as quickly and safely as possible.
 
 An Android-assisted Linux environment, a focused static Linux payload, a hybrid service, or another reversible design is a successful outcome if it makes the real Totoro genuinely useful or fun. Independent Linux boot is no longer the active critical path; it is a conditional research branch to reopen only if a demonstrated limitation requires it.
+
+## Identity and UI principles
+
+- **Pocket PC first:** design for small-screen computing rather than trying to imitate a modern smartphone.
+- **Desktop experience, miniature:** provide familiar concepts such as a launcher, task/application screens, files, terminal, settings/tools and status information, while keeping rendering and interaction lightweight.
+- **Borrow infrastructure, not identity:** reuse established Linux interfaces, libraries, driver knowledge and lessons from postmarketOS and other historical projects; do not unnecessarily reproduce an entire distribution.
+- **Totoro-native integration:** framebuffer, touchscreen, display geometry, input behavior and hardware constraints are treated as first-class design inputs.
+- **Incremental graphics stack:** begin with direct framebuffer rendering, then introduce a small graphics/UI layer only when repeated needs justify it. A conventional desktop/compositor stack remains optional and conditional.
+- **Preservation remains mandatory:** the pocket-PC identity does not justify boot-critical writes, repartitioning or replacing the stock Android environment prematurely.
 
 ## Current strategy
 
@@ -31,6 +53,12 @@ Do not select a large distribution, rebuild the kernel, port mainline Linux, rep
 - Basic static BusyBox chroot execution verified.
 - Loop-backed ext2 creation, attachment, read-write mount, file I/O and clean teardown verified.
 - ELF execution from the loop mount, dynamic Linux userspace compatibility, networking/SSH integration, recovery partition identity, and a fully verified restore route remain open unless supported by primary evidence.
+
+## Current physical milestone
+
+As of 2026-10-02, the project has crossed the important boundary from “Linux payload execution” into **physical-device interaction**: a persistent SD-backed ext2 Linux userspace is verified, native framebuffer writes have produced a visible LCD update, and the next engineering target is touch-driven native UI.
+
+This makes a pocket-PC direction technically meaningful rather than purely conceptual. The first UI should therefore be treated as the beginning of the product layer, while keeping the underlying Linux substrate minimal and evidence-driven.
 
 ## Documentation map
 
