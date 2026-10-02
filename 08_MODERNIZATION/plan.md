@@ -22,7 +22,7 @@ The active path is now:
             ↓
     Dynamic musl compatibility               ← PASSED
             ↓
-    Persistent SD-backed ext2 rootfs         ← NEXT
+    Persistent SD-backed ext2 rootfs         ← PASSED
             ↓
     Minimal network service
             ↓
@@ -77,11 +77,11 @@ This proves that the stock 2.6.35.7 kernel can load the ARMv6 dynamic ELF, invok
 
 No boot-critical storage, kernel, boot chain, NAND partitioning, EFS, PIT, recovery or modem was modified by this test.
 
-### A5. Persistent minimal rootfs — NEXT
+### A5. Persistent minimal rootfs — PASSED
 
-This is now the next engineering task.
+The persistent rootfs milestone is now physically verified on the handset.
 
-Build the smallest persistent Linux rootfs on removable SD storage. Use ext2 first because loop-backed ext2 is already proven on the handset.
+A 32 MiB ext2 image stored on the removable SD card was attached through `/dev/block/loop0`, mounted, entered with a controlled chroot, and used to execute the verified dynamically linked ARMv6 musl test. The same image completed two full attach/mount/chroot/execute/unmount/detach cycles.
 
 Requirements:
 - host-built and reproducible;
@@ -94,7 +94,17 @@ Requirements:
 - no `pivot_root`;
 - no boot-critical writes.
 
-First acceptance milestone:
+Acceptance evidence:
+
+- pristine image SHA-256: `4d84d6fb09d74b7049c0d0d77e8b59e1aba6f453c1bcf72eccaa5afde3ac6cc4`;
+- dynamic executable SHA-256: `48c56b75aeba489ec8b2101402dc8e3d5f5639c4271d4c34d5fda2d1ae7c0753`;
+- loader/libc SHA-256: `6a86294f527a1ad6539ac7643badd1986cfca012f5edfe52a541be3da00a4191`;
+- physical result: `TOTORO_DYNAMIC_MUSL_OK`, `armv6l`, `STATUS=0`;
+- two successful attach → mount → chroot → execute → unmount → detach cycles;
+- post-cycle image SHA-256: `b2bec9c8ab005f9fe99aad752b724d7fa0a1c106fc0c8dbe583e2aaffcbdc4f0`;
+- post-cycle host-side `e2fsck -fn`: all five passes completed without structural errors.
+
+The post-cycle hash is retained as a filesystem-state artifact; the pristine image hash remains the canonical build artifact.
 
 **The Totoro can repeatedly enter and leave a persistent SD-backed Linux rootfs while Android remains intact.**
 
@@ -207,19 +217,15 @@ Do not treat a review claim as proof of recovery readiness. A dump alone is not 
 
 ## Immediate next action
 
-**Build the persistent minimal SD-backed ext2 rootfs.**
+**Build and test the first tiny network service on the persistent rootfs.**
 
 The next technical sequence is:
 
-1. Design the smallest reproducible rootfs contents around the verified dynamic musl runtime.
-2. Create an ext2 image on the host.
-3. Populate it without adding unnecessary packages.
-4. Verify the image contents and checksums.
-5. Transfer/copy the image to removable SD storage.
-6. Attach and mount it on the Totoro using the already-proven loop/ext2 path.
-7. Enter the rootfs with a controlled chroot.
-8. Prove dynamic ELF execution from the mounted ext2 filesystem.
-9. Tear down and verify loop/mount state.
-10. Only after that, add the first tiny network service.
+1. Keep the verified persistent ext2 image as the Phase 4 baseline.
+2. Add only the files required for one tiny network service.
+3. Prove the service runs inside the persistent rootfs.
+4. Prove host/device network reachability.
+5. Prefer a tiny HTTP service because it directly supports the browser UI path.
+6. Preserve the working state before adding further packages.
 
 Do not touch boot-critical storage, NAND raw nodes, PIT, EFS, modem, boot/recovery partitions, or repartitioning.
