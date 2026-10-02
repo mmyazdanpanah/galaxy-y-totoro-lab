@@ -70,17 +70,60 @@ This verifies, on the stock kernel:
 
 The test did not modify boot-critical storage, the kernel, boot chain, NAND partitioning, EFS, PIT, recovery, or modem. The temporary dynamic rootfs remains under `/data/local/tmp/totoro-dynamic-test-01`.
 
+## Major verified milestone — Phase 4 persistent SD-backed ext2 rootfs PASSED
+
+On 2026-10-02, the physical Totoro successfully mounted and executed a dynamically linked ARMv6 musl program from a persistent SD-backed ext2 filesystem, using the stock Linux 2.6.35.7 kernel.
+
+Persistent image:
+- path on device: `/mnt/sdcard/totoro-rootfs-phase4-01.ext2`;
+- size: 33,554,432 bytes (32 MiB);
+- filesystem: ext2;
+- loop device: `/dev/block/loop0`;
+- mountpoint: `/data/local/tmp/totoro-rootfs-phase4-mnt`.
+
+Host-built image SHA-256 before device use: `4d84d6fb09d74b7049c0d0d77e8b59e1aba6f453c1bcf72eccaa5afde3ac6cc4`.
+
+The mounted executable, loader and libc were independently hash-verified on the device:
+- executable: `48c56b75aeba489ec8b2101402dc8e3d5f5639c4271d4c34d5fda2d1ae7c0753`;
+- `libc.so`: `6a86294f527a1ad6539ac7643badd1986cfca012f5edfe52a541be3da00a4191`;
+- `ld-musl-arm.so.1`: `6a86294f527a1ad6539ac7643badd1986cfca012f5edfe52a541be3da00a4191`.
+
+Physical execution from the mounted ext2 root, via chroot, produced:
+
+```
+TOTORO_DYNAMIC_MUSL_OK
+armv6l
+STATUS=0
+```
+
+A second complete attach → mount → hash verification → chroot execution → unmount → loop detach cycle also passed with `STATUS=0`. Both teardown checks reported `MOUNT_GONE` and `LOOP_DETACHED`.
+
+The image SHA-256 changed after writable device mounts, from `4d84d6fb09d74b7049c0d0d77e8b59e1aba6f453c1bcf72eccaa5afde3ac6cc4` to `b2bec9c8ab005f9fe99aad752b724d7fa0a1c106fc0c8dbe583e2aaffcbdc4f0`. The post-cycle image was pulled back to the host and passed `e2fsck -fn` through all five filesystem-check passes with no structural errors. The original hash remains the canonical pristine build artifact; the post-cycle hash records the writable filesystem state after physical use.
+
+This milestone demonstrates a persistent, removable Linux userspace substrate without modifying boot-critical storage, the kernel, boot chain, NAND partitioning, EFS, PIT, recovery or modem.
+
 ## Current gates
 
 - M1 — decision-critical baseline: remaining narrow evidence only.
 - M2 — static ARMv6 ELF: PASSED.
 - M3 — static musl userspace: PASSED.
 - M4 — dynamic musl compatibility: **PASSED — Phase 3 complete.**
-- M5 — persistent SD-backed ext2 rootfs: **NEXT.**
+- M5 — persistent SD-backed ext2 rootfs: **PASSED — Phase 4 complete.**
 - M6 — minimal network service: pending M5.
 - M7 — real UI milestone: local web dashboard rendered by the Totoro's existing Android browser, with touch interaction.
 - M8 — useful/cool checkpoint and preservation.
 - Native boot remains conditional on a concrete user-facing blocker.
+
+## Phase 4 acceptance evidence
+
+- persistent SD-backed ext2 image: 32 MiB;
+- pristine image SHA-256: `4d84d6fb09d74b7049c0d0d77e8b59e1aba6f453c1bcf72eccaa5afde3ac6cc4`;
+- physical executable SHA-256: `48c56b75aeba489ec8b2101402dc8e3d5f5639c4271d4c34d5fda2d1ae7c0753`;
+- physical dynamic loader/libc SHA-256: `6a86294f527a1ad6539ac7643badd1986cfca012f5edfe52a541be3da00a4191`;
+- two successful attach/mount/chroot/execute/teardown cycles;
+- execution result: `TOTORO_DYNAMIC_MUSL_OK`, `armv6l`, `STATUS=0`;
+- post-cycle image SHA-256: `b2bec9c8ab005f9fe99aad752b724d7fa0a1c106fc0c8dbe583e2aaffcbdc4f0`;
+- post-cycle host-side `e2fsck -fn`: all five passes completed without structural errors.
 
 ## Immediate path to a real UI
 
