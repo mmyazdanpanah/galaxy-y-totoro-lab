@@ -2,7 +2,7 @@
 
 The roadmap is ordered around one goal: **turn the Totoro into something useful and cool.**
 
-The active critical path is now the smallest safe Linux-userspace demonstration. Independent/native boot is preserved as a conditional research branch, not the default destination.
+The active critical path is now the smallest safe Linux-userspace demonstration, with the native framebuffer/touch path proven on physical hardware. Independent/native boot is preserved as a conditional research branch, not the default destination.
 
 ## Phase 0 — preservation and evidence
 
