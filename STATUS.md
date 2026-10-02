@@ -1,6 +1,6 @@
 # Status
 
-**Current stage:** Phase 4 persistent SD-backed ext2 rootfs verified on the physical Totoro → Phase 5 minimal network service.
+**Current stage:** Phase 4 persistent SD-backed ext2 rootfs verified on the physical Totoro → Phase 5 network service / native framebuffer UI bring-up.
 
 **Project goal:** **turn the Totoro into something useful and cool.** A useful Android-assisted Linux environment or other reversible hybrid outcome is fully successful. Independent Linux boot is now a conditional research branch, not the active critical path.
 
@@ -102,6 +102,45 @@ The image SHA-256 changed after writable device mounts, from `4d84d6fb09d74b7049
 
 This milestone demonstrates a persistent, removable Linux userspace substrate without modifying boot-critical storage, the kernel, boot chain, NAND partitioning, EFS, PIT, recovery or modem.
 
+
+## Major verified milestone — native framebuffer/LCD update path PASSED
+
+On 2026-10-02, the physical Totoro demonstrated a working native userspace path from framebuffer memory to the actual LCD panel.
+
+Verified display state:
+- `/proc/fb`: `0 LCDfb`;
+- `/dev/graphics/fb0`;
+- physical mode 240×320;
+- virtual framebuffer 240×640;
+- 32 bits per pixel;
+- 960-byte stride;
+- framebuffer mapping size 614,400 bytes.
+
+Samsung BCM21553 kernel source tracing established the exact update mechanism: `lcdfb.c` exposes `.fb_ioctl = lcdfb_ioctl`; `LCDFB_IOCTL_UPDATE_LCD` is `0x46ff`; the ioctl accepts `LCD_DirtyRows_t { top, bottom }` and calls `lcd_dirty_rows()`; the lower driver uses the DMA/write-combine framebuffer and Broadcom LCD controller update path. No separate userspace cache flush is required by this traced path. The physical device has no `/dev/lcd` node, so the framebuffer private ioctl is the relevant tested interface.
+
+A minimal static ARMv6 program opened and mapped `fb0`, backed up page 0, wrote an opaque white 240×320 pattern, issued `0x46ff` for rows 0–319, then restored the original page with the same ioctl.
+
+Physical result:
+
+```
+OPEN_OK fd=9
+MMAP_OK length=614400
+BACKUP_PAGE0_OK
+WHITE_PATTERN_WRITTEN
+DIRTY_ROWS top=0 bottom=319
+UPDATE_IOCTL_OK
+WHITE_VISIBLE_FOR_5_SECONDS
+RESTORING_PAGE0
+RESTORE_IOCTL_OK
+STATUS=0
+```
+
+Most importantly, the physical LCD visibly flashed white for less than one second before Android redrew its normal UI. This is direct physical evidence that custom native userspace can modify the framebuffer and trigger the real LCD controller/panel update path on the stock Totoro.
+
+Artifact: `fb-direct-dirty` device-verified SHA-256: `2e1cbb523761ff88a39253bfe6f5f5af460649d6f8d8019ec8c608cd21ca5c2d`.
+
+This does not yet establish an independent Linux graphical session; Android continues to own/redraw the display. The next goal is a small interactive native UI using the proven framebuffer and touchscreen paths.
+
 ## Current gates
 
 - M1 — decision-critical baseline: remaining narrow evidence only.
@@ -109,9 +148,10 @@ This milestone demonstrates a persistent, removable Linux userspace substrate wi
 - M3 — static musl userspace: PASSED.
 - M4 — dynamic musl compatibility: **PASSED — Phase 3 complete.**
 - M5 — persistent SD-backed ext2 rootfs: **PASSED — Phase 4 complete.**
-- M6 — minimal network service: **NEXT**.
-- M7 — real UI milestone: local web dashboard rendered by the Totoro's existing Android browser, with touch interaction.
-- M8 — useful/cool checkpoint and preservation.
+- M6 — minimal network service: **NEXT / in progress**.
+- M7 — native framebuffer display path: **PASSED on physical LCD**.
+- M8 — interactive native UI: **NEXT**.
+- M9 — useful/cool checkpoint and preservation.
 - Native boot remains conditional on a concrete user-facing blocker.
 
 ## Phase 4 acceptance evidence
@@ -125,11 +165,9 @@ This milestone demonstrates a persistent, removable Linux userspace substrate wi
 - post-cycle image SHA-256: `b2bec9c8ab005f9fe99aad752b724d7fa0a1c106fc0c8dbe583e2aaffcbdc4f0`;
 - post-cycle host-side `e2fsck -fn`: all five passes completed without structural errors.
 
-## Immediate path to a real UI
+## Immediate path
 
-The next engineering task is the **first tiny network service** on the verified persistent rootfs. Prefer a small HTTP service because it directly supports the eventual browser dashboard.
-
-The target remains a browser-rendered local dashboard using the existing Android browser, giving the physical Totoro a real touch UI without first solving GPU, framebuffer, window-system, or desktop-stack problems.
+The next engineering task is the **first tiny interactive native UI**: a small ARMv6 userspace renderer that writes the verified framebuffer and responds to `/dev/input/event4` touch events. The network-service path remains useful in parallel as a remote/debug/control channel.
 
 ## Phase 3 acceptance evidence
 
