@@ -1,192 +1,891 @@
-mostafa@MMostafa ~ % adb -s 172.20.10.2:5555 pull /system/lib/libsurfaceflinger.so /tmp/totoro-libsurfaceflinger.so
-adb -s 172.20.10.2:5555 pull /system/lib/libsurfaceflinger_client.so /tmp/totoro-libsurfaceflinger_client.so
-adb -s 172.20.10.2:5555 pull /system/lib/libui.so /tmp/totoro-libui.so
-adb -s 172.20.10.2:5555 pull /system/lib/libgui.so /tmp/totoro-libgui.so
-adb -s 172.20.10.2:5555 pull /system/lib/libEGL.so /tmp/totoro-libEGL.so
-adb -s 172.20.10.2:5555 pull /system/lib/libGLESv1_CM.so /tmp/totoro-libGLESv1_CM.so
-adb -s 172.20.10.2:5555 pull /system/lib/libGLESv2.so /tmp/totoro-libGLESv2.so
-/system/lib/libsurfaceflinger.so: 1 file pulled, 0 skipped. 0.3 MB/s (324276 bytes in 0.984s)
-/system/lib/libsurfaceflinger_client.so: 1 file pulled, 0 skipped. 0.3 MB/s (106292 bytes in 0.351s)
-/system/lib/libui.so: 1 file pulled, 0 skipped. 0.3 MB/s (216340 bytes in 0.598s)
-/system/lib/libgui.so: 1 file pulled, 0 skipped. 0.3 MB/s (48416 bytes in 0.182s)
-/system/lib/libEGL.so: 1 file pulled, 0 skipped. 0.3 MB/s (40864 bytes in 0.154s)
-/system/lib/libGLESv1_CM.so: 1 file pulled, 0 skipped. 0.3 MB/s (29800 bytes in 0.098s)
-/system/lib/libGLESv2.so: 1 file pulled, 0 skipped. 0.3 MB/s (21608 bytes in 0.081s)
-mostafa@MMostafa ~ % file /tmp/totoro-libsurfaceflinger.so
-file /tmp/totoro-libui.so
-/tmp/totoro-libsurfaceflinger.so: ELF 32-bit LSB shared object, ARM, EABI5 version 1 (SYSV), dynamically linked, stripped
-/tmp/totoro-libui.so: ELF 32-bit LSB shared object, ARM, EABI5 version 1 (SYSV), dynamically linked, stripped
-mostafa@MMostafa ~ % /opt/homebrew/opt/llvm/bin/llvm-nm \
+mostafa@MMostafa ~ % echo '=== DISPLAY HARDWARE: TARGETED DISASSEMBLY ==='
+
+/opt/homebrew/opt/llvm/bin/llvm-objdump \
+  -d \
+  --print-imm-hex \
+  --start-address=0x1d680 \
+  --stop-address=0x1d808 \
+  /tmp/totoro-libsurfaceflinger.so
+
+echo
+echo '=== SURFACEFLINGER POST FRAMEBUFFER ==='
+
+/opt/homebrew/opt/llvm/bin/llvm-objdump \
+  -d \
+  --print-imm-hex \
+  --start-address=0x275a0 \
+  --stop-address=0x276c8 \
+  /tmp/totoro-libsurfaceflinger.so
+
+echo
+echo '=== SURFACEFLINGER REPAINT / COMPOSITION / PAGE FLIP ==='
+
+/opt/homebrew/opt/llvm/bin/llvm-objdump \
+  -d \
+  --print-imm-hex \
+  --start-address=0x26df0 \
+  --stop-address=0x276a4 \
+  /tmp/totoro-libsurfaceflinger.so
+
+echo
+echo '=== DYNAMIC UNDEFINED SYMBOLS ==='
+
+/opt/homebrew/opt/llvm/bin/llvm-nm \
   -D \
   /tmp/totoro-libsurfaceflinger.so 2>/dev/null | \
-  grep -Ei 'framebuffer|fb0|surface|display|gralloc|egl|gem|flush|post|flip'
-0002d69c T GetPpFrameBufferWidth
-0002f278 T MP4FlushRegs
-0002f0dc T PPFlushRegs
-0002d658 T SetPpFrameBufferWidth
-00036448 T StrmDec_FlushBits
-00036a30 T StrmDec_UnFlushBits
-00024de0 T _ZN7android10UserClient13createSurfaceEPNS_22ISurfaceComposerClient14surface_data_tEiRKNS_7String8Eijjij
-00024de8 T _ZN7android10UserClient14destroySurfaceEi
-00025a6c T _ZN7android10UserClientC1ERKNS_2spINS_14SurfaceFlingerEEE
-00025b7c T _ZN7android10UserClientC2ERKNS_2spINS_14SurfaceFlingerEEE
-0001d62c T _ZN7android10blurFilterEPK10GGLSurfaceii
-00024e18 W _ZN7android11BnInterfaceINS_16ISurfaceComposerEE10onAsBinderEv
-00024ea4 W _ZN7android11BnInterfaceINS_22ISurfaceComposerClientEE10onAsBinderEv
-0001eaf0 W _ZN7android11BnInterfaceINS_8ISurfaceEE10onAsBinderEv
-00022214 T _ZN7android11LayerBuffer10postBufferEl
-00023444 T _ZN7android11LayerBuffer12BufferSource10postBufferEl
-000225a4 T _ZN7android11LayerBuffer12BufferSourceC1ERS0_RKNS_8ISurface10BufferHeapE
-00022a90 T _ZN7android11LayerBuffer12BufferSourceC2ERS0_RKNS_8ISurface10BufferHeapE
-0004ee78 B _ZN7android11LayerBuffer14sGrallocModuleE
-000237a0 T _ZN7android11LayerBuffer14unlockPageFlipERKNS_9TransformERNS_6RegionE
-00022a20 T _ZN7android11LayerBuffer15registerBuffersERKNS_8ISurface10BufferHeapE
-00023578 T _ZN7android11LayerBuffer18SurfaceLayerBuffer10postBufferEl
-00023c74 T _ZN7android11LayerBuffer18SurfaceLayerBuffer13createOverlayEjjii
-000235a0 T _ZN7android11LayerBuffer18SurfaceLayerBuffer15registerBuffersERKNS_8ISurface10BufferHeapE
-00023558 T _ZN7android11LayerBuffer18SurfaceLayerBuffer17unregisterBuffersEv
-0002367c T _ZN7android11LayerBuffer18SurfaceLayerBufferC1ERKNS_2spINS_14SurfaceFlingerEEERKNS2_IS0_EE
-000236e4 T _ZN7android11LayerBuffer18SurfaceLayerBufferC2ERKNS_2spINS_14SurfaceFlingerEEERKNS2_IS0_EE
-00023640 T _ZN7android11LayerBuffer18SurfaceLayerBufferD0Ev
-000235e4 T _ZN7android11LayerBuffer18SurfaceLayerBufferD1Ev
-00023654 T _ZN7android11LayerBuffer18SurfaceLayerBufferD2Ev
-0002237c T _ZN7android11LayerBuffer6BufferC1ERKNS_8ISurface10BufferHeapElj
-00022490 T _ZN7android11LayerBuffer6BufferC2ERKNS_8ISurface10BufferHeapElj
-00021980 T _ZN7android11LayerBuffer6Source10postBufferEl
-00023988 T _ZN7android11LayerBufferC1EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
-000239d0 T _ZN7android11LayerBufferC2EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
-0002b100 T _ZN7android11V3D_Compose6CreateEPK20framebuffer_device_t
-000255e4 T _ZN7android12GraphicPlane18setDisplayHardwareEPNS_15DisplayHardwareE
-00024e0c T _ZN7android12GraphicPlane19editDisplayHardwareEv
-00024c44 T _ZN7android12MessageQueue11postMessageERKNS_2spINS_11MessageBaseEEExj
-         U _ZN7android14IPCThreadState13flushCommandsEv
-00026034 T _ZN7android14SurfaceFlinger10addLayer_lERKNS_2spINS_9LayerBaseEEE
-00026c18 T _ZN7android14SurfaceFlinger10onFirstRefEv
-000281bc T _ZN7android14SurfaceFlinger10onTransactEjRKNS_6ParcelEPS1_j
-00028678 T _ZN7android14SurfaceFlinger10readyToRunEv
-0002856c T _ZN7android14SurfaceFlinger10threadLoopEv
-00027fb8 T _ZN7android14SurfaceFlinger11removeLayerERKNS_2spINS_9LayerBaseEEE
-00027920 T _ZN7android14SurfaceFlinger11signalEventEv
-000287e0 T _ZN7android14SurfaceFlinger12bootFinishedEv
-000283f0 T _ZN7android14SurfaceFlinger12destroyLayerEPKNS_9LayerBaseE
-00025c30 T _ZN7android14SurfaceFlinger12graphicPlaneEi
-00024d64 T _ZN7android14SurfaceFlinger12lockPageFlipERKNS0_11LayerVectorE
-00028428 T _ZN7android14SurfaceFlinger12waitForEventEv
-000276c8 T _ZN7android14SurfaceFlinger13captureScreenEiPNS_2spINS_11IMemoryHeapEEEPjS5_Pijj
-00027c38 T _ZN7android14SurfaceFlinger13createSurfaceERKNS_2spINS_6ClientEEEiRKNS_7String8EPNS_22ISurfaceComposerClient14surface_data_tEijjij
-00027f6c T _ZN7android14SurfaceFlinger13freezeDisplayEij
-00026e88 T _ZN7android14SurfaceFlinger13handleRepaintEv
-00026c80 T _ZN7android14SurfaceFlinger13removeLayer_lERKNS_2spINS_9LayerBaseEEE
-00027ba4 T _ZN7android14SurfaceFlinger13removeSurfaceERKNS_2spINS_6ClientEEEi
-00024d90 T _ZN7android14SurfaceFlinger13unlockClientsEv
-00026048 T _ZN7android14SurfaceFlinger14addClientLayerERKNS_2spINS_6ClientEEERKNS1_INS_15LayerBaseClientEEE
-00026d28 T _ZN7android14SurfaceFlinger14destroySurfaceERKNS_2wpINS_15LayerBaseClientEEE
-00027260 T _ZN7android14SurfaceFlinger14handlePageFlipEv
-000279a4 T _ZN7android14SurfaceFlinger14screenAcquiredEi
-000279bc T _ZN7android14SurfaceFlinger14screenReleasedEi
-000279f4 T _ZN7android14SurfaceFlinger14setClientStateERKNS_2spINS_6ClientEEEiPKNS_13layer_state_tE
-00027ee0 T _ZN7android14SurfaceFlinger14setOrientationEiij
-00025c38 T _ZN7android14SurfaceFlinger14unlockPageFlipERKNS0_11LayerVectorE
-00026df8 T _ZN7android14SurfaceFlinger15composeSurfacesERKNS_6RegionE
-00027604 T _ZN7android14SurfaceFlinger15postFramebufferEv
-000276a4 T _ZN7android14SurfaceFlinger15postMessageSyncERKNS_2spINS_11MessageBaseEEExj
-00027f3c T _ZN7android14SurfaceFlinger15unfreezeDisplayEij
-00026378 T _ZN7android14SurfaceFlinger16createConnectionEv
-00026af4 T _ZN7android14SurfaceFlinger16createDimSurfaceERKNS_2spINS_6ClientEEEijjj
-000277fc T _ZN7android14SurfaceFlinger16postMessageAsyncERKNS_2spINS_11MessageBaseEEExj
-00026f4c T _ZN7android14SurfaceFlinger17commitTransactionEv
-00026b38 T _ZN7android14SurfaceFlinger17createBlurSurfaceERKNS_2spINS_6ClientEEEijjj
-00024dac T _ZN7android14SurfaceFlinger17debugFlashRegionsEv
-000275a0 T _ZN7android14SurfaceFlinger17handleTransactionEj
-00026da0 T _ZN7android14SurfaceFlinger18purgatorizeLayer_lERKNS_2spINS_9LayerBaseEEE
-00027810 T _ZN7android14SurfaceFlinger18turnElectronBeamOnEi
-00026b7c T _ZN7android14SurfaceFlinger19createNormalSurfaceERKNS_2spINS_6ClientEEEijjjRi
-000256e4 T _ZN7android14SurfaceFlinger19getTransactionFlagsEj
-00027890 T _ZN7android14SurfaceFlinger19handleConsoleEventsEv
-00027388 T _ZN7android14SurfaceFlinger19handleDestroyLayersEv
-000279d4 T _ZN7android14SurfaceFlinger19setTransactionFlagsEj
-00027770 T _ZN7android14SurfaceFlinger19turnElectronBeamOffEi
-00026c40 T _ZN7android14SurfaceFlinger20peekTransactionFlagsEj
-00026f8c T _ZN7android14SurfaceFlinger21computeVisibleRegionsERNS0_11LayerVectorERNS_6RegionES4_
-000265a0 T _ZN7android14SurfaceFlinger21openGlobalTransactionEv
-00028f4c T _ZN7android14SurfaceFlinger22closeGlobalTransactionEv
-00025b08 T _ZN7android14SurfaceFlinger22createClientConnectionEv
-00025c84 T _ZN7android14SurfaceFlinger23captureScreenImplLockedEiPNS_2spINS_11IMemoryHeapEEEPjS5_Pijj
-0002744c T _ZN7android14SurfaceFlinger23handleTransactionLockedEj
-00026ab0 T _ZN7android14SurfaceFlinger24createPushBuffersSurfaceERKNS_2spINS_6ClientEEEijjj
-00027fa0 T _ZN7android14SurfaceFlinger25invalidateLayerVisibilityERKNS_2spINS_9LayerBaseEEE
-00024db0 T _ZN7android14SurfaceFlinger27renderScreenToTextureLockedEiPjPfS2_
-0002792c T _ZN7android14SurfaceFlinger28turnElectronBeamOnImplLockedEi
-000265e8 T _ZN7android14SurfaceFlinger29turnElectronBeamOffImplLockedEi
-00024db8 T _ZN7android14SurfaceFlinger33electronBeamOnAnimationImplLockedEv
-00024db4 T _ZN7android14SurfaceFlinger34electronBeamOffAnimationImplLockedEv
-00026750 T _ZN7android14SurfaceFlinger4dumpEiRKNS_6VectorINS_8String16EEE
-00025578 T _ZN7android14SurfaceFlinger4initEv
-0002817c T _ZN7android14SurfaceFlinger8addLayerERKNS_2spINS_9LayerBaseEEE
-00028af0 T _ZN7android14SurfaceFlingerC1Ev
-00028d2c T _ZN7android14SurfaceFlingerC2Ev
-000289b0 T _ZN7android14SurfaceFlingerD0Ev
-00028868 T _ZN7android14SurfaceFlingerD1Ev
-000289c4 T _ZN7android14SurfaceFlingerD2Ev
-0001d710 T _ZN7android15DisplayHardware10AllocGEBufEjRPjS2_
-0001d6e4 T _ZN7android15DisplayHardware14TextureComposeEijjjffjRKNS_4RectE
-0001d6c8 T _ZN7android15DisplayHardware18tileConvertRequestEjjjjij
-0001d6a8 T _ZN7android15DisplayHardware4finiEv
-0001d808 T _ZN7android15DisplayHardware4initEj
-0001d71c T _ZN7android15DisplayHardware9FreeGEBufEjRPjS2_
-0001d9fc T _ZN7android15DisplayHardwareC1ERKNS_2spINS_14SurfaceFlingerEEEj
-0001da18 T _ZN7android15DisplayHardwareC2ERKNS_2spINS_14SurfaceFlingerEEEj
-0001d9b4 T _ZN7android15DisplayHardwareD1Ev
-0001d9d8 T _ZN7android15DisplayHardwareD2Ev
-00020808 T _ZN7android15LayerBaseClient10getSurfaceEv
-00020490 T _ZN7android15LayerBaseClient7Surface10onTransactEjRKNS_6ParcelEPS2_j
-00020440 T _ZN7android15LayerBaseClient7Surface10postBufferEl
-00020448 T _ZN7android15LayerBaseClient7Surface13createOverlayEjjii
-00020428 T _ZN7android15LayerBaseClient7Surface13requestBufferEijjjj
-00020430 T _ZN7android15LayerBaseClient7Surface14setBufferCountEi
-00020438 T _ZN7android15LayerBaseClient7Surface15registerBuffersERKNS_8ISurface10BufferHeapE
-00020444 T _ZN7android15LayerBaseClient7Surface17unregisterBuffersEv
-00020688 T _ZN7android15LayerBaseClient7SurfaceC1ERKNS_2spINS_14SurfaceFlingerEEEiRKNS2_IS0_EE
-0002070c T _ZN7android15LayerBaseClient7SurfaceC2ERKNS_2spINS_14SurfaceFlingerEEEiRKNS2_IS0_EE
-000205bc T _ZN7android15LayerBaseClient7SurfaceD0Ev
-00020534 T _ZN7android15LayerBaseClient7SurfaceD1Ev
-000205d0 T _ZN7android15LayerBaseClient7SurfaceD2Ev
-000217f0 T _ZN7android15LayerBaseClientC1EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
-0002185c T _ZN7android15LayerBaseClientC2EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
+  grep ' U ' | \
+  grep -Ei 'frame|fb|gralloc|egl|ioctl|mmap|open|close|write|post|queue|buffer|display|surface|gem|v3d'
+
+echo
+echo '=== RELOCATIONS AROUND GRAPHICS CALLS ==='
+
+/opt/homebrew/opt/llvm/bin/llvm-readelf \
+  -r \
+  /tmp/totoro-libsurfaceflinger.so | \
+  grep -Ei '1d[0-9a-f]+|27[0-9a-f]+|gralloc|framebuffer|egl|surface'
+=== DISPLAY HARDWARE: TARGETED DISASSEMBLY ===
+
+/tmp/totoro-libsurfaceflinger.so:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+0001d62c <_ZN7android10blurFilterEPK10GGLSurfaceii>:
+   1d680: eafffe00     	b	0x1ce88 <_ZN7android8clz_implEi+0x6b4> @ imm = #-0x800
+
+0001d684 <_ZNK7android15DisplayHardware7getDpiXEv>:
+   1d684: 47706a40     	ldrbmi	r6, [r0, -r0, asr #20]!
+
+0001d688 <_ZNK7android15DisplayHardware7getDpiYEv>:
+   1d688: 47706a80     	ldrbmi	r6, [r0, -r0, lsl #21]!
+
+0001d68c <_ZNK7android15DisplayHardware10getDensityEv>:
+   1d68c: 47706b00     	ldrbmi	r6, [r0, -r0, lsl #22]!
+
+0001d690 <_ZNK7android15DisplayHardware14getRefreshRateEv>:
+   1d690: 47706ac0     	ldrbmi	r6, [r0, -r0, asr #21]!
+
+0001d694 <_ZNK7android15DisplayHardware8getWidthEv>:
+   1d694: 47706b40     	ldrbmi	r6, [r0, -r0, asr #22]!
+
+0001d698 <_ZNK7android15DisplayHardware9getHeightEv>:
+   1d698: 47706b80     	ldrbmi	r6, [r0, -r0, lsl #23]!
+
+0001d69c <_ZNK7android15DisplayHardware9getFormatEv>:
+   1d69c: 47706bc0     	ldrbmi	r6, [r0, -r0, asr #23]!
+
+0001d6a0 <_ZNK7android15DisplayHardware17getMaxTextureSizeEv>:
+   1d6a0: 47706cc0     	ldrbmi	r6, [r0, -r0, asr #25]!
+
+0001d6a4 <_ZNK7android15DisplayHardware18getMaxViewportDimsEv>:
+   1d6a4: 47706c80     	ldrbmi	r6, [r0, -r0, lsl #25]!
+
+0001d6a8 <_ZN7android15DisplayHardware4finiEv>:
+   1d6a8: 1c04b510     	<unknown>
+   1d6ac: 28006900     	stmdahs	r0, {r8, r11, sp, lr}
+   1d6b0: 6801d002     	stmdavs	r1, {r1, r12, lr, pc}
+   1d6b4: 4798698b     	ldrmi	r6, [r8, r11, lsl #19]
+   1d6b8: 61202000     	<unknown>
+   1d6bc: 6bc26d60     	blvs	0xff0b8c44 <pp_wait_mutex+0xffffffffff069d6c> @ imm = #-0xf64a80
+   1d6c0: bd104790     	ldclt	p7, c4, [r0, #-576]
+
+0001d6c4 <_ZNK7android15DisplayHardware16getPageFlipCountEv>:
+   1d6c4: 47706c40     	ldrbmi	r6, [r0, -r0, asr #24]!
+
+0001d6c8 <_ZN7android15DisplayHardware18tileConvertRequestEjjjjij>:
+   1d6c8: b085b530     	addlt	r11, r5, r0, lsr r5
+   1d6cc: 9d086900     	stcls	p9, c6, [r8, #-0]
+   1d6d0: 95006804     	strls	r6, [r0, #-0x804]
+   1d6d4: 95019d09     	strls	r9, [r1, #-0xd09]
+   1d6d8: 95029d0a     	strls	r9, [r2, #-0xd0a]
+   1d6dc: 47a06824     	strmi	r6, [r0, r4, lsr #16]!
+   1d6e0: bd30b005     	ldclt	p0, c11, [r0, #-20]!
+
+0001d6e4 <_ZN7android15DisplayHardware14TextureComposeEijjjffjRKNS_4RectE>:
+   1d6e4: b087b530     	addlt	r11, r7, r0, lsr r5
+   1d6e8: 9d0a6900     	stcls	p9, c6, [r10, #-0]
+   1d6ec: 95006804     	strls	r6, [r0, #-0x804]
+   1d6f0: 95019d0b     	strls	r9, [r1, #-0xd0b]
+   1d6f4: 95029d0c     	strls	r9, [r2, #-0xd0c]
+   1d6f8: 95039d0d     	strls	r9, [r3, #-0xd0d]
+   1d6fc: 95049d0e     	strls	r9, [r4, #-0xd0e]
+   1d700: 47a068a4     	strmi	r6, [r0, r4, lsr #17]!
+   1d704: bd30b007     	ldclt	p0, c11, [r0, #-28]!
+
+0001d708 <_ZNK7android15DisplayHardware8getFlagsEv>:
+   1d708: 47706c00     	ldrbmi	r6, [r0, -r0, lsl #24]!
+
+0001d70c <_ZNK7android15DisplayHardware11makeCurrentEv>:
+   1d70c: 46c04770     	uxtab16mi	r4, r0, r0, ror #8
+
+0001d710 <_ZN7android15DisplayHardware10AllocGEBufEjRPjS2_>:
+   1d710: 6900b510     	stmdbvs	r0, {r4, r8, r10, r12, sp, pc}
+   1d714: 68e46804     	stmvs	r4!, {r2, r11, sp, lr} ^
+   1d718: bd1047a0     	ldclt	p7, c4, [r0, #-640]
+
+0001d71c <_ZN7android15DisplayHardware9FreeGEBufEjRPjS2_>:
+   1d71c: 6900b510     	stmdbvs	r0, {r4, r8, r10, r12, sp, pc}
+   1d720: 69246804     	stmdbvs	r4!, {r2, r11, sp, lr}
+   1d724: bd1047a0     	ldclt	p7, c4, [r0, #-640]
+
+0001d728 <_ZNK7android15DisplayHardware4flipERKNS_6RegionE>:
+   1d728: 6c03b5f0     	<unknown>
+   1d72c: 1c04b085     	<unknown>
+   1d730: d508039a     	strle	r0, [r8, #-0x39a]
+   1d734: 6d00466a     	stcvs	p6, c4, [r0, #-424]
+   1d738: c2e0c9e0     	rscgt	r12, r0, #224, #18
+   1d73c: 60116809     	andsvs	r6, r1, r9, lsl #16
+   1d740: f7fe4669     	<unknown>
+   1d744: 6d25e9d8     	stcvs	p9, c14, [r5, #-864]!
+   1d748: 1c286c61     	stcne	p12, c6, [r8], #-388
+   1d74c: 64613101     	strbtvs	r3, [r1], #-257
+   1d750: 6d2f68e1     	stcvs	p8, c6, [pc, #-900]!
+   1d754: 200047b8     	strhhs	r4, [r0], -r8
+   1d758: 60e01c21     	rscvs	r1, r0, r1, lsr #24
+   1d75c: 6cae310c     	stcvs	p1, c3, [lr], #48
+   1d760: 47b01c28     	ldrmi	r1, [r0, r8, lsr #24]!
+   1d764: 1c2868e1     	stcne	p8, c6, [r8], #-900
+   1d768: 47a06cec     	strmi	r6, [r0, r12, ror #25]!
+   1d76c: bdf0b005     	ldcllt	p0, c11, [r0, #20]!
+
+0001d770 <_ZNK7android15DisplayHardware21getCurrentBufferIndexEv>:
+   1d770: 6d00b510     	stcvs	p5, c11, [r0, #-64]
+   1d774: e9c4f7fe     	stmib	r4, {r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc} ^
+   1d778: 46c0bd10     	<unknown>
+
+0001d77c <_ZNK7android15DisplayHardware23getDisplayBufferAddressEv>:
+   1d77c: 1c04b510     	<unknown>
+   1d780: fff6f7ff     	<unknown>
+   1d784: d1012800     	mrsle	r2, apsr
+   1d788: e00069e0     	and	r6, r0, r0, ror #19
+   1d78c: bd106a20     	vldrlt	s12, [r0, #-128]
+
+0001d790 <_ZNK7android15DisplayHardware18compositionRequestEv>:
+   1d790: 6904b570     	stmdbvs	r4, {r4, r5, r6, r8, r10, r12, sp, pc}
+   1d794: 685d6823     	ldmdavs	sp, {r0, r1, r5, r11, sp, lr} ^
+   1d798: ffeaf7ff     	<unknown>
+   1d79c: 1c201c01     	stcne	p12, c1, [r0], #-4
+   1d7a0: bd7047a8     	ldcllt	p7, c4, [r0, #-672]!
+
+0001d7a4 <_ZNK7android15DisplayHardware19compositionCompleteEv>:
+   1d7a4: 1c04b510     	<unknown>
+   1d7a8: fff2f7ff     	<unknown>
+   1d7ac: f7fe6d20     	<unknown>
+   1d7b0: bd10e9ae     	ldclt	p9, c14, [r0, #-696]
+
+0001d7b4 <_ZNK7android15DisplayHardware13acquireScreenEv>:
+   1d7b4: f000b510     	<unknown>
+   1d7b8: bd10f98f     	ldclt	p9, c15, [r0, #-572]
+
+0001d7bc <_ZNK7android15DisplayHardware13releaseScreenEv>:
+   1d7bc: f000b510     	<unknown>
+   1d7c0: bd10f97f     	ldclt	p9, c15, [r0, #-508]
+   1d7c4: 1c04b510     	<unknown>
+   1d7c8: e9a6f7fe     	stmib	r6!, {r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc}
+   1d7cc: d1082801     	<unknown>
+   1d7d0: 2c003c68     	<unknown>
+   1d7d4: 1c20d005     	stcne	p0, c13, [r0], #-20
+   1d7d8: e9a4f7fe     	stmib	r4!, {r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc}
+   1d7dc: f7fe1c20     	<unknown>
+   1d7e0: bd10e9a8     	ldclt	p9, c14, [r0, #-672]
+
+0001d7e4 <_ZN7android2spINS_23FramebufferNativeWindowEEaSEPS1_>:
+   1d7e4: 1c04b570     	<unknown>
+   1d7e8: d0031e0d     	andle	r1, r3, sp, lsl #28
+   1d7ec: 30681c28     	rsblo	r1, r8, r8, lsr #24
+   1d7f0: e9a4f7fe     	stmib	r4!, {r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc}
+   1d7f4: 28006820     	stmdahs	r0, {r5, r11, sp, lr}
+   1d7f8: 3068d003     	rsblo	sp, r8, r3
+   1d7fc: f7ff1c21     	<unknown>
+   1d800: 6025ffe1     	eorvs	pc, r5, r1, ror #31
+   1d804: bd701c20     	ldcllt	p12, c1, [r0, #-128]!
+
+=== SURFACEFLINGER POST FRAMEBUFFER ===
+
+/tmp/totoro-libsurfaceflinger.so:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+000275a0 <_ZN7android14SurfaceFlinger17handleTransactionEj>:
+   275a0: 1c05b5f0     	<unknown>
+   275a4: 354cb083     	strblo	r11, [r12, #-0x83]
+   275a8: 1c281c04     	stcne	p12, c1, [r8], #-16
+   275ac: f7f49501     	<unknown>
+   275b0: 2001eb5c     	andhs	lr, r1, r12, asr r11
+   275b4: ee7cf7f4     	mrc	p7, #0x3, apsr_nzcv, c12, c4, #0x7
+   275b8: 21a61c0e     	<unknown>
+   275bc: 00881c05     	addeq	r1, r8, r5, lsl #24
+   275c0: 21031827     	<unknown>
+   275c4: 607e603d     	rsbsvs	r6, lr, sp, lsr r0
+   275c8: f7fe1c20     	<unknown>
+   275cc: 1c01f88b     	<unknown>
+   275d0: f7ff1c20     	<unknown>
+   275d4: 2001ff3b     	andhs	pc, r1, r11, lsr pc
+   275d8: ee6af7f4     	mcr	p7, #0x3, pc, c10, c4, #0x7
+   275dc: 009a23a8     	addseq	r2, r10, r8, lsr #7
+   275e0: 1c0b18a4     	<unknown>
+   275e4: 1b521c02     	blne	0x14ae5f4 <pp_wait_mutex+0x145f71c> @ imm = #0x1487008
+   275e8: 1c1541b3     	<unknown>
+   275ec: 60251c1e     	eorvs	r1, r5, lr, lsl r12
+   275f0: 23006066     	<unknown>
+   275f4: 603b2400     	eorsvs	r2, r11, r0, lsl #8
+   275f8: 9801607c     	stmdals	r1, {r2, r3, r4, r5, r6, sp, lr}
+   275fc: eb40f7f4     	bl	0x10655d4 <pp_wait_mutex+0x10166fc> @ imm = #0x103dfd0
+   27600: bdf0b003     	ldcllt	p0, c11, [r0, #12]!
+
+00027604 <_ZN7android14SurfaceFlinger15postFramebufferEv>:
+   27604: 2784b5f0     	<unknown>
+   27608: 00bd2682     	adcseq	r2, sp, r2, lsl #13
+   2760c: 594200b1     	stmdbpl	r2, {r0, r4, r5, r7} ^
+   27610: 58401c04     	stmdapl	r0, {r2, r10, r11, r12} ^
+   27614: 1a13b083     	bne	0x513828 <pp_wait_mutex+0x4c4950> @ imm = #0x4ec20c
+   27618: dd362b00     	vldmdble	r6!, {d2}
+   2761c: 26832785     	strhs	r2, [r3], r5, lsl #15
+   27620: 00b100bd     	ldrhteq	r0, [r1], sp
+   27624: 58605962     	stmdapl	r0!, {r1, r5, r6, r8, r11, r12, lr} ^
+   27628: 2b001a13     	blhs	0x2de7c <PPCheckConfig+0x4d0> @ imm = #0x684c
+   2762c: 2100dd2d     	<unknown>
+   27630: f7fe1c20     	<unknown>
+   27634: f7fdfafd     	<unknown>
+   27638: 27a2fbe7     	strhs	pc, [r2, r7, ror #23]!
+   2763c: 20019001     	andhs	r9, r1, r1
+   27640: ee36f7f4     	mrc	p7, #0x1, apsr_nzcv, c6, c4, #0x7
+   27644: 18a700ba     	stmne	r7!, {r1, r3, r4, r5, r7}
+   27648: 1c0e1c05     	<unknown>
+   2764c: 00882182     	addeq	r2, r8, r2, lsl #3
+   27650: 603d1823     	eorsvs	r1, sp, r3, lsr #16
+   27654: 1c19607e     	<unknown>
+   27658: 93009801     	<unknown>
+   2765c: f864f7f6     	<unknown>
+   27660: f7f42001     	<unknown>
+   27664: 22a4ee26     	adchs	lr, r4, #608
+   27668: 18e40093     	stmne	r4!, {r0, r1, r4, r7} ^
+   2766c: 1c0b1c02     	<unknown>
+   27670: 41b31b52     	<unknown>
+   27674: 1c151c1e     	<unknown>
+   27678: 60666025     	rsbvs	r6, r6, r5, lsr #32
+   2767c: 24002300     	strhs	r2, [r0], #-768
+   27680: 607c603b     	rsbsvs	r6, r12, r11, lsr r0
+   27684: f7f49800     	<unknown>
+   27688: b003ebec     	andlt	lr, r3, r12, ror #23
+   2768c: 46c0bdf0     	<unknown>
+   27690: 6803b510     	stmdavs	r3, {r4, r8, r10, r12, sp, pc}
+   27694: d0032b00     	andle	r2, r3, r0, lsl #22
+   27698: 1c111c08     	<unknown>
+   2769c: ef22f7f4     	svc	#0x22f7f4
+   276a0: 46c0bd10     	<unknown>
+
+000276a4 <_ZN7android14SurfaceFlinger15postMessageSyncERKNS_2spINS_11MessageBaseEEExj>:
+   276a4: b083b530     	addlt	r11, r3, r0, lsr r5
+   276a8: 99061c0c     	stmdbls	r6, {r2, r3, r10, r11, r12}
+   276ac: 91003034     	<unknown>
+   276b0: f7fd1c21     	<unknown>
+   276b4: 1e05fac7     	vmlsne.f32	s30, s11, s14
+   276b8: 6820d103     	stmdavs	r0!, {r0, r1, r8, r12, lr, pc}
+   276bc: f7f63018     	<unknown>
+   276c0: b003fc0d     	andlt	pc, r3, sp, lsl #24
+   276c4: bd301c28     	ldclt	p12, c1, [r0, #-160]!
+
+=== SURFACEFLINGER REPAINT / COMPOSITION / PAGE FLIP ===
+
+/tmp/totoro-libsurfaceflinger.so:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+00026dc0 <_ZNK7android14SurfaceFlinger12drawWormholeEv>:
+   26df0: b00ae832     	andlt	lr, r10, r2, lsr r8
+   26df4: 46c0bd10     	<unknown>
+
+00026df8 <_ZN7android14SurfaceFlinger15composeSurfacesERKNS_6RegionE>:
+   26df8: b08fb5f0     	strdlt	r11, r12, [pc], r0
+   26dfc: 268b278d     	strhs	r2, [r11], sp, lsl #15
+   26e00: 00bc9103     	adcseq	r9, r12, r3, lsl #2
+   26e04: 590200b1     	stmdbpl	r2, {r0, r4, r5, r7}
+   26e08: 58401c05     	stmdapl	r0, {r0, r2, r10, r11, r12} ^
+   26e0c: 2b001a13     	blhs	0x2d660 <SetPpFrameBufferWidth+0x8> @ imm = #0x684c
+   26e10: 278edd08     	strhs	sp, [lr, r8, lsl #26]
+   26e14: 00bc268c     	adcseq	r2, r12, r12, lsl #13
+   26e18: 592a00b1     	stmdbpl	r10!, {r0, r4, r5, r7}
+   26e1c: 1a135868     	bne	0x4fcfc4 <pp_wait_mutex+0x4ae0ec> @ imm = #0x4d61a0
+   26e20: dc252b00     	<unknown>
+   26e24: 00a1249c     	umlaleq	r2, r1, r12, r4
+   26e28: 586a209b     	stmdapl	r10!, {r0, r1, r3, r4, r7, sp} ^
+   26e2c: 92020083     	andls	r0, r2, #131
+   26e30: 93012700     	<unknown>
+   26e34: e017ac05     	ands	r10, r7, r5, lsl #24
+   26e38: 00b99b01     	adcseq	r9, r9, r1, lsl #22
+   26e3c: 58ee1c20     	stmpl	lr!, {r5, r10, r11, r12} ^
+   26e40: 99031876     	stmdbls	r3, {r1, r2, r4, r5, r6, r11, r12}
+   26e44: 32106832     	andslo	r6, r0, #3276800
+   26e48: ea2cf7f5     	b	0xb64e24 <pp_wait_mutex+0xb15f4c> @ imm = #0xb3dfd4
+   26e4c: 682068a2     	stmdavs	r0!, {r1, r5, r7, r11, sp, lr}
+   26e50: 2b001a13     	blhs	0x2d6a4 <GetPpFrameBufferWidth+0x8> @ imm = #0x684c
+   26e54: 68e2dd04     	stmvs	r2!, {r2, r8, r10, r11, r12, lr, pc} ^
+   26e58: 1a506861     	bne	0x1440fe4 <pp_wait_mutex+0x13f210c> @ imm = #0x141a184
+   26e5c: dc0b2800     	<unknown>
+   26e60: f7f41c20     	<unknown>
+   26e64: 3701eff8     	<unknown>
+   26e68: 429f9b02     	addsmi	r9, pc, #2048
+   26e6c: e009d3e4     	and	sp, r9, r4, ror #7
+   26e70: f7ff1c28     	<unknown>
+   26e74: e7d5ffa5     	ldrb	pc, [r5, r5, lsr #31]
+   26e78: 68016830     	stmdavs	r1, {r4, r5, r11, sp, lr}
+   26e7c: 1c216a0e     	<unknown>
+   26e80: e7ed47b0     	<unknown>
+   26e84: bdf0b00f     	ldcllt	p0, c11, [r0, #60]!
+
+00026e88 <_ZN7android14SurfaceFlinger13handleRepaintEv>:
+   26e88: 2582b5f0     	strhs	r11, [r2, #0x5f0]
+   26e8c: 188700aa     	stmne	r7, {r1, r3, r5, r7}
+   26e90: 18853a48     	stmne	r5, {r3, r6, r9, r11, r12, sp}
+   26e94: 1c291c04     	stcne	p12, c1, [r9], #-16
+   26e98: 1c38b08d     	ldcne	p0, c11, [r8], #-564
+   26e9c: eff2f7f4     	svc	#0xf2f7f4
+   26ea0: 23822084     	orrhs	r2, r2, #132
+   26ea4: 00990086     	addseq	r0, r9, r6, lsl #1
+   26ea8: 586059a2     	stmdapl	r0!, {r1, r5, r7, r8, r11, r12, lr} ^
+   26eac: 2b001a13     	blhs	0x2d700 <SetPpOvercrossRightSize+0x3c> @ imm = #0x684c
+   26eb0: 2685dd4a     	strhs	sp, [r5], r10, asr #26
+   26eb4: 00b22183     	adcseq	r2, r2, r3, lsl #3
+   26eb8: 58a0008b     	stmpl	r0!, {r0, r1, r3, r7}
+   26ebc: 1b8158e6     	blne	0xfe07d25c <pp_wait_mutex+0xfffffffffe02e384> @ imm = #-0x1fa9c68
+   26ec0: dc3b2900     	ldcle	p9, c2, [r11], #-0
+   26ec4: 1c20e040     	stcne	p0, c14, [r0], #-256
+   26ec8: ff70f7fd     	<unknown>
+   26ecc: 1c202100     	stcne	p1, c2, [r0], #-0
+   26ed0: feaef7fe     	mcr2	p7, #0x5, pc, c14, c14, #0x7
+   26ed4: ff98f7fd     	<unknown>
+   26ed8: f7f61c06     	<unknown>
+   26edc: 2290fc15     	addshs	pc, r0, #5376
+   26ee0: 42180313     	andsmi	r0, r8, #1275068416
+   26ee4: ae08d003     	cdpge	p0, #0x0, c13, c8, c3, #0x0
+   26ee8: d51f0303     	ldrle	r0, [pc, #-0x303]       @ 0x26bed <_ZN7android14SurfaceFlinger19createNormalSurfaceERKNS_2spINS_6ClientEEEijjjRi+0x71>
+   26eec: 2180e004     	orrhs	lr, r0, r4
+   26ef0: 4003028b     	andmi	r0, r3, r11, lsl #5
+   26ef4: ae04d00c     	cdpge	p0, #0x0, c13, c4, c12, #0x0
+   26ef8: 00872082     	addeq	r2, r7, r2, lsl #1
+   26efc: 1c3019e1     	ldcne	p9, c1, [r0], #-900
+   26f00: f7f42210     	<unknown>
+   26f04: 1c28edec     	stcne	p13, c14, [r8], #-944
+   26f08: f7f51c31     	<unknown>
+   26f0c: e00deaaa     	and	lr, sp, r10, lsr #21
+   26f10: 6bb26b70     	blvs	0xfecc1cd8 <pp_wait_mutex+0xfffffffffec72e00> @ imm = #-0x1365240
+   26f14: 90024669     	andls	r4, r2, r9, ror #12
+   26f18: 93011c28     	<unknown>
+   26f1c: 92039300     	andls	r9, r3, #0, #6
+   26f20: ea9ef7f5     	b	0xfe7e4efc <pp_wait_mutex+0xfffffffffe796024> @ imm = #-0x184202c
+   26f24: 1c291c38     	stcne	p12, c1, [r9], #-224
+   26f28: efa0f7f4     	svc	#0xa0f7f4
+   26f2c: 1c291c20     	stcne	p12, c1, [r9], #-128
+   26f30: ff62f7ff     	<unknown>
+   26f34: f7f41c28     	<unknown>
+   26f38: e005ef94     	mul	r5, r4, pc
+   26f3c: 008b219f     	umulleq	r2, r11, pc, r1
+   26f40: 2e0058e6     	cdphs	p8, #0x0, c5, c0, c6, #0x7
+   26f44: e7bed0c2     	ldr	sp, [lr, r2, asr #1]!
+   26f48: bdf0b00d     	ldcllt	p0, c11, [r0, #52]!
+
+00026f4c <_ZN7android14SurfaceFlinger17commitTransactionEv>:
+   26f4c: 1c04b510     	<unknown>
+   26f50: 31501c21     	cmplo	r0, r1, lsr #24
+   26f54: f7f53068     	<unknown>
+   26f58: 1c22ea8a     	<unknown>
+   26f5c: 1c233264     	stcne	p2, c3, [r3], #-400
+   26f60: 1c207811     	stcne	p8, c7, [r0], #-68
+   26f64: 3065337c     	rsblo	r3, r5, r12, ror r3
+   26f68: 1c217019     	stcne	p0, c7, [r1], #-100
+   26f6c: 31667802     	<unknown>
+   26f70: 701a3301     	andsvc	r3, r10, r1, lsl #6
+   26f74: 33017808     	<unknown>
+   26f78: 70182200     	andsvc	r2, r8, r0, lsl #4
+   26f7c: 1c20330e     	stcne	p3, c3, [r0], #-56
+   26f80: 3088701a     	addlo	r7, r8, r10, lsl r0
+   26f84: ee76f7f4     	mrc	p7, #0x3, apsr_nzcv, c6, c4, #0x7
+   26f88: 46c0bd10     	<unknown>
+
+00026f8c <_ZN7android14SurfaceFlinger21computeVisibleRegionsERNS0_11LayerVectorERNS_6RegionES4_>:
+   26f8c: 4fb1b5f0     	svcmi	#0xb1b5f0
+   26f90: 44bd4eb1     	ldrtmi	r4, [sp], #3761
+   26f94: 21001c0f     	<unknown>
+   26f98: 930f920d     	<unknown>
+   26f9c: f7fe9007     	<unknown>
+   26fa0: 1c04fe47     	<unknown>
+   26fa4: ff34f7fd     	<unknown>
+   26fa8: 1c20900e     	stcne	p0, c9, [r0], #-56
+   26fac: ff2cf7fd     	<unknown>
+   26fb0: 2300a98e     	<unknown>
+   26fb4: 6b806b42     	blvs	0xfe041cc4 <pp_wait_mutex+0xfffffffffdff2dec> @ imm = #-0x1fe52f8
+   26fb8: 608a604b     	addvs	r6, r10, r11, asr #32
+   26fbc: a88560c8     	stmge	r5, {r3, r6, r7, sp, lr}
+   26fc0: f7f5938e     	<unknown>
+   26fc4: a87ce8f8     	ldmdage	r12!, {r3, r4, r5, r6, r7, r11, sp, lr, pc} ^
+   26fc8: efcef7f4     	svc	#0xcef7f4
+   26fcc: f7f4a873     	<unknown>
+   26fd0: a86aefcc     	stmdage	r10!, {r2, r3, r6, r7, r8, r9, r10, r11, sp, lr, pc} ^
+   26fd4: efc8f7f4     	svc	#0xc8f7f4
+   26fd8: 466968bd     	<unknown>
+   26fdc: 19ac466a     	stmibne	r12!, {r1, r3, r5, r6, r9, r10, lr}
+   26fe0: 323d3185     	eorslo	r3, sp, #1073741857
+   26fe4: 230000a0     	<unknown>
+   26fe8: 32ff31ff     	rscslo	r3, pc, #-1073741761
+   26fec: 90069504     	andls	r9, r6, r4, lsl #10
+   26ff0: 9105930c     	<unknown>
+   26ff4: 9203ae58     	andls	r10, r3, #88, #28
+   26ff8: 9804e0fe     	stmdals	r4, {r1, r2, r3, r4, r5, r6, r7, sp, lr, pc}
+   26ffc: 38019c06     	stmdalo	r1, {r1, r2, r10, r11, r12, pc}
+   27000: 687d9004     	ldmdavs	sp!, {r2, r12, pc} ^
+   27004: 192d990e     	pushne	{r1, r2, r3, r8, r11, r12, pc}
+   27008: 68036828     	stmdavs	r3, {r3, r5, r11, sp, lr}
+   2700c: 47906bda     	<unknown>
+   27010: 682c9805     	stmdavs	r12!, {r0, r2, r11, r12, pc}
+   27014: efa8f7f4     	svc	#0xa8f7f4
+   27018: f7f41c30     	<unknown>
+   2701c: 9803efa6     	stmdals	r3, {r1, r2, r5, r7, r8, r9, r10, r11, sp, lr, pc}
+   27020: efa2f7f4     	svc	#0xa2f7f4
+   27024: 5c60498d     	stclpl	p9, c4, [r0], #-564
+   27028: d43a07c1     	ldrtle	r0, [r10], #-1985
+   2702c: 005a23d6     	ldrsbeq	r2, [r10], #-54
+   27030: 29005ca1     	stmdbhs	r0, {r0, r5, r7, r10, r11, r12, lr}
+   27034: 6828d035     	stmdavs	r8!, {r0, r2, r4, r5, r12, lr, pc}
+   27038: 6ccb6801     	stclvs	p8, c6, [r11], {1}
+   2703c: 466a4798     	uqadd8mi	r4, r10, r8
+   27040: 920232f4     	andls	r3, r2, #244, #4
+   27044: 1c109001     	<unknown>
+   27048: f7f96829     	<unknown>
+   2704c: 1c30f9b1     	ldcne	p9, c15, [r0], #-708
+   27050: f7f59902     	<unknown>
+   27054: a985ea06     	stmibge	r5, {r1, r2, r9, r11, sp, lr, pc}
+   27058: f7f41c30     	<unknown>
+   2705c: 68b2ef0e     	ldmvs	r2!, {r1, r2, r3, r8, r9, r10, r11, sp, lr, pc}
+   27060: 1a506831     	bne	0x144112c <pp_wait_mutex+0x13f2254> @ imm = #0x141a0c4
+   27064: dd1c2800     	ldcle	p8, c2, [r12, #-0]
+   27068: 687368f2     	ldmdavs	r3!, {r1, r4, r5, r6, r7, r11, sp, lr} ^
+   2706c: 28001ad0     	stmdahs	r0, {r4, r6, r7, r9, r11, r12}
+   27070: e0e9dd00     	rsc	sp, r9, r0, lsl #26
+   27074: 6829e015     	stmdavs	r9!, {r0, r2, r4, sp, lr, pc}
+   27078: 31341c30     	teqlo	r4, r0, lsr r12
+   2707c: e9fcf7f5     	ldmib	r12!, {r0, r2, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc} ^
+   27080: 23d66829     	bicshs	r6, r6, #2686976
+   27084: 005831f0     	ldrsheq	r3, [r8], #-16
+   27088: 5c21680a     	stcpl	p8, c6, [r1], #-40
+   2708c: d10829ff     	strdle	r2, r3, [r8, -pc]
+   27090: 2c009c01     	<unknown>
+   27094: 0611d105     	ldreq	sp, [r1], -r5, lsl #2
+   27098: 9805d403     	stmdals	r5, {r0, r1, r10, r12, lr, pc}
+   2709c: f7f41c31     	<unknown>
+   270a0: 466aeee6     	strbtmi	lr, [r10], -r6, ror #29
+   270a4: 32ff3219     	rscslo	r3, pc, #-1879048191
+   270a8: 1c10ac73     	<unknown>
+   270ac: 1c219201     	stcne	p2, c9, [r1], #-4
+   270b0: f7f51c32     	<unknown>
+   270b4: 9901e8f8     	stmdbls	r1, {r3, r4, r5, r6, r7, r11, sp, lr, pc}
+   270b8: f7f49803     	<unknown>
+   270bc: 9801eed8     	stmdals	r1, {r3, r4, r6, r7, r9, r10, r11, sp, lr, pc}
+   270c0: eec8f7f4     	mcr	p7, #0x6, pc, c8, c4, #0x7
+   270c4: 1c201c31     	stcne	p12, c1, [r0], #-196
+   270c8: eedcf7f4     	mrc	p7, #0x6, apsr_nzcv, c12, c4, #0x7
+   270cc: 1c30a97c     	ldcne	p9, c10, [r0], #-496
+   270d0: e9d2f7f5     	ldmib	r2, {r0, r2, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc} ^
+   270d4: 46696828     	strbtmi	r6, [r9], -r8, lsr #16
+   270d8: 7b0231a9     	blvc	0xb3784 <pp_wait_mutex+0x648ac> @ imm = #0x8c6a4
+   270dc: 910b31ff     	strdls	r3, r4, [r11, -pc]
+   270e0: d00c2a00     	andle	r2, r12, r0, lsl #20
+   270e4: 1c311c08     	ldcne	p12, c1, [r1], #-32
+   270e8: eec0f7f4     	mcr	p7, #0x6, pc, c0, c4, #0x7
+   270ec: 980b6829     	stmdals	r11, {r0, r3, r5, r11, sp, lr}
+   270f0: f7f43110     	<unknown>
+   270f4: 682beec8     	stmdavs	r11!, {r3, r6, r7, r9, r10, r11, sp, lr, pc}
+   270f8: 73192100     	tstvc	r9, #0, #2
+   270fc: 466ae043     	strbtmi	lr, [r10], -r3, asr #32
+   27100: 1c1032f4     	<unknown>
+   27104: 1c319201     	ldcne	p2, c9, [r1], #-4
+   27108: f7f59a03     	<unknown>
+   2710c: 466be9bc     	<unknown>
+   27110: 930233d0     	<unknown>
+   27114: 1c186829     	<unknown>
+   27118: f7f43110     	<unknown>
+   2711c: 4669ee96     	uqadd8mi	lr, r9, r6
+   27120: 910831ac     	smlatbls	r8, r12, r1, r3
+   27124: 98086829     	stmdals	r8, {r0, r3, r5, r11, sp, lr}
+   27128: f7f43158     	<unknown>
+   2712c: 466aee8e     	strbtmi	lr, [r10], -lr, lsl #29
+   27130: 1c103288     	<unknown>
+   27134: 99029209     	stmdbls	r2, {r0, r3, r9, r12, pc}
+   27138: f7f59a08     	<unknown>
+   2713c: 466be9a4     	strbtmi	lr, [r11], -r4, lsr #19
+   27140: 1c183364     	<unknown>
+   27144: 9901ac10     	stmdbls	r1, {r4, r10, r11, sp, pc}
+   27148: 930a9a09     	<unknown>
+   2714c: e99af7f5     	ldmib	r10, {r0, r2, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc}
+   27150: 1c209a0a     	<unknown>
+   27154: f7f51c31     	<unknown>
+   27158: 1c21e99c     	stcne	p9, c14, [r1], #-624
+   2715c: f7f4980b     	<unknown>
+   27160: 1c20ee86     	stcne	p14, c14, [r0], #-536
+   27164: ee76f7f4     	mrc	p7, #0x3, apsr_nzcv, c6, c4, #0x7
+   27168: f7f4980a     	<unknown>
+   2716c: 9809ee74     	stmdals	r9, {r2, r4, r5, r6, r9, r10, r11, sp, lr, pc}
+   27170: ee70f7f4     	mrc	p7, #0x3, apsr_nzcv, c0, c4, #0x7
+   27174: f7f49808     	<unknown>
+   27178: 9802ee6e     	stmdals	r2, {r1, r2, r3, r5, r6, r9, r10, r11, sp, lr, pc}
+   2717c: ee6af7f4     	mcr	p7, #0x3, pc, c10, c4, #0x7
+   27180: f7f49801     	<unknown>
+   27184: 4669ee68     	strbtmi	lr, [r9], -r8, ror #28
+   27188: 31ff31a9     	mvnslo	r3, r9, lsr #3
+   2718c: 9101ac7c     	<unknown>
+   27190: 1c211c08     	stcne	p12, c1, [r1], #-32
+   27194: e970f7f5     	ldmdb	r0!, {r0, r2, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc} ^
+   27198: 980d9901     	stmdals	sp, {r0, r8, r11, r12, pc}
+   2719c: ee72f7f4     	mrc	p7, #0x3, apsr_nzcv, c2, c4, #0x7
+   271a0: 99051c20     	stmdbls	r5, {r5, r10, r11, r12}
+   271a4: ee6ef7f4     	mcr	p7, #0x3, pc, c14, c4, #0x7
+   271a8: 1c316828     	ldcne	p8, c6, [r1], #-160
+   271ac: 6b626804     	blvs	0x18c11c4 <pp_wait_mutex+0x18722ec> @ imm = #0x189a010
+   271b0: 68284790     	stmdavs	r8!, {r4, r7, r8, r9, r10, lr}
+   271b4: 6b8b6801     	blvs	0xfe3011c0 <pp_wait_mutex+0xfffffffffe2b22e8> @ imm = #-0x1d25ffc
+   271b8: 47989903     	ldrmi	r9, [r8, r3, lsl #18]
+   271bc: 68046828     	stmdavs	r4, {r3, r5, r11, sp, lr}
+   271c0: 47a86de5     	strmi	r6, [r8, r5, ror #27]!
+   271c4: d00b2800     	andle	r2, r11, r0, lsl #16
+   271c8: 683568b3     	ldmdavs	r5!, {r0, r1, r4, r5, r7, r11, sp, lr}
+   271cc: 28001b58     	stmdahs	r0, {r3, r4, r6, r8, r9, r11, r12}
+   271d0: 68f2dd06     	ldmvs	r2!, {r1, r2, r8, r10, r11, r12, lr, pc} ^
+   271d4: 1a546871     	bne	0x15413a0 <pp_wait_mutex+0x14f24c8> @ imm = #0x151a1c4
+   271d8: dd012c00     	stcle	p12, c2, [r1, #-0]
+   271dc: 900c2001     	andls	r2, r12, r1
+   271e0: f7f49803     	<unknown>
+   271e4: 1c30ee38     	ldcne	p14, c14, [r0], #-224
+   271e8: ee34f7f4     	mrc	p7, #0x1, apsr_nzcv, c4, c4, #0x7
+   271ec: f7f49805     	<unknown>
+   271f0: 9d06ee32     	stcls	p14, c14, [r6, #-200]
+   271f4: 95063d04     	strls	r3, [r6, #-0xd04]
+   271f8: 2b009b04     	blhs	0x4de10 <_ZTCN7android10UserClientE0_NS_23BnSurfaceComposerClientE+0x90> @ imm = #0x26c10
+   271fc: e6fcd000     	ldrbt	sp, [r12], r0
+   27200: 980d9d07     	stmdals	sp, {r0, r1, r2, r8, r10, r11, r12, pc}
+   27204: 35ff35e5     	ldrblo	r3, [pc, #0x5e5]!
+   27208: f7f41c29     	<unknown>
+   2720c: 1c28ee3c     	stcne	p14, c14, [r8], #-240
+   27210: ee26f7f4     	mcr	p7, #0x1, pc, c6, c4, #0x7
+   27214: 20b59907     	adcshs	r9, r5, r7, lsl #18
+   27218: 9c0c0082     	<unknown>
+   2721c: 508caf7c     	addpl	r10, r12, r12, ror pc
+   27220: 1c39980f     	ldcne	p8, c9, [r9], #-60
+   27224: ee22f7f4     	mcr	p7, #0x1, pc, c2, c4, #0x7
+   27228: f7f4a86a     	<unknown>
+   2722c: a873ee14     	ldmdage	r3!, {r2, r4, r9, r10, r11, sp, lr, pc} ^
+   27230: ee10f7f4     	mrc	p7, #0x0, apsr_nzcv, c0, c4, #0x7
+   27234: 1c382693     	ldcne	p6, c2, [r8], #-588
+   27238: ee0cf7f4     	mcr	p7, #0x0, pc, c12, c4, #0x7
+   2723c: a88500b6     	stmge	r5, {r1, r2, r4, r5, r7}
+   27240: ee08f7f4     	mcr	p7, #0x0, pc, c8, c4, #0x7
+   27244: bdf044b5     	ldcllt	p4, c4, [r0, #724]!
+   27248: 2b009b01     	blhs	0x4de54 <_ZTCN7android10UserClientE0_NS_11BnInterfaceINS_22ISurfaceComposerClientEEE+0x14> @ imm = #0x26c04
+   2724c: e717d100     	ldr	sp, [r7, -r0, lsl #2]
+   27250: 46c0e711     	<unknown>
+   27254: fffffdb4     	<unknown>
+   27258: 3fffffff     	svclo	#0xffffff
+   2725c: 000001ad     	andeq	r0, r0, sp, lsr #3
+
+00027260 <_ZN7android14SurfaceFlinger14handlePageFlipEv>:
+   27260: 2194b5f0     	ldrshhs	r11, [r4, r0]
+   27264: 1c071c04     	<unknown>
+   27268: 37680088     	strblo	r0, [r8, -r8, lsl #1]!
+   2726c: 5c25b0a3     	stcpl	p0, c11, [r5], #-652
+   27270: 1c201c39     	stcne	p12, c1, [r0], #-228
+   27274: fd76f7fd     	ldc2l	p7, c15, [r6, #-1012]!
+   27278: 43052100     	<unknown>
+   2727c: f7fe1c20     	<unknown>
+   27280: f7fdfcd7     	<unknown>
+   27284: a91efdc1     	ldmdbge	lr, {r0, r6, r7, r8, r10, r11, r12, sp, lr, pc}
+   27288: 6b462300     	blvs	0x11afe90 <pp_wait_mutex+0x1160fb8> @ imm = #0x1188c00
+   2728c: 604b6b82     	subvs	r6, r11, r2, lsl #23
+   27290: 60ca608e     	sbcvs	r6, r10, lr, lsl #1
+   27294: 931ea815     	tstls	lr, #1376256
+   27298: ef8cf7f4     	svc	#0x8cf7f4
+   2729c: d0422d00     	suble	r2, r2, r0, lsl #26
+   272a0: 1c28ad0c     	stcne	p13, c10, [r8], #-48
+   272a4: ee60f7f4     	mcr	p7, #0x3, pc, c0, c4, #0x7
+   272a8: 004320e0     	subeq	r2, r3, r0, ror #1
+   272ac: 1c3918e2     	ldcne	p8, c1, [r9], #-904
+   272b0: 1c201c2b     	stcne	p12, c1, [r0], #-172
+   272b4: f7ff269a     	<unknown>
+   272b8: 00b2fe69     	adcseq	pc, r2, r9, ror #28
+   272bc: 1c3018a6     	ldcne	p8, c1, [r0], #-664
+   272c0: e8ecf7f5     	stm	r12!, {r0, r2, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc} ^
+   272c4: 1c306f25     	ldcne	p15, c6, [r0], #-148
+   272c8: 95011c29     	strls	r1, [r1, #-0xc29]
+   272cc: e8ecf7f5     	stm	r12!, {r0, r2, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc} ^
+   272d0: e00e2500     	and	r2, lr, r0, lsl #10
+   272d4: 00ab6ee1     	adceq	r6, r11, r1, ror #29
+   272d8: 680b18c9     	stmdavs	r11, {r0, r3, r6, r7, r11, r12}
+   272dc: 691a6998     	ldmdbvs	r10, {r3, r4, r7, r8, r11, sp, lr}
+   272e0: 2a001a82     	bhs	0x2dcf0 <PPCheckConfig+0x344> @ imm = #0x6a08
+   272e4: 69dadd04     	ldmibvs	r10, {r2, r8, r10, r11, r12, lr, pc} ^
+   272e8: 1ad0695b     	bne	0xff44185c <pp_wait_mutex+0xffffffffff3f2984> @ imm = #-0xbe5a94
+   272ec: dc2a2800     	stcle	p8, c2, [r10], #-0
+   272f0: 9b013501     	blls	0x746fc <pp_wait_mutex+0x25824> @ imm = #0x4d404
+   272f4: d3ed429d     	<unknown>
+   272f8: ae0cad03     	cdpge	p13, #0x0, c10, c12, c3, #0x0
+   272fc: a9151c28     	ldmdbge	r5, {r3, r5, r10, r11, r12}
+   27300: f7f51c32     	<unknown>
+   27304: 238be8c0     	orrhs	lr, r11, #192, #16
+   27308: 1c29009a     	stcne	p0, c0, [r9], #-616
+   2730c: f7f418a0     	<unknown>
+   27310: 1c28edae     	stcne	p13, c14, [r8], #-696
+   27314: ed9ef7f4     	ldc	p7, c15, [lr, #976]
+   27318: 00812094     	umulleq	r2, r1, r4, r0
+   2731c: 54652500     	strbtpl	r2, [r5], #-1280
+   27320: f7f41c30     	<unknown>
+   27324: 26e0ed98     	usaths	lr, #0x0, r8, lsl #27
+   27328: 1c391c20     	ldcne	p12, c1, [r9], #-128
+   2732c: f7fe0077     	<unknown>
+   27330: 19e0fc83     	stmibne	r0!, {r0, r1, r7, r10, r11, r12, sp, lr, pc} ^
+   27334: 1c21ac15     	stcne	p12, c10, [r1], #-84
+   27338: ed9ef7f4     	ldc	p7, c15, [lr, #976]
+   2733c: f7f41c20     	<unknown>
+   27340: b023ed8a     	eorlt	lr, r3, r10, lsl #27
+   27344: 1c30bdf0     	ldcne	p13, c11, [r0], #-960
+   27348: e8b4f7f5     	ldm	r4!, {r0, r2, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc}
+   2734c: 46c0e7d0     	<unknown>
+
+00027350 <_ZNK7android6VectorIPKNS_9LayerBaseEE7do_copyEPvPKvj>:
+   27350: 009bb510     	addseq	r11, r11, r0, lsl r5
+   27354: 1c111c08     	<unknown>
+   27358: f7f41c1a     	<unknown>
+   2735c: bd10ebc0     	vldrlt	d14, [r0, #-768]
+   27360: 4b07b510     	blmi	0x2147a8 <pp_wait_mutex+0x1c58d0> @ imm = #0x1ed440
+   27364: 48071c04     	stmdami	r7, {r2, r10, r11, r12}
+   27368: 581a447b     	ldmdapl	r10, {r0, r1, r3, r4, r5, r6, r10, lr}
+   2736c: 32081c20     	andlo	r1, r8, #32, #24
+   27370: f7f56022     	<unknown>
+   27374: 1c20e816     	stcne	p8, c14, [r0], #-88
+   27378: e8a2f7f5     	stm	r2!, {r0, r2, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc}
+   2737c: bd101c20     	ldclt	p12, c1, [r0, #-128]
+   27380: 00027470     	andeq	r7, r2, r0, ror r4
+   27384: ffffffbc     	<unknown>
+
+00027388 <_ZN7android14SurfaceFlinger19handleDestroyLayersEv>:
+   27388: b087b5f0     	strdlt	r11, r12, [r7], r0
+   2738c: 1c06ad01     	<unknown>
+   27390: 22072104     	andhs	r2, r7, #4, #2
+   27394: 1c284c17     	stcne	p12, c4, [r8], #-92
+   27398: e898f7f5     	ldm	r8, {r0, r2, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc}
+   2739c: 447c4b16     	ldrbtmi	r4, [r12], #-2838
+   273a0: 58e722ae     	stmpl	r7!, {r1, r2, r3, r5, r7, r9, sp} ^
+   273a4: 37080091     	<unknown>
+   273a8: 18779701     	ldmdane	r7!, {r0, r8, r9, r10, r12, pc} ^
+   273ac: f7f41c38     	<unknown>
+   273b0: 20afec5c     	adchs	lr, pc, r12, asr r12
+   273b4: 18f40083     	ldmne	r4!, {r0, r1, r7} ^
+   273b8: 1c281c21     	stcne	p12, c1, [r8], #-132
+   273bc: e88cf7f5     	stm	r12, {r0, r2, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc}
+   273c0: f7f51c20     	<unknown>
+   273c4: 1c38e86c     	ldcne	p8, c14, [r8], #-432
+   273c8: ec5af7f4     	mrrc	p7, #0xf, pc, r10, c4
+   273cc: 68af2600     	stmvs	pc!, {r9, r10, sp}
+   273d0: e0081c2c     	and	r1, r8, r12, lsr #24
+   273d4: 00b56861     	adcseq	r6, r5, r1, ror #16
+   273d8: 28005868     	stmdahs	r0, {r3, r5, r6, r11, r12, lr}
+   273dc: 6803d002     	stmdavs	r3, {r1, r12, lr, pc}
+   273e0: 4790685a     	<unknown>
+   273e4: 42be3601     	adcsmi	r3, lr, #1048576
+   273e8: 1c20d3f4     	stcne	p3, c13, [r0], #-976
+   273ec: ffb8f7ff     	<unknown>
+   273f0: bdf0b007     	ldcllt	p0, c11, [r0, #28]!
+   273f4: 0002743a     	andeq	r7, r2, r10, lsr r4
+   273f8: ffffffbc     	<unknown>
+   273fc: 1c04b510     	<unknown>
+   27400: ffaef7ff     	<unknown>
+   27404: f7f41c20     	<unknown>
+   27408: 1c20eb94     	<unknown>
+   2740c: 46c0bd10     	<unknown>
+   27410: 4b07b510     	blmi	0x214858 <pp_wait_mutex+0x1c5980> @ imm = #0x1ed440
+   27414: 48071c04     	stmdami	r7, {r2, r10, r11, r12}
+   27418: 581a447b     	ldmdapl	r10, {r0, r1, r3, r4, r5, r6, r10, lr}
+   2741c: 32081c20     	andlo	r1, r8, #32, #24
+   27420: f7f46022     	<unknown>
+   27424: 1c20efbe     	stcne	p15, c14, [r0], #-760
+   27428: e84af7f5     	stmda	r10, {r0, r2, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc} ^
+   2742c: bd101c20     	ldclt	p12, c1, [r0, #-128]
+   27430: 000273c0     	andeq	r7, r2, r0, asr #7
+   27434: ffffffc0     	<unknown>
+   27438: 1c04b510     	<unknown>
+   2743c: ffe8f7ff     	<unknown>
+   27440: f7f41c20     	<unknown>
+   27444: 1c20eb76     	<unknown>
+   27448: 46c0bd10     	<unknown>
+
+0002744c <_ZN7android14SurfaceFlinger23handleTransactionLockedEj>:
+   2744c: b087b5f0     	strdlt	r11, r12, [r7], r0
+   27450: 91001c0b     	<unknown>
+   27454: 1c046d82     	<unknown>
+   27458: 079b9201     	ldreq	r9, [r11, r1, lsl #4]
+   2745c: 2794d51a     	<unknown>
+   27460: 00bf2600     	adcseq	r2, pc, r0, lsl #12
+   27464: 6d65e013     	stclvs	p0, c14, [r5, #-76]!
+   27468: 182d00b0     	stmdane	sp!, {r4, r5, r7}
+   2746c: 68282101     	stmdavs	r8!, {r0, r8, sp}
+   27470: fcc2f7f9     	stc2l	p7, c15, [r2], {249}
+   27474: d0092800     	andle	r2, r9, r0, lsl #16
+   27478: 21006828     	<unknown>
+   2747c: 6b136802     	blvs	0x50148c <pp_wait_mutex+0x4b25b4> @ imm = #0x4da008
+   27480: 21024798     	swphs	r4, r8, [r2]
+   27484: d0014208     	andle	r4, r1, r8, lsl #4
+   27488: 55e52501     	strbpl	r2, [r5, #0x501]!
+   2748c: 9b013601     	blls	0x74c98 <pp_wait_mutex+0x25dc0> @ imm = #0x4d804
+   27490: d3e8429e     	<unknown>
+   27494: 27019e00     	strhs	r9, [r1, -r0, lsl #28]
+   27498: d07a423e     	rsbsle	r4, r10, lr, lsr r2
+   2749c: 31641c21     	<unknown>
+   274a0: 3118780f     	tstlo	r8, pc, lsl #16
+   274a4: 42b87808     	adcsmi	r7, r8, #8, #16
+   274a8: 2100d031     	<unknown>
+   274ac: f7fe1c20     	<unknown>
+   274b0: 1c39fbbf     	<unknown>
+   274b4: f7fe1c05     	<unknown>
+   274b8: 1c28f821     	stcne	p8, c15, [r8], #-132
+   274bc: fca4f7fd     	stc2	p7, c15, [r4], #1012
+   274c0: 1c201c06     	stcne	p12, c1, [r0], #-24
+   274c4: 6a0330fc     	bvs	0xf38bc <pp_wait_mutex+0xa49e4> @ imm = #0xcc3f0
+   274c8: 93011c28     	<unknown>
+   274cc: 93003320     	<unknown>
+   274d0: f7fd715f     	<unknown>
+   274d4: 9a01fc95     	bls	0xa6730 <pp_wait_mutex+0x57858> @ imm = #0x7f254
+   274d8: 0c390407     	ldceq	p4, c0, [r9], #-28
+   274dc: 1c288411     	stcne	p4, c8, [r8], #-68
+   274e0: fc90f7fd     	ldc2	p7, c15, [r0], {253}
+   274e4: 9b002594     	blls	0x30b3c <MP4AllocateRlcBuffers+0x74> @ imm = #0x9650
+   274e8: 210100aa     	smlatbhs	r1, r10, r0, r0
+   274ec: 0c070400     	<unknown>
+   274f0: 20e0805f     	rschs	r8, r0, pc, asr r0
+   274f4: a90254a1     	stmdbge	r2, {r0, r5, r7, r10, r12, lr}
+   274f8: 6bb26b75     	blvs	0xfecc22d4 <pp_wait_mutex+0xfffffffffec733fc> @ imm = #-0x136522c
+   274fc: 00472300     	subeq	r2, r7, r0, lsl #6
+   27500: 604b19e0     	subvs	r1, r11, r0, ror #19
+   27504: 60ca608d     	sbcvs	r6, r10, sp, lsl #1
+   27508: f7f49302     	<unknown>
+   2750c: 1c21efaa     	stcne	p15, c14, [r1], #-680
+   27510: 31661c25     	<unknown>
+   27514: 780b357e     	stmdavc	r11, {r1, r2, r3, r4, r5, r6, r8, r10, r12, sp}
+   27518: 429e782e     	addsmi	r7, lr, #3014656
+   2751c: 1e5ad00b     	cdpne	p0, #0x5, c13, c10, c11, #0x0
+   27520: 4a1e4193     	bmi	0x7b7b74 <pp_wait_mutex+0x768c9c> @ imm = #0x79064c
+   27524: 2b0054a3     	blhs	0x3c7b8 <H264RunAsic+0x3fc> @ imm = #0x1528c
+   27528: 320ed005     	andlo	sp, lr, #5
+   2752c: 210018a7     	smlatbhs	r0, r7, r8, r1
+   27530: 60392200     	eorsvs	r2, r9, r0, lsl #4
+   27534: 6da2607a     	stcvs	p0, c6, [r2, #488]!
+   27538: 429a6f23     	addsmi	r6, r10, #35, #30
+   2753c: 2594d903     	ldrhs	sp, [r4, #0x903]
+   27540: 200100ae     	andhs	r0, r1, lr, lsr #1
+   27544: 1c2355a0     	stcne	p5, c5, [r3], #-640
+   27548: 781933f8     	ldmdavc	r9, {r3, r4, r5, r6, r7, r8, r9, r12, sp}
+   2754c: d0202900     	eorle	r2, r0, r0, lsl #18
+   27550: 21942200     	orrshs	r2, r4, r0, lsl #4
+   27554: 701a20f2     	ldrshvc	r2, [r10], -r2
+   27558: 1c26008d     	stcne	p0, c0, [r6], #-564
+   2755c: 27010043     	strhs	r0, [r1, -r3, asr #32]
+   27560: 18e23650     	stmne	r2!, {r4, r6, r9, r10, r12, sp} ^
+   27564: 96005567     	strls	r5, [r0], -r7, ror #10
+   27568: 92016f27     	andls	r6, r1, #39, #30
+   2756c: e00e2500     	and	r2, lr, r0, lsl #10
+   27570: 00ab6ee0     	adceq	r6, r11, r0, ror #29
+   27574: 1c3118c6     	ldcne	p8, c1, [r1], #-792
+   27578: f7f49800     	<unknown>
+   2757c: 2800ef00     	stmdahs	r0, {r8, r9, r10, r11, sp, lr, pc}
+   27580: 6831da04     	ldmdavs	r1!, {r2, r9, r11, r12, lr, pc}
+   27584: 31109801     	tstlo	r0, r1, lsl #16
+   27588: ec7cf7f4     	ldcl	p7, c15, [r12], #-976
+   2758c: 42bd3501     	adcsmi	r3, sp, #4194304
+   27590: 1c20d3ee     	stcne	p3, c13, [r0], #-952
+   27594: fcdaf7ff     	ldc2l	p7, c15, [r10], {255}
+   27598: bdf0b007     	ldcllt	p0, c11, [r0, #28]!
+   2759c: 00000252     	andeq	r0, r0, r2, asr r2
+
+000275a0 <_ZN7android14SurfaceFlinger17handleTransactionEj>:
+   275a0: 1c05b5f0     	<unknown>
+   275a4: 354cb083     	strblo	r11, [r12, #-0x83]
+   275a8: 1c281c04     	stcne	p12, c1, [r8], #-16
+   275ac: f7f49501     	<unknown>
+   275b0: 2001eb5c     	andhs	lr, r1, r12, asr r11
+   275b4: ee7cf7f4     	mrc	p7, #0x3, apsr_nzcv, c12, c4, #0x7
+   275b8: 21a61c0e     	<unknown>
+   275bc: 00881c05     	addeq	r1, r8, r5, lsl #24
+   275c0: 21031827     	<unknown>
+   275c4: 607e603d     	rsbsvs	r6, lr, sp, lsr r0
+   275c8: f7fe1c20     	<unknown>
+   275cc: 1c01f88b     	<unknown>
+   275d0: f7ff1c20     	<unknown>
+   275d4: 2001ff3b     	andhs	pc, r1, r11, lsr pc
+   275d8: ee6af7f4     	mcr	p7, #0x3, pc, c10, c4, #0x7
+   275dc: 009a23a8     	addseq	r2, r10, r8, lsr #7
+   275e0: 1c0b18a4     	<unknown>
+   275e4: 1b521c02     	blne	0x14ae5f4 <pp_wait_mutex+0x145f71c> @ imm = #0x1487008
+   275e8: 1c1541b3     	<unknown>
+   275ec: 60251c1e     	eorvs	r1, r5, lr, lsl r12
+   275f0: 23006066     	<unknown>
+   275f4: 603b2400     	eorsvs	r2, r11, r0, lsl #8
+   275f8: 9801607c     	stmdals	r1, {r2, r3, r4, r5, r6, sp, lr}
+   275fc: eb40f7f4     	bl	0x10655d4 <pp_wait_mutex+0x10166fc> @ imm = #0x103dfd0
+   27600: bdf0b003     	ldcllt	p0, c11, [r0, #12]!
+
+00027604 <_ZN7android14SurfaceFlinger15postFramebufferEv>:
+   27604: 2784b5f0     	<unknown>
+   27608: 00bd2682     	adcseq	r2, sp, r2, lsl #13
+   2760c: 594200b1     	stmdbpl	r2, {r0, r4, r5, r7} ^
+   27610: 58401c04     	stmdapl	r0, {r2, r10, r11, r12} ^
+   27614: 1a13b083     	bne	0x513828 <pp_wait_mutex+0x4c4950> @ imm = #0x4ec20c
+   27618: dd362b00     	vldmdble	r6!, {d2}
+   2761c: 26832785     	strhs	r2, [r3], r5, lsl #15
+   27620: 00b100bd     	ldrhteq	r0, [r1], sp
+   27624: 58605962     	stmdapl	r0!, {r1, r5, r6, r8, r11, r12, lr} ^
+   27628: 2b001a13     	blhs	0x2de7c <PPCheckConfig+0x4d0> @ imm = #0x684c
+   2762c: 2100dd2d     	<unknown>
+   27630: f7fe1c20     	<unknown>
+   27634: f7fdfafd     	<unknown>
+   27638: 27a2fbe7     	strhs	pc, [r2, r7, ror #23]!
+   2763c: 20019001     	andhs	r9, r1, r1
+   27640: ee36f7f4     	mrc	p7, #0x1, apsr_nzcv, c6, c4, #0x7
+   27644: 18a700ba     	stmne	r7!, {r1, r3, r4, r5, r7}
+   27648: 1c0e1c05     	<unknown>
+   2764c: 00882182     	addeq	r2, r8, r2, lsl #3
+   27650: 603d1823     	eorsvs	r1, sp, r3, lsr #16
+   27654: 1c19607e     	<unknown>
+   27658: 93009801     	<unknown>
+   2765c: f864f7f6     	<unknown>
+   27660: f7f42001     	<unknown>
+   27664: 22a4ee26     	adchs	lr, r4, #608
+   27668: 18e40093     	stmne	r4!, {r0, r1, r4, r7} ^
+   2766c: 1c0b1c02     	<unknown>
+   27670: 41b31b52     	<unknown>
+   27674: 1c151c1e     	<unknown>
+   27678: 60666025     	rsbvs	r6, r6, r5, lsr #32
+   2767c: 24002300     	strhs	r2, [r0], #-768
+   27680: 607c603b     	rsbsvs	r6, r12, r11, lsr r0
+   27684: f7f49800     	<unknown>
+   27688: b003ebec     	andlt	lr, r3, r12, ror #23
+   2768c: 46c0bdf0     	<unknown>
+   27690: 6803b510     	stmdavs	r3, {r4, r8, r10, r12, sp, pc}
+   27694: d0032b00     	andle	r2, r3, r0, lsl #22
+   27698: 1c111c08     	<unknown>
+   2769c: ef22f7f4     	svc	#0x22f7f4
+   276a0: 46c0bd10     	<unknown>
+
+=== DYNAMIC UNDEFINED SYMBOLS ===
+         U _ZN7android13GraphicBufferC1Ejjij
          U _ZN7android16ISurfaceComposer10descriptorE
          U _ZN7android16ISurfaceComposerC2Ev
          U _ZN7android16ISurfaceComposerD0Ev
          U _ZN7android16ISurfaceComposerD1Ev
          U _ZN7android16ISurfaceComposerD2Ev
-0002a2f4 T _ZN7android16V3D_Compose_Impl4initEPK20framebuffer_device_t
          U _ZN7android17BnSurfaceComposer10onTransactEjRKNS_6ParcelEPS1_j
-0001daa8 T _ZN7android19DisplayHardwareBase10setCanDrawEb
-0001de28 T _ZN7android19DisplayHardwareBase18DisplayEventThread10readyToRunEv
-0001df00 T _ZN7android19DisplayHardwareBase18DisplayEventThread10threadLoopEv
-0001e914 T _ZN7android19DisplayHardwareBase18DisplayEventThreadC1ERKNS_2spINS_14SurfaceFlingerEEE
-0001e9f0 T _ZN7android19DisplayHardwareBase18DisplayEventThreadC2ERKNS_2spINS_14SurfaceFlingerEEE
-0001e2c4 T _ZN7android19DisplayHardwareBase18DisplayEventThreadD0Ev
-0001e278 T _ZN7android19DisplayHardwareBase18DisplayEventThreadD1Ev
-0001e2d8 T _ZN7android19DisplayHardwareBase18DisplayEventThreadD2Ev
-0001dd30 T _ZN7android19DisplayHardwareBase20ConsoleManagerThread10readyToRunEv
-0001dcb4 T _ZN7android19DisplayHardwareBase20ConsoleManagerThread10sigHandlerEi
-0001dbe4 T _ZN7android19DisplayHardwareBase20ConsoleManagerThread10threadLoopEv
-0001dd0c T _ZN7android19DisplayHardwareBase20ConsoleManagerThread11requestExitEv
-0004ee6c B _ZN7android19DisplayHardwareBase20ConsoleManagerThread17sSignalCatcherPidE
-0001e398 T _ZN7android19DisplayHardwareBase20ConsoleManagerThreadC1ERKNS_2spINS_14SurfaceFlingerEEE
-0001e660 T _ZN7android19DisplayHardwareBase20ConsoleManagerThreadC2ERKNS_2spINS_14SurfaceFlingerEEE
-0001e1c8 T _ZN7android19DisplayHardwareBase20ConsoleManagerThreadD0Ev
-0001e108 T _ZN7android19DisplayHardwareBase20ConsoleManagerThreadD1Ev
-0001e1dc T _ZN7android19DisplayHardwareBase20ConsoleManagerThreadD2Ev
-0001e304 T _ZN7android19DisplayHardwareBase22DisplayEventThreadBaseC1ERKNS_2spINS_14SurfaceFlingerEEE
-0001e35c T _ZN7android19DisplayHardwareBase22DisplayEventThreadBaseC2ERKNS_2spINS_14SurfaceFlingerEEE
-0001e0c4 T _ZN7android19DisplayHardwareBase22DisplayEventThreadBaseD0Ev
-0001e078 T _ZN7android19DisplayHardwareBase22DisplayEventThreadBaseD1Ev
-0001e0d8 T _ZN7android19DisplayHardwareBase22DisplayEventThreadBaseD2Ev
-0001e958 T _ZN7android19DisplayHardwareBaseC1ERKNS_2spINS_14SurfaceFlingerEEEj
-0001e9a4 T _ZN7android19DisplayHardwareBaseC2ERKNS_2spINS_14SurfaceFlingerEEEj
-0001daf8 T _ZN7android19DisplayHardwareBaseD1Ev
-0001db1c T _ZN7android19DisplayHardwareBaseD2Ev
+         U _ZN7android18SharedBufferServer13reallocateAllEv
+         U _ZN7android18SharedBufferServer13retireAndLockEv
+         U _ZN7android18SharedBufferServer19reallocateAllExceptEi
+         U _ZN7android18SharedBufferServer6resizeEi
+         U _ZN7android18SharedBufferServer9setStatusEi
+         U _ZN7android18SharedBufferServerC1EPNS_12SharedClientEiii
+         U _ZN7android18SharedBufferServerD1Ev
+         U _ZN7android22GraphicBufferAllocatorC1Ev
          U _ZN7android22ISurfaceComposerClient10descriptorE
          U _ZN7android22ISurfaceComposerClientC2Ev
          U _ZN7android22ISurfaceComposerClientD0Ev
@@ -197,34 +896,18 @@ mostafa@MMostafa ~ % /opt/homebrew/opt/llvm/bin/llvm-nm \
          U _ZN7android23FramebufferNativeWindow19compositionCompleteEv
          U _ZN7android23FramebufferNativeWindowC1Ev
          U _ZN7android23FramebufferNativeWindowD1Ev
-00025170 W _ZN7android2spINS_14SurfaceFlingerEEC1ERKS2_
-0001db40 W _ZN7android2spINS_14SurfaceFlingerEED1Ev
-00020628 W _ZN7android2spINS_15LayerBaseClient7SurfaceEEaSERKS3_
-00021f9c W _ZN7android2spINS_15LayerBaseClient7SurfaceEEaSINS_11LayerBuffer18SurfaceLayerBufferEEERS3_PT_
-0001ec70 W _ZN7android2spINS_15LayerBaseClient7SurfaceEEaSINS_5Layer12SurfaceLayerEEERS3_PT_
-0001db5c W _ZN7android2spINS_19DisplayHardwareBase22DisplayEventThreadBaseEEaSINS1_18DisplayEventThreadEEERS3_PT_
-0001db8c W _ZN7android2spINS_19DisplayHardwareBase22DisplayEventThreadBaseEEaSINS1_20ConsoleManagerThreadEEERS3_PT_
-000258a0 W _ZN7android2spINS_22ISurfaceComposerClientEEaSINS_10UserClientEEERS2_RKNS0_IT_EE
-000258d4 W _ZN7android2spINS_22ISurfaceComposerClientEEaSINS_6ClientEEERS2_RKNS0_IT_EE
-0001d7e4 W _ZN7android2spINS_23FramebufferNativeWindowEEaSEPS1_
-00020778 W _ZN7android2wpINS_15LayerBaseClient7SurfaceEEaSERKNS_2spIS2_EE
-0001f8e0 T _ZN7android5Layer12SurfaceLayer13requestBufferEijjjj
-0001f978 T _ZN7android5Layer12SurfaceLayer14setBufferCountEi
-0001ee24 T _ZN7android5Layer12SurfaceLayerC1ERKNS_2spINS_14SurfaceFlingerEEERKNS2_IS0_EE
-0001ee8c T _ZN7android5Layer12SurfaceLayerC2ERKNS_2spINS_14SurfaceFlingerEEERKNS2_IS0_EE
-0001edf0 T _ZN7android5Layer12SurfaceLayerD0Ev
-0001ed9c T _ZN7android5Layer12SurfaceLayerD1Ev
-0001ee04 T _ZN7android5Layer12SurfaceLayerD2Ev
-0001fb54 T _ZN7android5Layer12lockPageFlipERb
-0001eaec T _ZN7android5Layer13BufferManager11loadTextureERKNS_6RegionERK10GGLSurface
-0001f1d0 T _ZN7android5Layer14finishPageFlipEv
-0001f480 T _ZN7android5Layer14unlockPageFlipERKNS_9TransformERNS_6RegionE
-000200c0 T _ZN7android5LayerC1EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
-00020168 T _ZN7android5LayerC2EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
-00027e98 T _ZN7android6Client13createSurfaceEPNS_22ISurfaceComposerClient14surface_data_tEiRKNS_7String8Eijjij
-00027c0c T _ZN7android6Client14destroySurfaceEi
-00026308 T _ZN7android6ClientC1ERKNS_2spINS_14SurfaceFlingerEEE
-000263d4 T _ZN7android6ClientC2ERKNS_2spINS_14SurfaceFlingerEEE
+         U _ZN7android6Parcel10writeInt32Ei
+         U _ZN7android7RefBase10onFirstRefEv
+         U _ZN7android7RefBase12setDestroyerEPNS0_9DestroyerE
+         U _ZN7android7RefBase12weakref_type16attemptIncStrongEPKv
+         U _ZN7android7RefBase12weakref_type7decWeakEPKv
+         U _ZN7android7RefBase12weakref_type7incWeakEPKv
+         U _ZN7android7RefBase13onLastWeakRefEPKv
+         U _ZN7android7RefBase15onLastStrongRefEPKv
+         U _ZN7android7RefBase20onIncStrongAttemptedEjPKv
+         U _ZN7android7RefBase9DestroyerD2Ev
+         U _ZN7android7RefBaseC2Ev
+         U _ZN7android7RefBaseD2Ev
          U _ZN7android8ISurface10BufferHeapC1Ev
          U _ZN7android8ISurface10BufferHeapD1Ev
          U _ZN7android8ISurface10descriptorE
@@ -232,425 +915,504 @@ mostafa@MMostafa ~ % /opt/homebrew/opt/llvm/bin/llvm-nm \
          U _ZN7android8ISurfaceD0Ev
          U _ZN7android8ISurfaceD1Ev
          U _ZN7android8ISurfaceD2Ev
-00024544 T _ZN7android8LayerDim10initDimmerEPNS_14SurfaceFlingerEjj
-000246e0 T _ZN7android8LayerDimC1EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
-00024758 T _ZN7android8LayerDimC2EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
          U _ZN7android9BnSurface10onTransactEjRKNS_6ParcelEPS1_j
-000203c4 T _ZN7android9LayerBase12lockPageFlipERb
-000203c8 T _ZN7android9LayerBase14finishPageFlipEv
-00020e0c T _ZN7android9LayerBase14unlockPageFlipERKNS_9TransformERNS_6RegionE
-00021590 T _ZN7android9LayerBaseC1EPNS_14SurfaceFlingerEi
-000216c0 T _ZN7android9LayerBaseC2EPNS_14SurfaceFlingerEi
-000243d8 T _ZN7android9LayerBlur14unlockPageFlipERKNS_9TransformERNS_6RegionE
-000242a0 T _ZN7android9LayerBlurC1EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
-00024318 T _ZN7android9LayerBlurC2EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
-000264d8 T _ZNK7android10UserClient18getTokenForSurfaceERKNS_2spINS_8ISurfaceEEE
-00021a5c T _ZNK7android11LayerBuffer13createSurfaceEv
-00024e14 T _ZNK7android12GraphicPlane13getEGLDisplayEv
-00024e08 T _ZNK7android12GraphicPlane15displayHardwareEv
-0002667c T _ZNK7android14SurfaceFlinger12debugShowFPSEv
-00026dc0 T _ZNK7android14SurfaceFlinger12drawWormholeEv
-00025c04 T _ZNK7android14SurfaceFlinger12graphicPlaneEi
-000265ac T _ZNK7android14SurfaceFlinger13getFreezeLockEv
-00025c74 T _ZNK7android14SurfaceFlinger16getOverlayEngineEv
-00028420 T _ZNK7android14SurfaceFlinger6signalEv
-00025150 T _ZNK7android14SurfaceFlinger7getCblkEv
-00026428 T _ZNK7android14SurfaceFlinger8getLayerERKNS_2spINS_8ISurfaceEEE
-0001d68c T _ZNK7android15DisplayHardware10getDensityEv
-0001d70c T _ZNK7android15DisplayHardware11makeCurrentEv
-0001d7b4 T _ZNK7android15DisplayHardware13acquireScreenEv
-0001d7bc T _ZNK7android15DisplayHardware13releaseScreenEv
-0001d690 T _ZNK7android15DisplayHardware14getRefreshRateEv
-0001d6c4 T _ZNK7android15DisplayHardware16getPageFlipCountEv
-0001d6a0 T _ZNK7android15DisplayHardware17getMaxTextureSizeEv
-0001d790 T _ZNK7android15DisplayHardware18compositionRequestEv
-0001d6a4 T _ZNK7android15DisplayHardware18getMaxViewportDimsEv
-0001d7a4 T _ZNK7android15DisplayHardware19compositionCompleteEv
-0001d770 T _ZNK7android15DisplayHardware21getCurrentBufferIndexEv
-0001d77c T _ZNK7android15DisplayHardware23getDisplayBufferAddressEv
-0001d728 T _ZNK7android15DisplayHardware4flipERKNS_6RegionE
-0001d684 T _ZNK7android15DisplayHardware7getDpiXEv
-0001d688 T _ZNK7android15DisplayHardware7getDpiYEv
-0001d708 T _ZNK7android15DisplayHardware8getFlagsEv
-0001d694 T _ZNK7android15DisplayHardware8getWidthEv
-0001d69c T _ZNK7android15DisplayHardware9getFormatEv
-0001d698 T _ZNK7android15DisplayHardware9getHeightEv
-000207b0 T _ZNK7android15LayerBaseClient13createSurfaceEv
-00020500 T _ZNK7android15LayerBaseClient7Surface8getOwnerEv
+         U _ZN7android9SingletonINS_22GraphicBufferAllocatorEE5sLockE
+         U _ZN7android9SingletonINS_22GraphicBufferAllocatorEE9sInstanceE
+         U _ZNK7android13GraphicBuffer9initCheckEv
          U _ZNK7android16ISurfaceComposer22getInterfaceDescriptorEv
-0001dad8 T _ZNK7android19DisplayHardwareBase13acquireScreenEv
-0001dac0 T _ZNK7android19DisplayHardwareBase13releaseScreenEv
-0001daf0 T _ZNK7android19DisplayHardwareBase16isScreenAcquiredEv
-0001ded0 T _ZNK7android19DisplayHardwareBase18DisplayEventThread13releaseScreenEv
-0001ddc4 T _ZNK7android19DisplayHardwareBase18DisplayEventThread9initCheckEv
-0001dc60 T _ZNK7android19DisplayHardwareBase20ConsoleManagerThread13releaseScreenEv
-0001da98 T _ZNK7android19DisplayHardwareBase20ConsoleManagerThread9initCheckEv
-0001daac T _ZNK7android19DisplayHardwareBase7canDrawEv
+         U _ZNK7android16SharedBufferBase4dumpEPKc
+         U _ZNK7android18SharedBufferServer12getTransformEi
+         U _ZNK7android18SharedBufferServer14getDirtyRegionEi
+         U _ZNK7android18SharedBufferServer14getQueuedCountEv
+         U _ZNK7android18SharedBufferServer7getCropEi
+         U _ZNK7android18SharedBufferServer8getStatsEv
+         U _ZNK7android22GraphicBufferAllocator4dumpERNS_7String8E
          U _ZNK7android22ISurfaceComposerClient22getInterfaceDescriptorEv
          U _ZNK7android23FramebufferNativeWindow21getCurrentBufferIndexEv
-0001dbc4 W _ZNK7android2wpINS_14SurfaceFlingerEE7promoteEv
-0001ebd0 T _ZNK7android5Layer13createSurfaceEv
-00024dc8 T _ZNK7android6Client18getTokenForSurfaceERKNS_2spINS_8ISurfaceEEE
+         U _ZNK7android7RefBase10createWeakEPKv
+         U _ZNK7android7RefBase9decStrongEPKv
+         U _ZNK7android7RefBase9incStrongEPKv
          U _ZNK7android8ISurface22getInterfaceDescriptorEv
-0004de40 D _ZTCN7android10UserClientE0_NS_11BnInterfaceINS_22ISurfaceComposerClientEEE
-0004def8 D _ZTCN7android10UserClientE0_NS_22ISurfaceComposerClientE
-0004dd80 D _ZTCN7android10UserClientE0_NS_23BnSurfaceComposerClientE
-0004dfb0 D _ZTCN7android10UserClientE4_NS_7BBinderE
-0004d308 V _ZTCN7android11BnInterfaceINS_16ISurfaceComposerEEE0_NS_10IInterfaceE
-0004d278 V _ZTCN7android11BnInterfaceINS_16ISurfaceComposerEEE0_S1_
-0004d358 V _ZTCN7android11BnInterfaceINS_16ISurfaceComposerEEE4_NS_7BBinderE
-0004d3e0 V _ZTCN7android11BnInterfaceINS_16ISurfaceComposerEEE4_NS_7IBinderE
-0004d008 V _ZTCN7android11BnInterfaceINS_22ISurfaceComposerClientEEE0_NS_10IInterfaceE
-0004cfa0 V _ZTCN7android11BnInterfaceINS_22ISurfaceComposerClientEEE0_S1_
-0004d058 V _ZTCN7android11BnInterfaceINS_22ISurfaceComposerClientEEE4_NS_7BBinderE
-0004d0e0 V _ZTCN7android11BnInterfaceINS_22ISurfaceComposerClientEEE4_NS_7IBinderE
-0004b4c0 V _ZTCN7android11BnInterfaceINS_8ISurfaceEEE0_NS_10IInterfaceE
-0004b458 V _ZTCN7android11BnInterfaceINS_8ISurfaceEEE0_S1_
-0004b510 V _ZTCN7android11BnInterfaceINS_8ISurfaceEEE4_NS_7BBinderE
-0004b598 V _ZTCN7android11BnInterfaceINS_8ISurfaceEEE4_NS_7IBinderE
-0004cbd0 D _ZTCN7android11LayerBuffer18SurfaceLayerBufferE0_NS_10IInterfaceE
-0004caa8 D _ZTCN7android11LayerBuffer18SurfaceLayerBufferE0_NS_11BnInterfaceINS_8ISurfaceEEE
-0004c928 D _ZTCN7android11LayerBuffer18SurfaceLayerBufferE0_NS_15LayerBaseClient7SurfaceE
-0004cb68 D _ZTCN7android11LayerBuffer18SurfaceLayerBufferE0_NS_8ISurfaceE
-0004c9e8 D _ZTCN7android11LayerBuffer18SurfaceLayerBufferE0_NS_9BnSurfaceE
-0004cc20 D _ZTCN7android11LayerBuffer18SurfaceLayerBufferE4_NS_7BBinderE
-0004cca8 D _ZTCN7android11LayerBuffer18SurfaceLayerBufferE4_NS_7IBinderE
-0004dac8 D _ZTCN7android14SurfaceFlingerE0_NS_10IInterfaceE
-0004d950 D _ZTCN7android14SurfaceFlingerE0_NS_11BnInterfaceINS_16ISurfaceComposerEEE
-0004da38 D _ZTCN7android14SurfaceFlingerE0_NS_16ISurfaceComposerE
-0004d868 D _ZTCN7android14SurfaceFlingerE0_NS_17BnSurfaceComposerE
-0004dc20 D _ZTCN7android14SurfaceFlingerE16_NS_6ThreadE
-0004db18 D _ZTCN7android14SurfaceFlingerE4_NS_7BBinderE
-0004dba0 D _ZTCN7android14SurfaceFlingerE4_NS_7IBinderE
-0004bf20 D _ZTCN7android15LayerBaseClient7SurfaceE0_NS_10IInterfaceE
-0004bdf8 D _ZTCN7android15LayerBaseClient7SurfaceE0_NS_11BnInterfaceINS_8ISurfaceEEE
-0004beb8 D _ZTCN7android15LayerBaseClient7SurfaceE0_NS_8ISurfaceE
-0004bd38 D _ZTCN7android15LayerBaseClient7SurfaceE0_NS_9BnSurfaceE
-0004bf70 D _ZTCN7android15LayerBaseClient7SurfaceE4_NS_7BBinderE
-0004bff8 D _ZTCN7android15LayerBaseClient7SurfaceE4_NS_7IBinderE
-0004b1d8 D _ZTCN7android19DisplayHardwareBase18DisplayEventThreadE0_NS0_22DisplayEventThreadBaseE
-0004b240 D _ZTCN7android19DisplayHardwareBase18DisplayEventThreadE0_NS_6ThreadE
-0004b098 D _ZTCN7android19DisplayHardwareBase20ConsoleManagerThreadE0_NS0_22DisplayEventThreadBaseE
-0004b100 D _ZTCN7android19DisplayHardwareBase20ConsoleManagerThreadE0_NS_6ThreadE
-0004b310 D _ZTCN7android19DisplayHardwareBase22DisplayEventThreadBaseE0_NS_6ThreadE
-0004ba60 D _ZTCN7android5Layer12SurfaceLayerE0_NS_10IInterfaceE
-0004b938 D _ZTCN7android5Layer12SurfaceLayerE0_NS_11BnInterfaceINS_8ISurfaceEEE
-0004b7b8 D _ZTCN7android5Layer12SurfaceLayerE0_NS_15LayerBaseClient7SurfaceE
-0004b9f8 D _ZTCN7android5Layer12SurfaceLayerE0_NS_8ISurfaceE
-0004b878 D _ZTCN7android5Layer12SurfaceLayerE0_NS_9BnSurfaceE
-0004bab0 D _ZTCN7android5Layer12SurfaceLayerE4_NS_7BBinderE
-0004bb38 D _ZTCN7android5Layer12SurfaceLayerE4_NS_7IBinderE
-0004e280 D _ZTCN7android6ClientE0_NS_11BnInterfaceINS_22ISurfaceComposerClientEEE
-0004e338 D _ZTCN7android6ClientE0_NS_22ISurfaceComposerClientE
-0004e1c0 D _ZTCN7android6ClientE0_NS_23BnSurfaceComposerClientE
-0004d248 V _ZTTN7android11BnInterfaceINS_16ISurfaceComposerEEE
-0004cf70 V _ZTTN7android11BnInterfaceINS_22ISurfaceComposerClientEEE
-0004b428 V _ZTTN7android11BnInterfaceINS_8ISurfaceEEE
-0004c8d8 D _ZTTN7android11LayerBuffer18SurfaceLayerBufferE
-0004d818 D _ZTTN7android14SurfaceFlingerE
-0004bcf0 D _ZTTN7android15LayerBaseClient7SurfaceE
          U _ZTTN7android17BnSurfaceComposerE
-0004b1c0 D _ZTTN7android19DisplayHardwareBase18DisplayEventThreadE
-0004b080 D _ZTTN7android19DisplayHardwareBase20ConsoleManagerThreadE
-0004b300 D _ZTTN7android19DisplayHardwareBase22DisplayEventThreadBaseE
          U _ZTTN7android23BnSurfaceComposerClientE
-0004b768 D _ZTTN7android5Layer12SurfaceLayerE
          U _ZTTN7android9BnSurfaceE
-0004d160 V _ZTVN7android11BnInterfaceINS_16ISurfaceComposerEEE
-0004ceb8 V _ZTVN7android11BnInterfaceINS_22ISurfaceComposerClientEEE
-0004b368 V _ZTVN7android11BnInterfaceINS_8ISurfaceEEE
-0004c818 D _ZTVN7android11LayerBuffer18SurfaceLayerBufferE
-0004d618 V _ZTVN7android14SurfaceFlinger11LayerVectorE
-0004d6f8 D _ZTVN7android14SurfaceFlingerE
-0004bc30 D _ZTVN7android15LayerBaseClient7SurfaceE
          U _ZTVN7android17BnSurfaceComposerE
-0004b158 D _ZTVN7android19DisplayHardwareBase18DisplayEventThreadE
-0004b018 D _ZTVN7android19DisplayHardwareBase20ConsoleManagerThreadE
-0004b298 D _ZTVN7android19DisplayHardwareBase22DisplayEventThreadBaseE
          U _ZTVN7android23BnSurfaceComposerClientE
-0004b6a8 D _ZTVN7android5Layer12SurfaceLayerE
          U _ZTVN7android9BnSurfaceE
-0004d490 V _ZTVZN7android14SurfaceFlinger13captureScreenEiPNS_2spINS_11IMemoryHeapEEEPjS5_PijjE20MessageCaptureScreen
-0004d478 V _ZTVZN7android14SurfaceFlinger18turnElectronBeamOnEiE25MessageTurnElectronBeamOn
-0004d460 V _ZTVZN7android14SurfaceFlinger19turnElectronBeamOffEiE26MessageTurnElectronBeamOff
-00028664 T _ZThn16_N7android14SurfaceFlinger10readyToRunEv
-00028558 T _ZThn16_N7android14SurfaceFlinger10threadLoopEv
-00028988 T _ZThn16_N7android14SurfaceFlingerD0Ev
-00028840 T _ZThn16_N7android14SurfaceFlingerD1Ev
-0002362c T _ZThn4_N7android11LayerBuffer18SurfaceLayerBufferD0Ev
-000235d0 T _ZThn4_N7android11LayerBuffer18SurfaceLayerBufferD1Ev
-000281a8 T _ZThn4_N7android14SurfaceFlinger10onTransactEjRKNS_6ParcelEPS1_j
-00026738 T _ZThn4_N7android14SurfaceFlinger4dumpEiRKNS_6VectorINS_8String16EEE
-0002899c T _ZThn4_N7android14SurfaceFlingerD0Ev
-00028854 T _ZThn4_N7android14SurfaceFlingerD1Ev
-0002047c T _ZThn4_N7android15LayerBaseClient7Surface10onTransactEjRKNS_6ParcelEPS2_j
-000205a8 T _ZThn4_N7android15LayerBaseClient7SurfaceD0Ev
-00020520 T _ZThn4_N7android15LayerBaseClient7SurfaceD1Ev
          U _ZThn4_N7android17BnSurfaceComposer10onTransactEjRKNS_6ParcelEPS1_j
          U _ZThn4_N7android23BnSurfaceComposerClient10onTransactEjRKNS_6ParcelEPS1_j
-0001eddc T _ZThn4_N7android5Layer12SurfaceLayerD0Ev
-0001ed88 T _ZThn4_N7android5Layer12SurfaceLayerD1Ev
          U _ZThn4_N7android9BnSurface10onTransactEjRKNS_6ParcelEPS1_j
-000252ec W _ZTv0_n12_N7android11BnInterfaceINS_16ISurfaceComposerEED0Ev
-000252b4 W _ZTv0_n12_N7android11BnInterfaceINS_16ISurfaceComposerEED1Ev
-00024fe4 W _ZTv0_n12_N7android11BnInterfaceINS_22ISurfaceComposerClientEED0Ev
-00024fac W _ZTv0_n12_N7android11BnInterfaceINS_22ISurfaceComposerClientEED1Ev
-0001eba8 W _ZTv0_n12_N7android11BnInterfaceINS_8ISurfaceEED0Ev
-0001eb70 W _ZTv0_n12_N7android11BnInterfaceINS_8ISurfaceEED1Ev
-00023e08 T _ZTv0_n12_N7android11LayerBuffer18SurfaceLayerBufferD0Ev
-00023e18 T _ZTv0_n12_N7android11LayerBuffer18SurfaceLayerBufferD1Ev
-00028fc8 T _ZTv0_n12_N7android14SurfaceFlingerD0Ev
-00028fd8 T _ZTv0_n12_N7android14SurfaceFlingerD1Ev
-000218c8 T _ZTv0_n12_N7android15LayerBaseClient7SurfaceD0Ev
-000218d8 T _ZTv0_n12_N7android15LayerBaseClient7SurfaceD1Ev
          U _ZTv0_n12_N7android16ISurfaceComposerD0Ev
          U _ZTv0_n12_N7android16ISurfaceComposerD1Ev
-000253b4 W _ZTv0_n12_N7android17BnSurfaceComposerD0Ev
-0002537c W _ZTv0_n12_N7android17BnSurfaceComposerD1Ev
-0001ea14 T _ZTv0_n12_N7android19DisplayHardwareBase18DisplayEventThreadD0Ev
-0001ea24 T _ZTv0_n12_N7android19DisplayHardwareBase18DisplayEventThreadD1Ev
-0001ea34 T _ZTv0_n12_N7android19DisplayHardwareBase20ConsoleManagerThreadD0Ev
-0001ea44 T _ZTv0_n12_N7android19DisplayHardwareBase20ConsoleManagerThreadD1Ev
-0001ea54 T _ZTv0_n12_N7android19DisplayHardwareBase22DisplayEventThreadBaseD0Ev
-0001ea64 T _ZTv0_n12_N7android19DisplayHardwareBase22DisplayEventThreadBaseD1Ev
          U _ZTv0_n12_N7android22ISurfaceComposerClientD0Ev
          U _ZTv0_n12_N7android22ISurfaceComposerClientD1Ev
-00025080 W _ZTv0_n12_N7android23BnSurfaceComposerClientD0Ev
-00025048 W _ZTv0_n12_N7android23BnSurfaceComposerClientD1Ev
-00020358 T _ZTv0_n12_N7android5Layer12SurfaceLayerD0Ev
-00020368 T _ZTv0_n12_N7android5Layer12SurfaceLayerD1Ev
          U _ZTv0_n12_N7android8ISurfaceD0Ev
          U _ZTv0_n12_N7android8ISurfaceD1Ev
-000202d0 W _ZTv0_n12_N7android9BnSurfaceD0Ev
-00020298 W _ZTv0_n12_N7android9BnSurfaceD1Ev
-00029008 T _ZTv0_n16_N7android14SurfaceFlinger10onFirstRefEv
-0001da80 W _ZTv0_n16_N7android19DisplayHardwareBase22DisplayEventThreadBase10onFirstRefEv
-00043914 T h264bsdFlushBits
-0003ca1c T h264bsdFlushBuffer
-0003d794 T h264bsdFlushDpb
-mostafa@MMostafa ~ % strings -a /tmp/totoro-libsurfaceflinger.so | \
-  grep -Ei 'fb0|framebuffer|gememalloc|gralloc|SurfaceFlinger|/dev/|flip|post|refresh'
-_ZNK7android15DisplayHardware14getRefreshRateEv
-_ZNK7android15DisplayHardware16getPageFlipCountEv
-_ZNK7android15DisplayHardware4flipERKNS_6RegionE
-_ZN7android23FramebufferNativeWindow18setUpdateRectangleERKNS_4RectE
-_ZNK7android23FramebufferNativeWindow21getCurrentBufferIndexEv
-_ZN7android23FramebufferNativeWindow19compositionCompleteEv
-_ZN7android23FramebufferNativeWindowD1Ev
-_ZN7android2spINS_23FramebufferNativeWindowEEaSEPS1_
-_ZN7android23FramebufferNativeWindowC1Ev
-_ZN7android11V3D_Compose6CreateEPK20framebuffer_device_t
-_ZN7android15DisplayHardwareC1ERKNS_2spINS_14SurfaceFlingerEEEj
-_ZN7android19DisplayHardwareBaseC2ERKNS_2spINS_14SurfaceFlingerEEEj
-_ZN7android15DisplayHardwareC2ERKNS_2spINS_14SurfaceFlingerEEEj
-_ZN7android2spINS_14SurfaceFlingerEED1Ev
-_ZNK7android2wpINS_14SurfaceFlingerEE7promoteEv
-_ZN7android14SurfaceFlinger14screenReleasedEi
-_ZN7android14SurfaceFlinger14screenAcquiredEi
-_ZN7android19DisplayHardwareBase22DisplayEventThreadBaseC1ERKNS_2spINS_14SurfaceFlingerEEE
-_ZN7android19DisplayHardwareBase22DisplayEventThreadBaseC2ERKNS_2spINS_14SurfaceFlingerEEE
-_ZN7android19DisplayHardwareBase20ConsoleManagerThreadC1ERKNS_2spINS_14SurfaceFlingerEEE
-_ZN7android19DisplayHardwareBase20ConsoleManagerThreadC2ERKNS_2spINS_14SurfaceFlingerEEE
-_ZN7android19DisplayHardwareBase18DisplayEventThreadC1ERKNS_2spINS_14SurfaceFlingerEEE
-_ZN7android19DisplayHardwareBaseC1ERKNS_2spINS_14SurfaceFlingerEEEj
-_ZN7android19DisplayHardwareBase18DisplayEventThreadC2ERKNS_2spINS_14SurfaceFlingerEEE
-_ZN7android5Layer12SurfaceLayerC1ERKNS_2spINS_14SurfaceFlingerEEERKNS2_IS0_EE
-_ZN7android15LayerBaseClient7SurfaceC2ERKNS_2spINS_14SurfaceFlingerEEEiRKNS2_IS0_EE
-_ZN7android5Layer12SurfaceLayerC2ERKNS_2spINS_14SurfaceFlingerEEERKNS2_IS0_EE
-_ZN7android5Layer14finishPageFlipEv
-_ZN7android5Layer14unlockPageFlipERKNS_9TransformERNS_6RegionE
-_ZNK7android14SurfaceFlinger13getFreezeLockEv
-_ZN7android5Layer12lockPageFlipERb
-_ZN7android14SurfaceFlinger11signalEventEv
-_ZN7android14SurfaceFlinger12destroyLayerEPKNS_9LayerBaseE
-_ZN7android5LayerC1EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
-_ZN7android15LayerBaseClientC2EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
-_ZN7android5LayerC2EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
-_ZN7android15LayerBaseClient7Surface10postBufferEl
-_ZN7android9LayerBase12lockPageFlipERb
-_ZN7android9LayerBase14finishPageFlipEv
-_ZN7android14SurfaceFlinger14destroySurfaceERKNS_2wpINS_15LayerBaseClientEEE
-_ZN7android15LayerBaseClient7SurfaceC1ERKNS_2spINS_14SurfaceFlingerEEEiRKNS2_IS0_EE
-_ZN7android9LayerBase14unlockPageFlipERKNS_9TransformERNS_6RegionE
-_ZN7android14SurfaceFlinger12graphicPlaneEi
-_ZN7android9LayerBaseC1EPNS_14SurfaceFlingerEi
-_ZN7android9LayerBaseC2EPNS_14SurfaceFlingerEi
-_ZN7android15LayerBaseClientC1EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
-_ZN7android11LayerBuffer6Source10postBufferEl
-_ZN7android11LayerBuffer10postBufferEl
-_ZN7android11LayerBuffer14sGrallocModuleE
-_ZN7android11LayerBuffer12BufferSource10postBufferEl
-_ZN7android11LayerBuffer18SurfaceLayerBuffer10postBufferEl
-_ZN7android11LayerBuffer18SurfaceLayerBufferC1ERKNS_2spINS_14SurfaceFlingerEEERKNS2_IS0_EE
-_ZN7android11LayerBuffer18SurfaceLayerBufferC2ERKNS_2spINS_14SurfaceFlingerEEERKNS2_IS0_EE
-_ZN7android11LayerBuffer14unlockPageFlipERKNS_9TransformERNS_6RegionE
-_ZN7android11LayerBufferC1EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
-_ZN7android11LayerBufferC2EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
-_ZNK7android14SurfaceFlinger16getOverlayEngineEv
-_ZN7android9LayerBlurC1EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
-_ZN7android9LayerBlurC2EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
-_ZN7android9LayerBlur14unlockPageFlipERKNS_9TransformERNS_6RegionE
-_ZN7android14SurfaceFlinger16postMessageAsyncERKNS_2spINS_11MessageBaseEEExj
-_ZN7android8LayerDim10initDimmerEPNS_14SurfaceFlingerEjj
-_ZN7android8LayerDimC1EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
-_ZN7android8LayerDimC2EPNS_14SurfaceFlingerEiRKNS_2spINS_6ClientEEE
-_ZN7android12MessageQueue11postMessageERKNS_2spINS_11MessageBaseEEExj
-_ZN7android14SurfaceFlinger12lockPageFlipERKNS0_11LayerVectorE
-_ZN7android14SurfaceFlinger13unlockClientsEv
-_ZN7android14SurfaceFlinger17debugFlashRegionsEv
-_ZN7android14SurfaceFlinger27renderScreenToTextureLockedEiPjPfS2_
-_ZN7android14SurfaceFlinger34electronBeamOffAnimationImplLockedEv
-_ZN7android14SurfaceFlinger33electronBeamOnAnimationImplLockedEv
-_ZNK7android14SurfaceFlinger7getCblkEv
-_ZN7android2spINS_14SurfaceFlingerEEC1ERKS2_
-_ZN7android14SurfaceFlinger4initEv
-_ZN7android14SurfaceFlinger19getTransactionFlagsEj
-_ZN7android10UserClientC1ERKNS_2spINS_14SurfaceFlingerEEE
-_ZN7android14SurfaceFlinger22createClientConnectionEv
-_ZN7android10UserClientC2ERKNS_2spINS_14SurfaceFlingerEEE
-_ZNK7android14SurfaceFlinger12graphicPlaneEi
-_ZN7android14SurfaceFlinger14unlockPageFlipERKNS0_11LayerVectorE
-_ZN7android14SurfaceFlinger23captureScreenImplLockedEiPNS_2spINS_11IMemoryHeapEEEPjS5_Pijj
-_ZN7android14SurfaceFlinger10addLayer_lERKNS_2spINS_9LayerBaseEEE
-_ZN7android14SurfaceFlinger14addClientLayerERKNS_2spINS_6ClientEEERKNS1_INS_15LayerBaseClientEEE
-_ZTVN7android14SurfaceFlinger11LayerVectorE
-_ZN7android6ClientC1ERKNS_2spINS_14SurfaceFlingerEEE
-_ZN7android14SurfaceFlinger16createConnectionEv
-_ZN7android6ClientC2ERKNS_2spINS_14SurfaceFlingerEEE
-_ZNK7android14SurfaceFlinger8getLayerERKNS_2spINS_8ISurfaceEEE
-_ZN7android14SurfaceFlinger21openGlobalTransactionEv
-_ZN7android14SurfaceFlinger29turnElectronBeamOffImplLockedEi
-_ZNK7android14SurfaceFlinger12debugShowFPSEv
-_ZThn4_N7android14SurfaceFlinger4dumpEiRKNS_6VectorINS_8String16EEE
-_ZN7android14SurfaceFlinger4dumpEiRKNS_6VectorINS_8String16EEE
-_ZN7android14SurfaceFlinger24createPushBuffersSurfaceERKNS_2spINS_6ClientEEEijjj
-_ZN7android14SurfaceFlinger16createDimSurfaceERKNS_2spINS_6ClientEEEijjj
-_ZN7android14SurfaceFlinger17createBlurSurfaceERKNS_2spINS_6ClientEEEijjj
-_ZN7android14SurfaceFlinger19createNormalSurfaceERKNS_2spINS_6ClientEEEijjjRi
-_ZN7android14SurfaceFlinger10onFirstRefEv
-_ZN7android14SurfaceFlinger20peekTransactionFlagsEj
-_ZN7android14SurfaceFlinger13removeLayer_lERKNS_2spINS_9LayerBaseEEE
-_ZN7android14SurfaceFlinger18purgatorizeLayer_lERKNS_2spINS_9LayerBaseEEE
-_ZNK7android14SurfaceFlinger12drawWormholeEv
-_ZN7android14SurfaceFlinger15composeSurfacesERKNS_6RegionE
-_ZN7android14SurfaceFlinger13handleRepaintEv
-_ZN7android14SurfaceFlinger17commitTransactionEv
-_ZN7android14SurfaceFlinger21computeVisibleRegionsERNS0_11LayerVectorERNS_6RegionES4_
-_ZN7android14SurfaceFlinger14handlePageFlipEv
-_ZN7android14SurfaceFlinger19handleDestroyLayersEv
-_ZN7android14SurfaceFlinger23handleTransactionLockedEj
-_ZN7android14SurfaceFlinger17handleTransactionEj
-_ZN7android14SurfaceFlinger15postFramebufferEv
-_ZN7android14SurfaceFlinger15postMessageSyncERKNS_2spINS_11MessageBaseEEExj
-_ZN7android14SurfaceFlinger13captureScreenEiPNS_2spINS_11IMemoryHeapEEEPjS5_Pijj
-_ZTVZN7android14SurfaceFlinger13captureScreenEiPNS_2spINS_11IMemoryHeapEEEPjS5_PijjE20MessageCaptureScreen
-_ZN7android14SurfaceFlinger19turnElectronBeamOffEi
-_ZTVZN7android14SurfaceFlinger19turnElectronBeamOffEiE26MessageTurnElectronBeamOff
-_ZN7android14SurfaceFlinger18turnElectronBeamOnEi
-_ZTVZN7android14SurfaceFlinger18turnElectronBeamOnEiE25MessageTurnElectronBeamOn
-_ZN7android14SurfaceFlinger19handleConsoleEventsEv
-_ZN7android14SurfaceFlinger28turnElectronBeamOnImplLockedEi
-_ZN7android14SurfaceFlinger19setTransactionFlagsEj
-_ZN7android14SurfaceFlinger14setClientStateERKNS_2spINS_6ClientEEEiPKNS_13layer_state_tE
-_ZN7android14SurfaceFlinger13removeSurfaceERKNS_2spINS_6ClientEEEi
-_ZN7android14SurfaceFlinger13createSurfaceERKNS_2spINS_6ClientEEEiRKNS_7String8EPNS_22ISurfaceComposerClient14surface_data_tEijjij
-_ZN7android14SurfaceFlinger14setOrientationEiij
-_ZN7android14SurfaceFlinger15unfreezeDisplayEij
-_ZN7android14SurfaceFlinger13freezeDisplayEij
-_ZN7android14SurfaceFlinger25invalidateLayerVisibilityERKNS_2spINS_9LayerBaseEEE
-_ZN7android14SurfaceFlinger11removeLayerERKNS_2spINS_9LayerBaseEEE
-_ZN7android14SurfaceFlinger8addLayerERKNS_2spINS_9LayerBaseEEE
-_ZThn4_N7android14SurfaceFlinger10onTransactEjRKNS_6ParcelEPS1_j
-_ZN7android14SurfaceFlinger10onTransactEjRKNS_6ParcelEPS1_j
-_ZNK7android14SurfaceFlinger6signalEv
-_ZN7android14SurfaceFlinger12waitForEventEv
-_ZThn16_N7android14SurfaceFlinger10threadLoopEv
-_ZN7android14SurfaceFlinger10threadLoopEv
-_ZThn16_N7android14SurfaceFlinger10readyToRunEv
-_ZN7android14SurfaceFlinger10readyToRunEv
-_ZN7android14SurfaceFlinger12bootFinishedEv
-_ZThn16_N7android14SurfaceFlingerD1Ev
-_ZThn4_N7android14SurfaceFlingerD1Ev
-_ZN7android14SurfaceFlingerD1Ev
-_ZTVN7android14SurfaceFlingerE
-_ZTTN7android14SurfaceFlingerE
-_ZThn16_N7android14SurfaceFlingerD0Ev
-_ZThn4_N7android14SurfaceFlingerD0Ev
-_ZN7android14SurfaceFlingerD0Ev
-_ZN7android14SurfaceFlingerD2Ev
-_ZN7android14SurfaceFlingerC1Ev
-_ZN7android14SurfaceFlingerC2Ev
-_ZN7android14SurfaceFlinger22closeGlobalTransactionEv
-_ZTv0_n12_N7android14SurfaceFlingerD0Ev
-_ZTv0_n12_N7android14SurfaceFlingerD1Ev
-_ZTv0_n16_N7android14SurfaceFlinger10onFirstRefEv
-_ZTCN7android14SurfaceFlingerE0_NS_17BnSurfaceComposerE
-_ZTCN7android14SurfaceFlingerE0_NS_11BnInterfaceINS_16ISurfaceComposerEEE
-_ZTCN7android14SurfaceFlingerE0_NS_16ISurfaceComposerE
-_ZTCN7android14SurfaceFlingerE0_NS_10IInterfaceE
-_ZTCN7android14SurfaceFlingerE4_NS_7BBinderE
-_ZTCN7android14SurfaceFlingerE4_NS_7IBinderE
-_ZTCN7android14SurfaceFlingerE16_NS_6ThreadE
-_ZN7android16V3D_Compose_Impl4initEPK20framebuffer_device_t
-PPRefreshRegs
-SetPpFrameBufferWidth
-GetPpFrameBufferWidth
-MP4RefreshRegs
-libsurfaceflinger_client.so
-libsurfaceflinger.so
- FB0
- FB0
-SurfaceFlinger
-/dev/tty0
-Permission Denial: can't access SurfaceFlinger pid=%d, uid=%d
-LayerBuffer::BufferSource::postBuffer() invalid buffer (offset=%d, size=%d, heap-size=%d
+         U close
+         U ioctl
+         U mmap
+         U open
+         U write
+
+=== RELOCATIONS AROUND GRAPHICS CALLS ===
+Relocation section '.rel.plt' at offset 0x173a8 contains 270 entries:
+0004e7f8  00001a16 R_ARM_JUMP_SLOT        00000000   _ZN7android23FramebufferNativeWindow18setUpdateRectangleERKNS_4RectE
+0004e7fc  00001c16 R_ARM_JUMP_SLOT        00000000   _ZNK7android23FramebufferNativeWindow21getCurrentBufferIndexEv
+0004e800  00002016 R_ARM_JUMP_SLOT        00000000   _ZN7android23FramebufferNativeWindow19compositionCompleteEv
+0004e808  00002616 R_ARM_JUMP_SLOT        00000000   _ZN7android23FramebufferNativeWindowD1Ev
+0004e80c  00002716 R_ARM_JUMP_SLOT        00000000   _ZdlPv
+0004e818  00002e16 R_ARM_JUMP_SLOT        00000000   _ZN7android23FramebufferNativeWindowC1Ev
+0004e8e8  0000a616 R_ARM_JUMP_SLOT        00000000   _ZNK7android8ISurface22getInterfaceDescriptorEv
+0004e8f0  0000a816 R_ARM_JUMP_SLOT        00000000   _ZN7android8ISurfaceD2Ev
+0004e974  00012716 R_ARM_JUMP_SLOT        00000000   _ZN7android6RegionC1Ev
+0004e9b4  00014c16 R_ARM_JUMP_SLOT        00000000   _ZN7android8ISurfaceD1Ev
+0004e9b8  00014d16 R_ARM_JUMP_SLOT        00000000   _ZN7android8ISurfaceD0Ev
+0004e9bc  00014e16 R_ARM_JUMP_SLOT        00000000   _ZTv0_n12_N7android8ISurfaceD1Ev
+0004e9c0  00014f16 R_ARM_JUMP_SLOT        00000000   _ZTv0_n12_N7android8ISurfaceD0Ev
+0004ea00  00017216 R_ARM_JUMP_SLOT        00000000   _ZN7android9BnSurface10onTransactEjRKNS_6ParcelEPS1_j
+0004ea04  00017316 R_ARM_JUMP_SLOT        00000000   _ZThn4_N7android9BnSurface10onTransactEjRKNS_6ParcelEPS1_j
+0004ea18  00018416 R_ARM_JUMP_SLOT        00000000   _ZN7android8ISurfaceC2Ev
+0004ea58  00020816 R_ARM_JUMP_SLOT        00000000   _ZN7android8ISurface10BufferHeapC1Ev
+0004ea64  00021016 R_ARM_JUMP_SLOT        00000000   _ZN7android8ISurface10BufferHeapD1Ev
+0004ea90  00027516 R_ARM_JUMP_SLOT        00000000   pthread_cond_signal
+0004ea94  00027816 R_ARM_JUMP_SLOT        00000000   __aeabi_ldivmod
+0004ea98  00027916 R_ARM_JUMP_SLOT        00000000   pthread_cond_timedwait_relative_np
+0004ea9c  00027a16 R_ARM_JUMP_SLOT        00000000   _ZdaPv
+0004eaa0  00027e16 R_ARM_JUMP_SLOT        00000000   _ZN7android14IPCThreadState13flushCommandsEv
+0004eaa8  0002a616 R_ARM_JUMP_SLOT        00000000   _ZNK7android16ISurfaceComposer22getInterfaceDescriptorEv
+0004eaac  0002a716 R_ARM_JUMP_SLOT        00000000   _ZNK7android22ISurfaceComposerClient22getInterfaceDescriptorEv
+0004eab0  0002a816 R_ARM_JUMP_SLOT        00000000   _ZN7android22ISurfaceComposerClientD2Ev
+0004eab4  0002b816 R_ARM_JUMP_SLOT        00000000   _ZN7android16ISurfaceComposerD2Ev
+0004eac0  0002df16 R_ARM_JUMP_SLOT        00000000   _ZN7android22ISurfaceComposerClientC2Ev
+0004eb54  00036916 R_ARM_JUMP_SLOT        00000000   _ZN7android17BnSurfaceComposer10onTransactEjRKNS_6ParcelEPS1_j
+0004eb70  00038016 R_ARM_JUMP_SLOT        00000000   _ZN7android16ISurfaceComposerC2Ev
+0004eb78  0003ab16 R_ARM_JUMP_SLOT        00000000   _ZN7android22ISurfaceComposerClientD1Ev
+0004eb7c  0003ac16 R_ARM_JUMP_SLOT        00000000   _ZN7android22ISurfaceComposerClientD0Ev
+0004eb80  0003ad16 R_ARM_JUMP_SLOT        00000000   _ZTv0_n12_N7android22ISurfaceComposerClientD1Ev
+0004eb84  0003ae16 R_ARM_JUMP_SLOT        00000000   _ZTv0_n12_N7android22ISurfaceComposerClientD0Ev
+0004eb88  0003b316 R_ARM_JUMP_SLOT        00000000   _ZN7android16ISurfaceComposerD1Ev
+0004eb8c  0003b416 R_ARM_JUMP_SLOT        00000000   _ZN7android16ISurfaceComposerD0Ev
+0004eb90  0003b516 R_ARM_JUMP_SLOT        00000000   _ZTv0_n12_N7android16ISurfaceComposerD1Ev
+0004eb94  0003b616 R_ARM_JUMP_SLOT        00000000   _ZTv0_n12_N7android16ISurfaceComposerD0Ev
+0004ebd8  0003c716 R_ARM_JUMP_SLOT        00000000   _ZThn4_N7android17BnSurfaceComposer10onTransactEjRKNS_6ParcelEPS1_j
+0004ebdc  0003c816 R_ARM_JUMP_SLOT        00000000   _ZN7android23BnSurfaceComposerClient10onTransactEjRKNS_6ParcelEPS1_j
+0004ebe0  0003c916 R_ARM_JUMP_SLOT        00000000   _ZThn4_N7android23BnSurfaceComposerClient10onTransactEjRKNS_6ParcelEPS1_j
+0004e270  00009602 R_ARM_ABS32            00000000   _ZN7android7RefBase15onLastStrongRefEPKv
+0004e274  00009702 R_ARM_ABS32            00000000   _ZN7android7RefBase20onIncStrongAttemptedEjPKv
+0004e278  00009802 R_ARM_ABS32            00000000   _ZN7android7RefBase13onLastWeakRefEPKv
+0004e1dc  00009a02 R_ARM_ABS32            00000000   __cxa_pure_virtual
+0004b470  0000a602 R_ARM_ABS32            00000000   _ZNK7android8ISurface22getInterfaceDescriptorEv
+0004ba10  0000a602 R_ARM_ABS32            00000000   _ZNK7android8ISurface22getInterfaceDescriptorEv
+0004bed0  0000a602 R_ARM_ABS32            00000000   _ZNK7android8ISurface22getInterfaceDescriptorEv
+0004cb80  0000a602 R_ARM_ABS32            00000000   _ZNK7android8ISurface22getInterfaceDescriptorEv
+0004e6b8  00012a15 R_ARM_GLOB_DAT         00000000   _ZTTN7android9BnSurfaceE
+0004e6bc  00012b15 R_ARM_GLOB_DAT         00000000   _ZTVN7android9BnSurfaceE
+0004e6c0  00012d15 R_ARM_GLOB_DAT         00000000   _ZN7android8ISurface10descriptorE
+0004d1d4  00013b02 R_ARM_ABS32            00000000   _ZNK7android7BBinder13isBinderAliveEv
+0004d1d8  00013c02 R_ARM_ABS32            00000000   _ZN7android7BBinder10pingBinderEv
+0004d1dc  00013d02 R_ARM_ABS32            00000000   _ZN7android7BBinder4dumpEiRKNS_6VectorINS_8String16EEE
+0004c270  00014402 R_ARM_ABS32            00000000   _ZN7android7BBinder12detachObjectEPKv
+0004c274  00014502 R_ARM_ABS32            00000000   _ZN7android7BBinder11localBinderEv
+0004c278  00014602 R_ARM_ABS32            00000000   _ZN7android7IBinder12remoteBinderEv
+0004b464  00014c02 R_ARM_ABS32            00000000   _ZN7android8ISurfaceD1Ev
+0004ba04  00014c02 R_ARM_ABS32            00000000   _ZN7android8ISurfaceD1Ev
+0004bec4  00014c02 R_ARM_ABS32            00000000   _ZN7android8ISurfaceD1Ev
+0004cb74  00014c02 R_ARM_ABS32            00000000   _ZN7android8ISurfaceD1Ev
+0004b468  00014d02 R_ARM_ABS32            00000000   _ZN7android8ISurfaceD0Ev
+0004ba08  00014d02 R_ARM_ABS32            00000000   _ZN7android8ISurfaceD0Ev
+0004bec8  00014d02 R_ARM_ABS32            00000000   _ZN7android8ISurfaceD0Ev
+0004cb78  00014d02 R_ARM_ABS32            00000000   _ZN7android8ISurfaceD0Ev
+0004b4a8  00014e02 R_ARM_ABS32            00000000   _ZTv0_n12_N7android8ISurfaceD1Ev
+0004ba48  00014e02 R_ARM_ABS32            00000000   _ZTv0_n12_N7android8ISurfaceD1Ev
+0004bf08  00014e02 R_ARM_ABS32            00000000   _ZTv0_n12_N7android8ISurfaceD1Ev
+0004cbb8  00014e02 R_ARM_ABS32            00000000   _ZTv0_n12_N7android8ISurfaceD1Ev
+0004b4ac  00014f02 R_ARM_ABS32            00000000   _ZTv0_n12_N7android8ISurfaceD0Ev
+0004ba4c  00014f02 R_ARM_ABS32            00000000   _ZTv0_n12_N7android8ISurfaceD0Ev
+0004bf0c  00014f02 R_ARM_ABS32            00000000   _ZTv0_n12_N7android8ISurfaceD0Ev
+0004cbbc  00014f02 R_ARM_ABS32            00000000   _ZTv0_n12_N7android8ISurfaceD0Ev
+0004b8b0  00017202 R_ARM_ABS32            00000000   _ZN7android9BnSurface10onTransactEjRKNS_6ParcelEPS1_j
+0004bd70  00017202 R_ARM_ABS32            00000000   _ZN7android9BnSurface10onTransactEjRKNS_6ParcelEPS1_j
+0004ca20  00017202 R_ARM_ABS32            00000000   _ZN7android9BnSurface10onTransactEjRKNS_6ParcelEPS1_j
+0004b900  00017302 R_ARM_ABS32            00000000   _ZThn4_N7android9BnSurface10onTransactEjRKNS_6ParcelEPS1_j
+0004bdc0  00017302 R_ARM_ABS32            00000000   _ZThn4_N7android9BnSurface10onTransactEjRKNS_6ParcelEPS1_j
+0004ca70  00017302 R_ARM_ABS32            00000000   _ZThn4_N7android9BnSurface10onTransactEjRKNS_6ParcelEPS1_j
+0004e6e0  0001dc15 R_ARM_GLOB_DAT         00000000   _ZN7android8IOverlay10descriptorE
+0004c1d4  00024f02 R_ARM_ABS32            00000000   _ZThn4_N7android9BnOverlay10onTransactEjRKNS_6ParcelEPS1_j
+0004d290  0002a602 R_ARM_ABS32            00000000   _ZNK7android16ISurfaceComposer22getInterfaceDescriptorEv
+0004da50  0002a602 R_ARM_ABS32            00000000   _ZNK7android16ISurfaceComposer22getInterfaceDescriptorEv
+0004cfb8  0002a702 R_ARM_ABS32            00000000   _ZNK7android22ISurfaceComposerClient22getInterfaceDescriptorEv
+0004df10  0002a702 R_ARM_ABS32            00000000   _ZNK7android22ISurfaceComposerClient22getInterfaceDescriptorEv
+0004e350  0002a702 R_ARM_ABS32            00000000   _ZNK7android22ISurfaceComposerClient22getInterfaceDescriptorEv
+0004e744  0002ab15 R_ARM_GLOB_DAT         00000000   _ZTVN7android23BnSurfaceComposerClientE
+0004e748  0002ac15 R_ARM_GLOB_DAT         00000000   _ZTTN7android23BnSurfaceComposerClientE
+0004e74c  0002ad15 R_ARM_GLOB_DAT         00000000   _ZN7android22ISurfaceComposerClient10descriptorE
+0004e750  0002ae15 R_ARM_GLOB_DAT         00000000   _ZN7android16ISurfaceComposer10descriptorE
+0004e75c  0002bb15 R_ARM_GLOB_DAT         00000000   _ZTVN7android17BnSurfaceComposerE
+0004e760  0002bc15 R_ARM_GLOB_DAT         00000000   _ZTTN7android17BnSurfaceComposerE
+0004d8c8  00036902 R_ARM_ABS32            00000000   _ZN7android17BnSurfaceComposer10onTransactEjRKNS_6ParcelEPS1_j
+0004cfac  0003ab02 R_ARM_ABS32            00000000   _ZN7android22ISurfaceComposerClientD1Ev
+0004df04  0003ab02 R_ARM_ABS32            00000000   _ZN7android22ISurfaceComposerClientD1Ev
+0004e344  0003ab02 R_ARM_ABS32            00000000   _ZN7android22ISurfaceComposerClientD1Ev
+0004cfb0  0003ac02 R_ARM_ABS32            00000000   _ZN7android22ISurfaceComposerClientD0Ev
+0004df08  0003ac02 R_ARM_ABS32            00000000   _ZN7android22ISurfaceComposerClientD0Ev
+0004e348  0003ac02 R_ARM_ABS32            00000000   _ZN7android22ISurfaceComposerClientD0Ev
+0004cfec  0003ad02 R_ARM_ABS32            00000000   _ZTv0_n12_N7android22ISurfaceComposerClientD1Ev
+0004df44  0003ad02 R_ARM_ABS32            00000000   _ZTv0_n12_N7android22ISurfaceComposerClientD1Ev
+0004e384  0003ad02 R_ARM_ABS32            00000000   _ZTv0_n12_N7android22ISurfaceComposerClientD1Ev
+0004cff0  0003ae02 R_ARM_ABS32            00000000   _ZTv0_n12_N7android22ISurfaceComposerClientD0Ev
+0004df48  0003ae02 R_ARM_ABS32            00000000   _ZTv0_n12_N7android22ISurfaceComposerClientD0Ev
+0004e388  0003ae02 R_ARM_ABS32            00000000   _ZTv0_n12_N7android22ISurfaceComposerClientD0Ev
+0004d284  0003b302 R_ARM_ABS32            00000000   _ZN7android16ISurfaceComposerD1Ev
+0004da44  0003b302 R_ARM_ABS32            00000000   _ZN7android16ISurfaceComposerD1Ev
+0004d288  0003b402 R_ARM_ABS32            00000000   _ZN7android16ISurfaceComposerD0Ev
+0004da48  0003b402 R_ARM_ABS32            00000000   _ZN7android16ISurfaceComposerD0Ev
+0004d2f0  0003b502 R_ARM_ABS32            00000000   _ZTv0_n12_N7android16ISurfaceComposerD1Ev
+0004dab0  0003b502 R_ARM_ABS32            00000000   _ZTv0_n12_N7android16ISurfaceComposerD1Ev
+0004d2f4  0003b602 R_ARM_ABS32            00000000   _ZTv0_n12_N7android16ISurfaceComposerD0Ev
+0004dab4  0003b602 R_ARM_ABS32            00000000   _ZTv0_n12_N7android16ISurfaceComposerD0Ev
+0004d918  0003c702 R_ARM_ABS32            00000000   _ZThn4_N7android17BnSurfaceComposer10onTransactEjRKNS_6ParcelEPS1_j
+0004dcac  0003c802 R_ARM_ABS32            00000000   _ZN7android23BnSurfaceComposerClient10onTransactEjRKNS_6ParcelEPS1_j
+0004ddb4  0003c802 R_ARM_ABS32            00000000   _ZN7android23BnSurfaceComposerClient10onTransactEjRKNS_6ParcelEPS1_j
+0004e0ec  0003c802 R_ARM_ABS32            00000000   _ZN7android23BnSurfaceComposerClient10onTransactEjRKNS_6ParcelEPS1_j
+0004e1f4  0003c802 R_ARM_ABS32            00000000   _ZN7android23BnSurfaceComposerClient10onTransactEjRKNS_6ParcelEPS1_j
+0004dcfc  0003c902 R_ARM_ABS32            00000000   _ZThn4_N7android23BnSurfaceComposerClient10onTransactEjRKNS_6ParcelEPS1_j
+0004de04  0003c902 R_ARM_ABS32            00000000   _ZThn4_N7android23BnSurfaceComposerClient10onTransactEjRKNS_6ParcelEPS1_j
+0004e13c  0003c902 R_ARM_ABS32            00000000   _ZThn4_N7android23BnSurfaceComposerClient10onTransactEjRKNS_6ParcelEPS1_j
+0004e244  0003c902 R_ARM_ABS32            00000000   _ZThn4_N7android23BnSurfaceComposerClient10onTransactEjRKNS_6ParcelEPS1_j
+mostafa@MMostafa ~ % echo '=== LIBUI FRAMEBUFFER NATIVE WINDOW ==='
+
+/opt/homebrew/opt/llvm/bin/llvm-nm \
+  -D \
+  /tmp/totoro-libui.so 2>/dev/null | \
+  grep -E 'FramebufferNativeWindow'
+
+echo
+echo '=== LIBUI TARGETED DISASSEMBLY ==='
+
+/opt/homebrew/opt/llvm/bin/llvm-objdump \
+  -d \
+  --print-imm-hex \
+  /tmp/totoro-libui.so | \
+  grep -n -A80 -B10 \
+  'FramebufferNativeWindow.*queueBuffer\|FramebufferNativeWindow.*dequeueBuffer\|FramebufferNativeWindow.*setUpdateRectangle\|FramebufferNativeWindow.*compositionComplete'
+=== LIBUI FRAMEBUFFER NATIVE WINDOW ===
+0001b304 T _ZN7android23FramebufferNativeWindow10lockBufferEP13ANativeWindowP23android_native_buffer_t
+0001b28c T _ZN7android23FramebufferNativeWindow11queueBufferEP13ANativeWindowP23android_native_buffer_t
+0001b204 T _ZN7android23FramebufferNativeWindow13dequeueBufferEP13ANativeWindowPP23android_native_buffer_t
+0001b0bc T _ZN7android23FramebufferNativeWindow15setSwapIntervalEP13ANativeWindowi
+0001b070 T _ZN7android23FramebufferNativeWindow18setUpdateRectangleERKNS_4RectE
+0001b0a4 T _ZN7android23FramebufferNativeWindow19compositionCompleteEv
+0001b150 T _ZN7android23FramebufferNativeWindow5queryEP13ANativeWindowiPi
+0001b0cc T _ZN7android23FramebufferNativeWindow7performEP13ANativeWindowiz
+0001b750 T _ZN7android23FramebufferNativeWindowC1Ev
+0001b4e0 T _ZN7android23FramebufferNativeWindowC2Ev
+0001b364 T _ZN7android23FramebufferNativeWindowD1Ev
+0001b414 T _ZN7android23FramebufferNativeWindowD2Ev
+0001b194 T _ZNK7android23FramebufferNativeWindow21getCurrentBufferIndexEv
+
+=== LIBUI TARGETED DISASSEMBLY ===
+3673-   1b04c: 62656225     	rsbvs	r6, r5, #1342177282
+3674-   1b050: 62e562a5     	rscvs	r6, r5, #1342177290
+3675-   1b054: 63656325     	<unknown>
+3676-   1b058: 63e563a5     	<unknown>
+3677-   1b05c: 64656425     	strbtvs	r6, [r5], #-1061
+3678-   1b060: 64e564a5     	strbtvs	r6, [r5], #1189
+3679-   1b064: 65656525     	strbvs	r6, [r5, #-0x525]!
+3680-   1b068: 65e565a5     	strbvs	r6, [r5, #0x5a5]!
+3681-   1b06c: bd701c20     	ldcllt	p12, c1, [r0, #-128]!
+3682-
+3683:0001b070 <_ZN7android23FramebufferNativeWindow18setUpdateRectangleERKNS_4RectE>:
+3684-   1b070: 1c0cb530     	<unknown>
+3685-   1b074: 319c1c01     	orrslo	r1, r12, r1, lsl #24
+3686-   1b078: 780bb083     	stmdavc	r11, {r0, r1, r7, r12, sp, pc}
+3687-   1b07c: d1022b00     	<unknown>
+3688-   1b080: 42402026     	submi	r2, r0, #38
+3689-   1b084: 6ec0e00b     	cdpvs	p0, #0xc, c14, c0, c11, #0x0
+3690-   1b088: 68626821     	stmdavs	r2!, {r0, r5, r11, sp, lr} ^
+3691-   1b08c: 1c0568a3     	<unknown>
+3692-   1b090: 359468e4     	ldrlo	r6, [r4, #0x8e4]
+3693-   1b094: 94001aa4     	strls	r1, [r0], #-2724
+3694-   1b098: 682c1a5b     	stmdavs	r12!, {r0, r1, r3, r4, r6, r9, r11, r12}
+3695-   1b09c: b00347a0     	andlt	r4, r3, r0, lsr #15
+3696-   1b0a0: 46c0bd30     	<unknown>
+3697-
+3698:0001b0a4 <_ZN7android23FramebufferNativeWindow19compositionCompleteEv>:
+3699-   1b0a4: 6ec0b510     	mcrvs	p5, #0x6, r11, c0, c0, #0x0
+3700-   1b0a8: 339c1c03     	orrslo	r1, r12, #768
+3701-   1b0ac: 2b00681b     	blhs	0x35120 <_ZGVN7android9SingletonINS_10GraphicLogEE5sLockE+0x810> @ imm = #0x1a06c
+3702-   1b0b0: 2026d102     	eorhs	sp, r6, r2, lsl #2
+3703-   1b0b4: e0004240     	and	r4, r0, r0, asr #4
+3704-   1b0b8: bd104798     	ldclt	p7, c4, [r0, #-608]
+3705-
+3706-0001b0bc <_ZN7android23FramebufferNativeWindow15setSwapIntervalEP13ANativeWindowi>:
+3707-   1b0bc: 6ec0b510     	mcrvs	p5, #0x6, r11, c0, c0, #0x0
+3708-   1b0c0: 32901c02     	addslo	r1, r0, #512
+3709-   1b0c4: 47986813     	<unknown>
+3710-   1b0c8: 46c0bd10     	<unknown>
+3711-
+3712-0001b0cc <_ZN7android23FramebufferNativeWindow7performEP13ANativeWindowiz>:
+3713-   1b0cc: 9a00b40e     	bls	0x4810c <_ZGVN7android9SingletonINS_10GraphicLogEE5sLockE+0x137fc> @ imm = #0x2d038
+3714-   1b0d0: d9022a02     	stmdble	r2, {r1, r9, r11, sp}
+3715-   1b0d4: 42402002     	submi	r2, r0, #2
+3716-   1b0d8: 4b03e003     	blmi	0x1130ec <_ZGVN7android9SingletonINS_10GraphicLogEE5sLockE+0xde7dc> @ imm = #0xf800c
+3717-   1b0dc: 447b0092     	ldrbtmi	r0, [r11], #-146
+3718-   1b0e0: b00358d0     	ldrdlt	r5, r6, [r3], -r0
+3719-   1b0e4: 46c04770     	uxtab16mi	r4, r0, r0, ror #8
+3720-   1b0e8: 0001133e     	andeq	r1, r1, lr, lsr r3
+3721-   1b0ec: 3068b510     	rsblo	r11, r8, r0, lsl r5
+3722-   1b0f0: e9caf7fd     	stmib	r10, {r0, r2, r3, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc} ^
+3723-   1b0f4: 46c0bd10     	<unknown>
+3724-   1b0f8: 3060b510     	rsblo	r11, r0, r0, lsl r5
+3725-   1b0fc: e9c4f7fd     	stmib	r4, {r0, r2, r3, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc} ^
+3726-   1b100: 46c0bd10     	<unknown>
+3727-   1b104: 1c04b510     	<unknown>
+3728-   1b108: e9c4f7fd     	stmib	r4, {r0, r2, r3, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc} ^
+3729-   1b10c: d1052801     	mrsle	r2, apsr
+3730-   1b110: 38601c20     	stmdalo	r0!, {r5, r10, r11, r12} ^
+3731-   1b114: d0012800     	andle	r2, r1, r0, lsl #16
+3732-   1b118: effaf7fc     	svc	#0xfaf7fc
+3733-   1b11c: 46c0bd10     	<unknown>
+3734-
+3735-0001b120 <_ZN7android2spINS_12NativeBufferEEaSEPS1_>:
+3736-   1b120: 1c04b570     	<unknown>
+3737-   1b124: d0031e0d     	andle	r1, r3, sp, lsl #28
+3738-   1b128: 30601c28     	rsblo	r1, r0, r8, lsr #24
+3739-   1b12c: e9acf7fd     	stmib	r12!, {r0, r2, r3, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc}
+3740-   1b130: 28006820     	stmdahs	r0, {r5, r11, sp, lr}
+3741-   1b134: 3060d003     	rsblo	sp, r0, r3
+3742-   1b138: f7ff1c21     	<unknown>
+3743-   1b13c: 6025ffe3     	eorvs	pc, r5, r3, ror #31
+3744-   1b140: bd701c20     	ldcllt	p12, c1, [r0, #-128]!
+3745-   1b144: 1c01b510     	<unknown>
+3746-   1b148: f7ff3060     	<unknown>
+3747-   1b14c: bd10ffdb     	ldclt	p15, c15, [r0, #-876]
+3748-
+3749-0001b150 <_ZN7android23FramebufferNativeWindow5queryEP13ANativeWindowiPi>:
+3750-   1b150: 1c07b5f8     	<unknown>
+3751-   1b154: 37841c05     	strlo	r1, [r4, r5, lsl #24]
+3752-   1b158: 1c381c0e     	ldcne	p12, c1, [r8], #-56
+3753-   1b15c: f7fc1c14     	<unknown>
+3754-   1b160: 6eebefe4     	cdpvs	p15, #0xe, c14, c11, c4, #0x7
+3755-   1b164: d0052e01     	andle	r2, r5, r1, lsl #28
+3756-   1b168: d0072e02     	andle	r2, r7, r2, lsl #28
+3757-   1b16c: d1072e00     	<unknown>
+3758-   1b170: e0006c5b     	and	r6, r0, r11, asr r12
+3759-   1b174: 60236c9b     	mlavs	r3, r11, r12, r6
+3760-   1b178: e0052400     	and	r2, r5, r0, lsl #8
+3761-   1b17c: e7fa6d1b     	<unknown>
+3762-   1b180: 60232300     	eorvs	r2, r3, r0, lsl #6
+3763-   1b184: 42642416     	rsbmi	r2, r4, #369098752
+3764-   1b188: f7fc1c38     	<unknown>
+3765-   1b18c: 1c20efda     	stcne	p15, c14, [r0], #-872
+3766-   1b190: 46c0bdf8     	<unknown>
+3767-
+3768-0001b194 <_ZNK7android23FramebufferNativeWindow21getCurrentBufferIndexEv>:
+3769-   1b194: 1c04b570     	<unknown>
+3770-   1b198: 35841c05     	strlo	r1, [r4, #0xc05]
+3771-   1b19c: 1c283498     	stcne	p4, c3, [r8], #-608
+3772-   1b1a0: efc2f7fc     	svc	#0xc2f7fc
+3773-   1b1a4: 1c286824     	stcne	p8, c6, [r8], #-144
+3774-   1b1a8: efcaf7fc     	svc	#0xcaf7fc
+3775-   1b1ac: bd701c20     	ldcllt	p12, c1, [r0, #-128]!
+3776-   1b1b0: 4c0cb570     	<unknown>
+3777-   1b1b4: 447c490c     	ldrbtmi	r4, [r12], #-2316
+3778-   1b1b8: f7fc5860     	<unknown>
+--
+3788-   1b1e0: 46c0bd70     	uxtab16mi	r11, r0, r0, ror #24
+3789-   1b1e4: 000192e2     	andeq	r9, r1, r2, ror #5
+3790-   1b1e8: fffffe8c     	<unknown>
+3791-   1b1ec: fffffe90     	<unknown>
+3792-   1b1f0: 6803b510     	stmdavs	r3, {r4, r8, r10, r12, sp, pc}
+3793-   1b1f4: d0032b00     	andle	r2, r3, r0, lsl #22
+3794-   1b1f8: 1c111c08     	<unknown>
+3795-   1b1fc: fd30f001     	ldc2	p0, c15, [r0, #-4]!
+3796-   1b200: 46c0bd10     	<unknown>
+3797-
+3798:0001b204 <_ZN7android23FramebufferNativeWindow13dequeueBufferEP13ANativeWindowPP23android_native_buffer_t>:
+3799-   1b204: 6ec5b5f0     	mcrvs	p5, #0x6, r11, c5, c0, #0x7
+3800-   1b208: 30941c04     	addslo	r1, r4, r4, lsl #24
+3801-   1b20c: 1c0fb083     	<unknown>
+3802-   1b210: f7ff6806     	<unknown>
+3803-   1b214: 491bffcd     	ldmdbmi	r11, {r0, r2, r3, r6, r7, r8, r9, r10, r11, r12, sp, lr, pc}
+3804-   1b218: 90011c32     	andls	r1, r1, r2, lsr r12
+3805-   1b21c: ffe8f7ff     	<unknown>
+3806-   1b220: 2b026f2b     	blhs	0xb6ed4 <_ZGVN7android9SingletonINS_10GraphicLogEE5sLockE+0x825c4> @ imm = #0x9bcac
+3807-   1b224: 1c29dd05     	stcne	p13, c13, [r9], #-20
+3808-   1b228: 1c2831b4     	stcne	p1, c3, [r8], #-720
+3809-   1b22c: 1c31680a     	ldcne	p8, c6, [r1], #-40
+3810-   1b230: 1c254790     	stcne	p7, c4, [r5], #-576
+3811-   1b234: 1c283584     	stcne	p5, c3, [r8], #-528
+3812-   1b238: ef76f7fc     	svc	#0x76f7fc
+3813-   1b23c: 33941c23     	orrslo	r1, r4, #8960
+3814-   1b240: 68181c22     	ldmdavs	r8, {r1, r5, r10, r11, r12}
+3815-   1b244: 3001328c     	andlo	r3, r1, r12, lsl #5
+3816-   1b248: 68116018     	ldmdavs	r1, {r3, r4, sp, lr}
+3817-   1b24c: db014288     	blle	0x6bc74 <_ZGVN7android9SingletonINS_10GraphicLogEE5sLockE+0x37364> @ imm = #0x50a20
+3818-   1b250: 60192100     	andsvs	r2, r9, r0, lsl #2
+3819-   1b254: 31901c21     	orrslo	r1, r0, r1, lsr #24
+3820-   1b258: 680b1c32     	stmdavs	r11, {r1, r4, r5, r10, r11, r12}
+3821-   1b25c: 0090321c     	addseq	r3, r0, r12, lsl r2
+3822-   1b260: 600b3b01     	andvs	r3, r11, r1, lsl #22
+3823-   1b264: 31081824     	<unknown>
+3824-   1b268: 600e1c32     	andvs	r1, lr, r2, lsr r12
+3825-   1b26c: 49066863     	stmdbmi	r6, {r0, r1, r5, r6, r11, sp, lr}
+3826-   1b270: 9801603b     	stmdals	r1, {r0, r1, r3, r4, r5, sp, lr}
+3827-   1b274: ffbcf7ff     	<unknown>
+3828-   1b278: f7fc1c28     	<unknown>
+3829-   1b27c: b003ef62     	andlt	lr, r3, r2, ror #30
+3830-   1b280: bdf02000     	ldcllt	p0, c2, [r0, #0]!
+3831-   1b284: 0000ead0     	ldrdeq	lr, pc, [r0], -r0
+3832-   1b288: 0000ead1     	ldrdeq	lr, pc, [r0], -r1
+3833-
+3834:0001b28c <_ZN7android23FramebufferNativeWindow11queueBufferEP13ANativeWindowP23android_native_buffer_t>:
+3835-   1b28c: 1c02b5f0     	<unknown>
+3836-   1b290: 3284b085     	addlo	r11, r4, #133
+3837-   1b294: 1c0d1c04     	<unknown>
+3838-   1b298: 92011c10     	andls	r1, r1, #16, #24
+3839-   1b29c: ef44f7fc     	svc	#0x44f7fc
+3840-   1b2a0: 33981c23     	orrslo	r1, r8, #8960
+3841-   1b2a4: 6ee76bee     	<unknown>
+3842-   1b2a8: 68199603     	ldmdavs	r9, {r0, r1, r9, r10, r12, pc}
+3843-   1b2ac: f7ff9102     	<unknown>
+3844-   1b2b0: 9a02ff7f     	bls	0xdb0b4 <_ZGVN7android9SingletonINS_10GraphicLogEE5sLockE+0xa67a4> @ imm = #0xbfdfc
+3845-   1b2b4: 1c064911     	<unknown>
+3846-   1b2b8: ff9af7ff     	<unknown>
+3847-   1b2bc: 30981c38     	addslo	r1, r8, r8, lsr r12
+3848-   1b2c0: 68029903     	stmdavs	r2, {r0, r1, r8, r11, r12, pc}
+3849-   1b2c4: 47901c38     	<unknown>
+3850-   1b2c8: 490d9a02     	stmdbmi	sp, {r1, r9, r11, r12, pc}
+3851-   1b2cc: 1c301c07     	ldcne	p12, c1, [r0], #-28
+3852-   1b2d0: ff8ef7ff     	<unknown>
+3853-   1b2d4: 1c291c20     	stcne	p12, c1, [r9], #-128
+3854-   1b2d8: f7ff3080     	<unknown>
+3855-   1b2dc: 1c23ff21     	stcne	p15, c15, [r3], #-132
+3856-   1b2e0: 1c203390     	stcne	p3, c3, [r0], #-576
+3857-   1b2e4: 3088681a     	addlo	r6, r8, r10, lsl r8
+3858-   1b2e8: 601a3201     	andsvs	r3, r10, r1, lsl #4
+3859-   1b2ec: e8d8f7fd     	ldm	r8, {r0, r2, r3, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc} ^
+3860-   1b2f0: f7fc9801     	<unknown>
+3861-   1b2f4: b005ef26     	andlt	lr, r5, r6, lsr #30
+3862-   1b2f8: bdf01c38     	ldcllt	p12, c1, [r0, #224]!
+3863-   1b2fc: 0000eace     	andeq	lr, r0, lr, asr #21
+3864-   1b300: 0000eacf     	andeq	lr, r0, pc, asr #21
+3865-
+3866-0001b304 <_ZN7android23FramebufferNativeWindow10lockBufferEP13ANativeWindowP23android_native_buffer_t>:
+3867-   1b304: 1c05b5f0     	<unknown>
+3868-   1b308: 3584b083     	strlo	r11, [r4, #0x83]
+3869-   1b30c: 1c281c04     	stcne	p12, c1, [r8], #-16
+3870-   1b310: f7fc9101     	<unknown>
+3871-   1b314: 1c23ef0a     	stcne	p15, c14, [r3], #-40
+3872-   1b318: 681f3398     	ldmdavs	pc, {r3, r4, r7, r8, r9, r12, sp}
+3873-   1b31c: ff48f7ff     	<unknown>
+3874-   1b320: 490e1c3a     	stmdbmi	lr, {r1, r3, r4, r5, r10, r11, r12}
+3875-   1b324: f7ff1c06     	<unknown>
+3876-   1b328: 1c22ff63     	stcne	p15, c15, [r2], #-396
+3877-   1b32c: 92003288     	andls	r3, r0, #136, #4
+3878-   1b330: e0033404     	and	r3, r3, r4, lsl #8
+3879-   1b334: 1c299800     	stcne	p8, c9, [r9], #-0
+3880-   1b338: e8b8f7fd     	ldm	r8!, {r0, r2, r3, r4, r5, r6, r7, r8, r9, r10, r12, sp, lr, pc}
+3881-   1b33c: 9a016fe0     	bls	0x772c4 <_ZGVN7android9SingletonINS_10GraphicLogEE5sLockE+0x429b4> @ imm = #0x5bf80
+3882-   1b340: d0f74290     	smlalsle	r4, r7, r0, r2
+3883-   1b344: 1c3a1c30     	ldcne	p12, c1, [r10], #-192
+3884-   1b348: f7ff4905     	<unknown>
+3885-   1b34c: 1c28ff51     	stcne	p15, c15, [r8], #-324
+3886-   1b350: eef6f7fc     	mrc	p7, #0x7, apsr_nzcv, c6, c12, #0x7
+3887-   1b354: 2000b003     	andhs	r11, r0, r3
+3888-   1b358: 46c0bdf0     	<unknown>
+3889-   1b35c: 0000ead2     	ldrdeq	lr, pc, [r0], -r2
+3890-   1b360: 0000ead3     	ldrdeq	lr, pc, [r0], -r3
+3891-
+3892-0001b364 <_ZN7android23FramebufferNativeWindowD1Ev>:
+3893-   1b364: 6f03b5f8     	svcvs	#0x3b5f8
+3894-   1b368: 2b001c04     	blhs	0x22380 <_ZN7android15InputDispatcher12dispatchOnceEv+0x30> @ imm = #0x7010
+3895-   1b36c: 1c05d014     	<unknown>
+3896-   1b370: 35741c06     	ldrblo	r1, [r4, #-0xc06]!
+3897-   1b374: 368c2700     	strlo	r2, [r12], r0, lsl #14
+3898-   1b378: 682be008     	stmdavs	r11!, {r3, sp, lr, pc}
+3899-   1b37c: d0032b00     	andle	r2, r3, r0, lsl #22
+3900-   1b380: 6bd96f20     	blvs	0xff677008 <_ZGVN7android9SingletonINS_10GraphicLogEE5sLockE+0xffffffffff6426f8> @ imm = #-0x9a4380
+3901-   1b384: 47906c42     	ldrmi	r6, [r0, r2, asr #24]
+3902-   1b388: 35043701     	strlo	r3, [r4, #-0x701]
+3903-   1b38c: 429f6833     	addsmi	r6, pc, #3342336
+3904-   1b390: 6f20dbf3     	svcvs	#0x20dbf3
+3905-   1b394: 47886bc1     	strmi	r6, [r8, r1, asr #23]
+3906-   1b398: 28006ee0     	stmdahs	r0, {r5, r6, r7, r9, r10, r11, sp, lr}
+3907-   1b39c: 6bc5d001     	blvs	0xff18f3a8 <_ZGVN7android9SingletonINS_10GraphicLogEE5sLockE+0xffffffffff15aa98> @ imm = #-0xe8bffc
+3908-   1b3a0: 1c2047a8     	stcne	p7, c4, [r0], #-672
+3909-   1b3a4: f7fd3088     	<unknown>
+3910-   1b3a8: 1d26e888     	stcne	p8, c14, [r6, #-544]!
+3911-   1b3ac: 30841c20     	addlo	r1, r4, r0, lsr #24
+3912-   1b3b0: ef50f7fc     	svc	#0x50f7fc
+3913-   1b3b4: 28006ff0     	stmdahs	r0, {r4, r5, r6, r7, r8, r9, r10, r11, sp, lr}
+3914-   1b3b8: 1c21d004     	stcne	p0, c13, [r1], #-16
+mostafa@MMostafa ~ % echo '=== FRAMEBUFFER / GRALLOC HALS ON DEVICE ==='
+
+adb -s 172.20.10.2:5555 shell \
+  'ls -l /system/lib/hw 2>/dev/null'
+
+echo
+adb -s 172.20.10.2:5555 shell \
+  'ls -l /system/lib/hw/*gralloc* /system/lib/hw/*fb* 2>/dev/null'
+=== FRAMEBUFFER / GRALLOC HALS ON DEVICE ===
+-rw-r--r-- root     root         5588 2012-03-16 19:23 lights.bcm21553.so
+-rw-r--r-- root     root        18316 2012-03-16 19:23 alsa.default.so
+-rw-r--r-- root     root        10084 2012-03-16 19:23 gralloc.default.so
+-rw-r--r-- root     root         5540 2012-03-16 19:23 acoustics.default.so
+-rw-r--r-- root     root        34648 2012-03-16 15:53 gps.bcm21553.so
+-rw-r--r-- root     root        26724 2012-03-16 19:23 sensors.default.so
+-rw-r--r-- root     root        10036 2012-03-16 15:53 sensors.goldfish.so
+-rw-r--r-- root     root         9812 2012-03-16 15:53 gps.goldfish.so
+
+-rw-r--r-- root     root        10084 2012-03-16 19:23 gralloc.default.so
+mostafa@MMostafa ~ % mkdir -p /tmp/totoro-hw
+
+adb -s 172.20.10.2:5555 shell \
+  'ls /system/lib/hw/*gralloc* /system/lib/hw/*fb* 2>/dev/null'
+
+adb -s 172.20.10.2:5555 pull \
+  /system/lib/hw/gralloc.default.so \
+  /tmp/totoro-hw/gralloc.default.so
+
+file /tmp/totoro-hw/gralloc.default.so
+
+/opt/homebrew/opt/llvm/bin/llvm-nm \
+  -D \
+  /tmp/totoro-hw/gralloc.default.so 2>/dev/null | \
+  grep -Ei 'framebuffer|fb|post|flip|lock|unlock|open|perform|map|update'
+
+strings -a /tmp/totoro-hw/gralloc.default.so | \
+  grep -Ei 'fb0|framebuffer|gememalloc|gralloc|ioctl|mmap|post|flip|refresh|LCD'
+/system/lib/hw/gralloc.default.so
+/system/lib/hw/gralloc.default.so: 1 file pulled, 0 skipped. 0.2 MB/s (10084 bytes in 0.057s)
+/tmp/totoro-hw/gralloc.default.so: ELF 32-bit LSB shared object, ARM, EABI5 version 1 (SYSV), dynamically linked, stripped
+000017c8 T _Z12gralloc_lockPK16gralloc_module_tPK15native_handle_tiiiiiPPv
+00001680 T _Z14fb_device_openPK11hw_module_tPKcPP11hw_device_t
+000017b0 T _Z14gralloc_unlockPK16gralloc_module_tPK15native_handle_t
+00001310 T _Z20mapFrameBufferLockedP16private_module_t
+0000189c T _Z9mapBufferPK16gralloc_module_tP16private_handle_t
+         U mmap
+         U munmap
+         U open
+         U pthread_mutex_lock
+         U pthread_mutex_unlock
+ioctl
+_Z15terminateBufferPK16gralloc_module_tP16private_handle_t
+mmap
+_Z20mapFrameBufferLockedP16private_module_t
+_Z23gralloc_register_bufferPK16gralloc_module_tPK15native_handle_t
+_Z25gralloc_unregister_bufferPK16gralloc_module_tPK15native_handle_t
+_Z12gralloc_lockPK16gralloc_module_tPK15native_handle_tiiiiiPPv
+_Z14gralloc_unlockPK16gralloc_module_tPK15native_handle_t
+_Z9mapBufferPK16gralloc_module_tP16private_handle_t
+gralloc.default.so
 gralloc
-SurfaceFlinger Client control-block
-Permission Denial: can't dump SurfaceFlinger from pid=%d, uid=%d
-SurfaceFlinger appears to be unresponsive, dumping anyways (no locks held)
-Permission Denial: can't read framebuffer pid=%d, uid=%d
-SurfaceFlinger read-only heap
-FLIP_V 
-FLIP_H 
-/dev/v3d
+invalid gralloc handle (at %p)
+open(/dev/gememalloc)++
 /dev/gememalloc
-Unsupported Framebuffer format
-/dev/cache-ops
-Hantro 7170 Video Post Processor
-/dev/gememalloc
-/dev/cache-ops
-/dev/hx170dec
-/dev/cache-ops
-mostafa@MMostafa ~ % strings -a /tmp/totoro-libui.so | \
-  grep -Ei 'fb0|framebuffer|gememalloc|gralloc|/dev/|flip|post|refresh'
-_ZN7android23FramebufferNativeWindow18setUpdateRectangleERKNS_4RectE
-_ZN7android23FramebufferNativeWindow19compositionCompleteEv
-_ZN7android23FramebufferNativeWindow15setSwapIntervalEP13ANativeWindowi
-_ZN7android23FramebufferNativeWindow7performEP13ANativeWindowiz
-_ZN7android23FramebufferNativeWindow5queryEP13ANativeWindowiPi
-_ZNK7android23FramebufferNativeWindow21getCurrentBufferIndexEv
-_ZN7android23FramebufferNativeWindow13dequeueBufferEP13ANativeWindowPP23android_native_buffer_t
-_ZN7android23FramebufferNativeWindow11queueBufferEP13ANativeWindowP23android_native_buffer_t
-_ZN7android23FramebufferNativeWindow10lockBufferEP13ANativeWindowP23android_native_buffer_t
-_ZN7android23FramebufferNativeWindowD1Ev
-_ZN7android23FramebufferNativeWindowD2Ev
-_ZN7android23FramebufferNativeWindowC2Ev
-_ZN7android23FramebufferNativeWindowC1Ev
-_ZN7android19sw_gralloc_handle_t4freeEPS0_
-_ZN7android19sw_gralloc_handle_t5allocEjjiiPPK15native_handle_tPi
-_ZN7android19sw_gralloc_handle_t4lockEPS0_iiiiiPPv
-_ZN7android19sw_gralloc_handle_t6unlockEPS0_
-_ZN7android19sw_gralloc_handle_t16unregisterBufferEPS0_
-_ZN7android19sw_gralloc_handle_t14registerBufferEPS0_
-_ZN7android15InputDispatcher17postCommandLockedEMS0_FvPNS0_12CommandEntryEE
-sem_post
-/dev/input
-gralloc
-FramebufferNativeWindow
-couldn't open framebuffer HAL (%s)
-couldn't open gralloc HAL (%s)
-Couldn't get gralloc module
-sw-gralloc-buffer
-APOSTROPHE
-channel '%s' publisher ~ Error %d in sem_post.
+open(/dev/gememalloc)--
+gralloc_alloc_buffer: Opened gememalloc
+FBIOPUT_VSCREENINFO failed, page flipping not supported
+page flipping not supported (yres_virtual=%d, requested=%d)
+Error mapping the framebuffer (%s)
+Could not mmap %s
 mostafa@MMostafa ~ % 
