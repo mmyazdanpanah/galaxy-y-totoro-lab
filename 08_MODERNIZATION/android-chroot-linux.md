@@ -2,7 +2,11 @@
 
 ## Purpose
 
-This document is the active implementation track for turning the Totoro into something useful and cool without replacing Android or the stock kernel.
+This document is the active implementation track for building the Linux substrate of the **Totoro-Pocket-PC** concept without replacing Android or the stock kernel.
+
+The intended end state is **a tiny, desktop-like ARMv6 pocket computer built from the Galaxy Y**. The current track deliberately separates that product experience from the underlying Linux substrate: first prove compute, storage, display and input; then build the smallest UI layer that can turn those capabilities into a coherent computer.
+
+The project will borrow established Linux infrastructure and lessons from postmarketOS and historical Linux-on-phone work where appropriate. It will not assume that a full distribution or desktop environment is suitable for this hardware.
 
 The immediate target is not a “Linux distribution.” It is a **verified ARMv6 Linux userspace capability**, followed by the smallest persistent rootfs and one useful service. Independent Linux boot is conditional and outside the active critical path.
 
@@ -27,6 +31,62 @@ A 4 MiB image was created under `/data/local/tmp`, formatted ext2, attached usin
 This proves loop-backed ext2 creation, attachment, RW mounting, file I/O and teardown on the actual handset.
 
 It does **not** prove execution of an ELF binary from that mount. The earlier script attempt was invalid because of its BusyBox shebang invocation.
+
+## Pocket-PC UI direction
+
+The UI is now a first-class future workstream rather than an optional afterthought.
+
+### Design objective
+
+Create a **desktop-like experience at miniature scale**:
+
+- launcher/home screen;
+- status information;
+- application panels/windows or full-screen app views;
+- touch-friendly controls;
+- Files;
+- Terminal;
+- Tools/System;
+- Settings;
+- About/device information.
+
+The first implementation should remain intentionally small. “Desktop-like” describes the interaction model and organization, not a requirement to run X11, Wayland, GTK, Qt or another large conventional desktop stack.
+
+### Borrow vs. build
+
+**Borrow/reuse where it makes sense:**
+- Linux input-event semantics;
+- framebuffer conventions;
+- font/rendering techniques;
+- small graphics libraries if they support ARMv6 and the project's license/performance constraints;
+- lessons from postmarketOS, Replicant and historical Linux-phone projects;
+- existing Tiny/embedded UI patterns.
+
+**Build Totoro-specific:**
+- display geometry and framebuffer integration;
+- Samsung dirty-row refresh behavior;
+- touchscreen coordinate mapping and hit testing;
+- the minimal shell/navigation model;
+- Totoro-specific widgets and resource budgets;
+- the product identity and visual language.
+
+The project should therefore avoid both extremes: **we are not writing an operating system from zero, and we are not merely repackaging another Linux-phone distribution.**
+
+### UI progression
+
+```
+U0  framebuffer proof              ← PASSED
+ ↓
+U1  touch + one interactive screen ← NEXT
+ ↓
+U2  tiny graphics primitives
+ ↓
+U3  desktop-like Totoro shell
+ ↓
+U4  pocket-PC applications
+ ↓
+U5  conventional Linux GUI stack   ← CONDITIONAL
+```
 
 ## Integrated engineering direction
 
