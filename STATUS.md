@@ -2,7 +2,12 @@
 
 **Current stage:** Phase 4 persistent SD-backed ext2 rootfs verified on the physical Totoro → Phase 5 network service / native framebuffer UI bring-up.
 
-**Project goal:** **turn the Totoro into something useful and cool.** A useful Android-assisted Linux environment or other reversible hybrid outcome is fully successful. Independent Linux boot is now a conditional research branch, not the active critical path.
+**Project identity:** **A tiny, native ARMv6 pocket computer built from a Samsung Galaxy Y.**  
+**Optional product identity:** **Totoro-Pocket-PC.**
+
+This is an aspirational product identity, not a claim of independent Linux boot. The present implementation is still Android-assisted and reversible. The intended UX direction is a **tiny desktop-like Linux experience** adapted to the Totoro's 240×320 touchscreen and severe resource limits.
+
+**Project goal:** **turn the Totoro into something useful, cool, and computer-like.** A useful Android-assisted Linux environment or other reversible hybrid outcome is fully successful. Independent Linux boot is now a conditional research branch, not the active critical path.
 
 **Working strategy:** preserve the known-working Android system and stock kernel; add complexity only when a measured blocker requires it; prefer evidence-producing experiments that write only to `/data/local/tmp` or removable storage.
 
@@ -141,6 +146,34 @@ Artifact: `fb-direct-dirty` device-verified SHA-256: `2e1cbb523761ff88a39253bfe6
 
 This does not yet establish an independent Linux graphical session; Android continues to own/redraw the display. The next goal is a small interactive native UI using the proven framebuffer and touchscreen paths.
 
+## Product-direction milestone
+
+The project has now demonstrated the three foundations needed for a future Totoro-Pocket-PC experience:
+
+1. **Compute:** native ARMv6 static and dynamic musl Linux userspace execution.
+2. **Persistent environment:** repeatable SD-backed ext2 rootfs attach → mount → chroot → execute → teardown.
+3. **Physical UI substrate:** direct native framebuffer access has visibly updated the real LCD; touchscreen input is available through `/dev/input/event4`.
+
+The next product-layer milestone is therefore **not a full Linux distribution**. It is the first tiny native graphical shell: framebuffer renderer + touch input + a desktop-like launcher/state model.
+
+The desired progression is:
+
+```
+Linux userspace
+     ↓
+framebuffer + touchscreen
+     ↓
+minimal graphics primitives
+     ↓
+Totoro UI layer
+     ↓
+desktop-like pocket shell
+     ↓
+Files / Terminal / Tools / Settings / small apps
+```
+
+Existing Linux-phone projects, including postmarketOS and historical Galaxy Y work, should be used as technical references and sources of reusable ideas where compatible. We should not copy an entire desktop stack before the Totoro hardware and performance evidence justifies it.
+
 ## Current gates
 
 - M1 — decision-critical baseline: remaining narrow evidence only.
@@ -167,7 +200,7 @@ This does not yet establish an independent Linux graphical session; Android cont
 
 ## Immediate path
 
-The next engineering task is the **first tiny interactive native UI**: a small ARMv6 userspace renderer that writes the verified framebuffer and responds to `/dev/input/event4` touch events. The network-service path remains useful in parallel as a remote/debug/control channel.
+The next engineering task is the **first tiny interactive native UI**, now explicitly treated as the first product-layer step toward Totoro-Pocket-PC: a small ARMv6 userspace renderer that writes the verified framebuffer and responds to `/dev/input/event4` touch events. The network-service path remains useful in parallel as a remote/debug/control channel.
 
 ## Phase 3 acceptance evidence
 
