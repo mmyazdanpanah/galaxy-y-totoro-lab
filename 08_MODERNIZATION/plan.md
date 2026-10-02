@@ -24,9 +24,11 @@ The active path is now:
             ↓
     Persistent SD-backed ext2 rootfs         ← PASSED
             ↓
-    Minimal network service
+    Network service                          ← ACTIVE
             ↓
-    Physical-device browser UX
+    Native framebuffer + touchscreen         ← DISPLAY PASSED
+            ↓
+    Interactive native UI                    ← NEXT
             ↓
     Useful/cool checkpoint
             ↓
@@ -132,7 +134,31 @@ Acceptance criteria:
 
 If this is already useful/cool, preserve it before adding complexity.
 
-### A8. Useful/cool checkpoint
+
+### A7. Native framebuffer and touchscreen — DISPLAY PATH PASSED
+
+The Totoro's stock Android kernel exposes a working native framebuffer and touchscreen interface. Verified display state is 240×320 physical, 240×640 virtual, 32 bpp, with a 614,400-byte mapped framebuffer. Touchscreen input is available at `/dev/input/event4` with X/Y ranges corresponding to the display.
+
+Samsung BCM21553 source tracing established the update mechanism: `lcdfb.c` provides `.fb_ioctl = lcdfb_ioctl`; `LCDFB_IOCTL_UPDATE_LCD = 0x46ff`; userspace passes `LCD_DirtyRows_t { top, bottom }`; the driver invokes `lcd_dirty_rows()`; and the lower LCD controller uses the DMA/write-combine framebuffer and Broadcom update path. The physical device has no `/dev/lcd` node, so the tested framebuffer ioctl is the relevant interface.
+
+The direct dirty-row test wrote an opaque white 240×320 page and issued the ioctl. The physical LCD visibly flashed white before Android redrew its own display. Device-verified artifact SHA-256: `2e1cbb523761ff88a39253bfe6f5f5af460649d6f8d8019ec8c608cd21ca5c2d`.
+
+**This proves custom native userspace pixels can reach the physical LCD on the stock Totoro.** It does not yet prove an independent Linux graphical session; Android still owns and redraws the display.
+
+### A8. Interactive native UI — NEXT
+
+Build the smallest real UI on top of the proven display and input path:
+- ARMv6 native userspace;
+- 240×320 framebuffer renderer;
+- direct mmap writes;
+- `0x46ff` dirty-row refresh;
+- `/dev/input/event4` touch decoding;
+- one stable screen and one or two touchable controls;
+- no boot-critical writes.
+
+If Android immediately redraws over the UI, document that behavior and then decide whether tighter Android cooperation or a more independent display ownership model is justified.
+
+### A9. Useful/cool checkpoint
 
 Use the physical phone.
 
@@ -180,9 +206,8 @@ Only after those gates may stock-kernel/custom-ramdisk work be considered.
 
 ### Still open
 
-- persistent SD-backed rootfs and execution from ext2;
-- minimal network service;
-- browser dashboard and touch interaction;
+- tiny HTTP/network service on the persistent rootfs;
+- interactive native framebuffer/touch UI;
 - useful/cool checkpoint;
 - actual available RAM under normal Android load;
 - complete recovery readiness and restore procedure.
