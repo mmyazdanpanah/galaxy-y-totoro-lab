@@ -1,0 +1,58 @@
+## Bottom line
+
+I recommend a **single-process shell built on LVGL with a custom Totoro platform layer**, not a window server and not a conventional toolkit. Your proven framebuffer page-switching and exclusive-touch code become LVGL's flush and input callbacks. The retro Pocket-PC feel comes from interaction design (full-screen apps, title bar, bottom command bar, Today screen) and a custom pixel-font theme, not from a windowing system. Nano-X is the fallback if measurements disqualify LVGL, and I'd leave Qt, X11, SDL2 and Rust/Slint out of U2.
+
+## What the hardware constrains
+
+The Galaxy Y has a single 832 MHz ARM1136 core, a 240×320 3-inch panel, and 384 MB RAM of which about 290 MB is available to the OS. So RAM is not your bottleneck. CPU is: there is no NEON, and you have no usable GPU path through plain fbdev. A full RGB565 frame is only 150 KB, so the real design question is how much CPU a software renderer burns per touch interaction. Your kernel is 2.6.35, while musl says it needs 2.6.39 or newer for POSIX-conformant behavior and works with varying non-conformance on older kernels. That argues for a single-threaded `poll()` loop and a minimal libc surface. Your static binaries already work, so stay inside that envelope.
+
+## Candidates
+
+| Approach | Fit for Totoro | Main problem |
+|---|---|---|
+| **LVGL + custom HAL** | Excellent | Software renderer speed on ARM11 is unmeasured |
+| Nano-X (Microwindows) | Good | Real window server adds complexity; thinner widget set |
+| Custom toolkit (microui/Nuklear + own raster) | Good | Most effort; you rebuild widgets, fonts, keyboard |
+| Qt 4.8 QWS | Possible | C++/libstdc++ weight, unmaintained, heavy for 832 MHz |
+| TinyX/Xfbdev + WM + toolkit | Possible | Whole X stack; most moving parts |
+| SDL 1.2 fbcon | Marginal | Dead branch; assumes console/VT environment |
+| Slint (Rust) | Risky | Toolchain and kernel-baseline risk |
+
+**LVGL.** Its documented minimums are tiny (over 64 kB flash, about 48 kB heap recommended, and a display buffer of at least one line). The fbdev driver needs no libraries and no display server, only a /dev/fb device, and handles RGB565 among other formats. Its docs also warn that fbdev has no page-flip guarantees, which is why you should use your own proven flip code in a custom flush callback instead of the stock driver. One trap: the current evdev driver always requires libevdev. A raw `read()` of `input_event` is about 30 lines and avoids the dependency, but pin the struct layout to what the 2.6.35 kernel emits, since modern musl/kernel headers can disagree on timeval size. For retro looks, LVGL ships pixel-perfect Unscii fonts at 8 and 16 px, and the offline converter can turn BDF/TTF pixel fonts into LVGL fonts. If you ever need Arabic/Persian or Hebrew, LVGL has built-in font and RTL support, which most of the other options lack.
+
+**Nano-X.** It implements both Win32 and X11-like APIs, has framebuffer and touch drivers, ARM cross-compilation support, handheld portrait/landscape modes, and runs FLTK through an X11 compatibility layer. This is the closest historical match to "WinCE-like" and gives real multi-window behavior. But the Win32 layer gives you Win95-style controls, not a polished modern-retro look, and I found no evidence either way about ARMv6/2.6.35 builds, so that is a spike, not a given.
+
+**Qt 4.8 QWS.** It has its own compact windowing system and writes directly to the framebuffer, and its default configuration enables only an unaccelerated framebuffer driver. It's the lineage behind Qtopia-era PDAs, but it is archived, C++-heavy, and a bad trade on one ARM11 core.
+
+**X11.** KDrive's Xfbdev is designed for a plain /dev/fb with an unaccelerated driver, and one maintainer reports a ~950 KB static musl build. It works, but you'd still need a window manager, a toolkit and fonts, all on a dead-end upstream: X.Org developers discussed removing KDrive years ago.
+
+**SDL.** SDL2 removed framebuffer-console support; fbcon exists only in SDL 1.2, with tslib touch patches. SDL is useful on your Mac for development but not as the device backend.
+
+**Slint.** It has a third-party linuxfb/evdev backend that supports static musl builds, and Rust ships ARMv6 musl targets with std. But Rust's documented kernel baselines for ARMv6 glibc targets are 3.2+, so running on 2.6.35 is untested territory I wouldn't take on in U2.
+
+## Overlooked or underrated ideas
+
+1. **You don't need a window system.** Pocket PC was essentially one full-screen app at a time (my recollection of the platform, not something I looked up here). A shell with in-process app modules gets you 90% of the experience without clipping, z-order or IPC.
+2. **Develop on the Mac first.** LVGL's SDL backend lets you build the same UI code on the desktop at 240×320 and swap only the HAL on device.
+3. **A terminal app is the highest-value first app.** A pty plus a VT100 widget makes the device useful immediately, with busybox ash behind it.
+4. **Supervisor-based recovery.** Make your safe-return-to-Android path reachable from a menu item and automatically after N shell crashes.
+5. **Rasterizer libraries are not a free win.** Pixman has ARMv6 fast paths (src, over and scaled variants), but reports from Raspberry Pi 1 work say ARMv6 can sometimes be slower than the generic C code. Don't add Cairo/pixman speculatively.
+
+## Recommended architecture
+
+- **One static musl binary**, `totoro-shell`, single-threaded: `poll()` on the touch fd, using LVGL's returned timer delay as the timeout so idle CPU is near zero.
+- **HAL (~300 lines):** fb flush using your page-switch code, evdev touch with calibration, monotonic tick, optional hardware-key input.
+- **LVGL pinned to one release**, 16-bit color, software renderer, no NEON/assembly options, Unscii or a converted BDF font, and a hand-built theme with bevels, flat title bars and a bottom command bar.
+- **App model:** built-in modules (Today, Start menu, Terminal, Files, Notes, Settings) run in-process. External programs launch as full-screen takeovers where the shell releases fb and touch, which fits your exclusive-ownership design. Defer shared-surface IPC to U3.
+
+## U2 prototype strategy
+
+1. **Spike (smallest step):** one label, button and slider with your flush and touch code. Record binary size, RSS, full-screen redraw time, touch-to-pixel latency and idle CPU. Proposed gates (my suggestions, not benchmarks): redraw ≤50 ms, latency ≤100 ms, idle CPU ≤2%.
+2. **Desktop loop:** the same UI on the Mac simulator while you design screens.
+3. **Shell skeleton:** status bar, Today screen, Start menu, task switcher, on-screen keyboard, "Return to Android" with confirmation.
+4. **Apps:** Terminal, then Files, then Notes.
+5. **Decision gate:** if the spike fails the gates, run a Nano-X spike on the same HAL before investing further.
+
+Not verified: LVGL performance on this exact ARM11 core, and Nano-X behavior on kernel 2.6.35. Both are decided by step 1, not by documentation.
+
+If you'd like, I can draft the `lv_conf.h` for this profile and the HAL interface header as the first U2 repo commit.
