@@ -1,14 +1,66 @@
 # Galaxy Y Modernization Plan
 
-## Goal
+## Goal and identity
 
-**Turn the Totoro into something useful and cool.**
+**Primary identity:** **A tiny, native ARMv6 pocket computer built from a Samsung Galaxy Y.**
+
+**Optional product name:** **Totoro-Pocket-PC.**
+
+The project is not claiming that the Totoro already boots an independent Linux operating system. This is the intended product direction built on the currently verified Android-assisted Linux substrate.
+
+The UX target is now explicitly **desktop-like rather than terminal-only**: a miniature launcher/shell, files, terminal, tools/settings, status information and small applications, all designed around a 240×320 touchscreen and severe CPU/RAM constraints.
+
+The guiding design principle is:
+
+> **Borrow Linux infrastructure and accumulated knowledge; build the Totoro-specific experience ourselves.**
+
+PostmarketOS, historical Galaxy Y Linux work, framebuffer Linux phones and other constrained Linux systems are reference material for drivers, interfaces, packaging and architectural lessons. They are not templates that must be transplanted wholesale.
+
+**Turn the Totoro into something useful, cool, and computer-like.**
 
 The project is outcome-first. A Linux userspace running beside Android, a focused static Linux payload, a hybrid service, or another reversible design is a successful result if it makes the physical Totoro genuinely useful or fun.
 
 Independent Linux boot remains interesting, but it is **not the active critical path**. We only reopen it when a concrete requirement cannot be met by the Android-assisted design.
 
-## Integrated strategy
+## Product architecture
+
+The eventual pocket-PC experience is planned as a layered system:
+
+    Applications
+        ↓
+    Totoro-Pocket-PC Shell
+        ↓
+    Small graphics/UI layer
+        ↓
+    Framebuffer + touchscreen integration
+        ↓
+    ARMv6 Linux userspace
+        ↓
+    Stock Linux 2.6.35.7 kernel / Android hardware plumbing
+
+The implementation should grow from the bottom upward. We should not build a desktop environment before the framebuffer and touch behavior are stable.
+
+### UI strategy
+
+**Stage U0 — direct framebuffer proof:** already passed.  
+Native userspace can mmap `/dev/graphics/fb0` and trigger the Samsung LCD update ioctl.
+
+**Stage U1 — interactive screen:** next.  
+Draw one stable 240×320 screen and decode `/dev/input/event4` to activate one or two controls.
+
+**Stage U2 — tiny graphics layer:** planned.  
+Provide reusable primitives such as rectangles, lines, bitmap images, text, clipping and a simple dirty-region mechanism.
+
+**Stage U3 — desktop-like shell:** planned.  
+Introduce a launcher/home screen, status area, application panels, navigation/back behavior and lightweight touch widgets.
+
+**Stage U4 — pocket-PC applications:** planned.  
+Terminal, Files, Tools/System, Settings and selected small applications.
+
+**Stage U5 — richer Linux desktop stack:** conditional only.  
+Evaluate an existing toolkit/windowing/compositor stack only if measurements show that it provides meaningful capability without overwhelming the Totoro's CPU, RAM, storage or display pipeline.
+
+This is deliberately **A → B → C**, not “write a desktop from scratch” and not “install a desktop distribution immediately.”
 
 The active path is now:
 
