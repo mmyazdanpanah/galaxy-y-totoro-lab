@@ -1,0 +1,471 @@
+I'll start by researching the project itself and the technical landscape in parallel.
+
+Let me dig into the repo's actual current state and research the toolkit landscape in parallel.
+
+Now let me research the toolkit landscape across the major alternatives.
+
+Let me verify the Samsung framebuffer driver internals, LVGL v8's driver dependencies, and the musl/ARMv6 toolchain constraints.
+
+Web search is rate-limited; let me try direct fetches and a sandbox shell.
+
+Let me get an independent perspective from a panel of models while I verify one more implementation detail.
+
+I hit a hard search cap partway through and Fusion is unavailable (no credits), so this is my own analysis from primary sources. Here it is.
+
+---
+
+# U2 Architecture Analysis: Totoro-Pocket-PC
+
+## 1. Baseline I verified first
+
+**Project state** (from `STATUS.md` + repo README): static musl ARMv6 ✅, dynamic musl ARMv6 ✅, SD-backed 32 MiB ext2 loop/chroot ✅ (2× cycles, `e2fsck` clean), framebuffer → real LCD via ioctl `0x46ff` ✅ (visible white flash + restore), evdev touch at `/dev/input/event4` ✅, root ✅, Dropbear next. Nothing boot-critical touched; five files added under `/system`.
+
+**Hardware** (Wikipedia + DeviceSpecifications + kernel source): BCM21553, single-core **ARM1136 @832 MHz, ARMv6**, 384 MB RAM (~290 MB user-available), **240×320 TFT @ 60 Hz**, capacitive touch, VideoCore IV GPU.
+
+**Framebuffer** (`/proc/fb` + driver source `drivers/video/broadcom/fb/lcdfb.{c,h}`, `include/lcd.h`): 240×320 physical, **240×640 virtual (3 pages)**, **32 bpp**, 960-byte stride. Vendor ioctl `0x46ff` takes `{top,bottom}` and calls `lcd_dirty_rows()`.
+
+Two findings from the driver headers that matter a lot and aren't in your notes:
+
+- `include/lcd.h` defines the panel colour enum as **RGB565** (`LCD_COLOR_RED = 0xF800`, …) and the bus as `LCD_16BIT`/`LCD_18BIT`. **RGB565 is the panel's native format.** The 32-bpp framebuffer is only the fbdev *ABI* convenience. Rendering internally in 565 and expanding once on flush is therefore the minimum-work path, not a compromise.
+- `lcd_dev_info_t` contains `LCD_DirtyRect_t dirty_rect` and `bool te_supported` — the driver was built with dirty-rectangle and tearing-effect concepts in mind. Worth probing whether more of that surface is exposed.
+
+**Build baseline:** your working artifacts are `armv6l` musl static/dynamic. Everything below assumes you keep those exact flags.
+
+---
+
+## 2. The real U2 blocker is not the GUI
+
+This is the most important thing in this analysis. Right now your framebuffer write is visible for **<1 second** because Android's SurfaceFlinger owns `/dev/graphics/fb0` and continuously repaints. No toolkit fixes that. It is a **session/resource-ownership problem**, and it has a known, documented solution shape.
+
+`linuxdeploy` has shipped this for years (`meefik/linuxdeploy` issue #287): `setprop ctl.stop surfaceflinger`, and the documented failure mode is that Samsung/other `init.rc` has `service surfaceflinger … onrestart restart zygote`, so **something restarts zygote ~2 minutes later and the Android UI comes back**. The reported fix is ordering: `stop zygote` → `stop bootanim` → `stop surfaceflinger` → run the guest.
+
+So U2 must be sequenced as:
+
+```
+display session control →  flush + input  →  one interactive screen  →  app model  →  shell  →  apps
+```
+
+not```
+pick toolkit → write UI → discover the screen is stolen
+```
+
+Also note: on these Broadcom kernels, **SurfaceFlinger's display HAL is what calls `0x46ff`** to push frames. Once it's stopped, that ioctl is exclusively yours. That is strong evidence that stopping SurfaceFlinger is both necessary and sufficient to own the panel.
+
+**Non-negotiable safety property:** the UI process must never be the only route back. Build `totoro-session` so that restore happens on process exit, on a signal, **and** on a hard timeout, and keep Dropbear/SSH up the whole time. Add a "forced-abort" affordance (long-press a corner, or a magic4-finger tap, or an HTTP endpoint) that restores Android without the UI having to be healthy.
+
+---
+
+## 3. What 832 MHz ARMv6 / 384 MB actually budgets
+
+Estimates, to be replaced by measurement in U2.0:
+
+| Quantity | Estimate | Basis |
+|---|---|---|
+| Effective integer throughput | 250–400 MIPS | ARM11 single-issue-ish, L1-resident, soft float |
+| Cached memory bandwidth | ~150–250 MB/s | single ARM11 core, word-at-a-time, no NEON |
+| Full-screen fill, 32 bpp | ~0.4–0.8 ms | 76,800 px × ~4–8 cyc |
+| 120×160 logical fill, RGB565 | ~0.03–0.06 ms | 19,200 px — **16× cheaper** |
+| Dirty-row flush of 40 rows (32 bpp) | ~38 KB moved | ~0.2–0.4 ms if cached |
+| Bitmap text, 40×25 chars @8×8 | ~0.05 ms | ~16 stores/char |
+| LVGL RAM (heap + draw buffer + static) | 100–160 KB | `LV_MEM_SIZE` 64 KB + 38 KB partial buf |
+| LVGL binary, static musl, pruned | 200–400 KB | `-Os`, gc-sections, no animations |
+| Free RAM for the whole session | ~40–90 MB | 290 MB user RAM minus live Android |
+
+**The dominant unknown is whether `mmap` of `fb0` is cached or uncached on this driver.** If the mapping is uncached/write-through, per-pixel stores go straight at the bus and every pixel operation gets 3–10× more expensive. Your own note says the lower driver uses a "DMA/write-combine framebuffer" — that is a red flag. **This single fact determines color depth, buffer strategy, render resolution and flush cadence. Measure it before writing any UI code.**
+
+---
+
+## 4. Candidate landscape
+
+### Summary table (estimates; `?` = must measure)
+
+| Option | RAM | Static size | Deps | Linux 2.6.35 | ARMv6 | Status | Verdict |
+|---|---|---|---|---|---|---|---|
+| **LVGL 8.3** | ~100–160 KB | 200–400 KB | libc only | ✅ | ✅ plain C99 | MIT, maintained | **Recommended core** |
+| SDL 1.2.15 + musl | ~1 MB | 306 KB proven | libc, (tslib?) | ✅ | ✅ | zlib, frozen 2011 | **Complementary only** |
+| DirectFB 1.7.x | 3–8 MB | ~1 MB | fusion, pthread, ttf/png | ✅ | ✅ | dead since 2015 | Reject |
+| DirectFB2 | ? | ~1 MB | pthread | ✅ | armv7 tested | young fork | Reject for now |
+| Xorg + matchbox-desktop | 40–80 MB | ~15 MB | glibc, ~40 libs | ✅ | slow | maintained | **Reject — unaffordable** |
+| Qt 4.8 QWS (linuxfb) | 10–25 MB | 8–20 MB | C++, freetype | ✅ | slow | EOL | Reject |
+| Qt 5/6 linuxfb | 20–40 MB | 15–30 MB | C++11/17, fontconfig | ✅ | needs ARMv7+ | current | Reject |
+| GTK+ / GDK-DirectFB | 15–30 MB | 10 MB+ | glib, pango, cairo | ✅ | no | dead backend | Reject |
+| Nano-X / µGUI | 50–150 KB | 60 KB | libc | ✅ | ✅ | unmaintained | Too small |
+| VideoCore IV GPU path | — | — | proprietary | ❌ no DRM/KMS | ❌ | blobs only | Reject |
+| **Bespoke shell layer** | 20–60 KB | 30–80 KB | libc | ✅ | ✅ | yours | **Mandatory regardless** |
+
+### LVGL 8.3 — why this, concretely
+
+**In favour, with evidence:**
+
+- **Zero external dependencies** for the fbdev + evdev path. v8's indev driver is a self-contained `read()` loop over `struct input_event`. Note the v9 docs say explicitly *"The driver always requires `libevdev`"* — that dependency, plus v9's `lv_conf.h`/fontconfig changes, is exactly why **v8.3 is the right pin, not v9**.
+- **v8.3 is the long-support branch.** LVGL's own release table: v8.3 (6 Jul 2022) → supported to 1 Jan 2025, and every minor from v8 gets a year of support.
+- **The display model fits your hardware exactly.** v8 uses `lv_disp_draw_buf_t` + a `flush_cb`, in `LV_DISP_BUF_MODE_PARTIAL`. You write a ~40-line `flush_cb` that: expands RGB565 → XRGB8888 into the back page of the 240×640 virtual fb, then `ioctl(0x46ff, {top,bottom})`. That is the whole integration. No X, no compositor, no mode setting.
+- **Partial rendering is the default**, so you only push dirty regions — which the vendor ioctl is literally designed for.
+- **`LV_COLOR_DEPTH 16` is available in v8.** In v9, `lv_color_t` is *always RGB888 regardless of `LV_COLOR_DEPTH`* (v9 changelog, migration guide) — that alone breaks the RGB565-internal plan. Another decisive reason for v8.
+- **MIT licence.** No copyleft entanglement in a project you intend to keep yours.
+- **Plain-Makefile integration.** LVGL ships `src/lv.mk` for use from an existing Makefile — no CMake, no Meson, no `pkg-config` in your static-musl toolchain. *Verify this file exists in the pinned v8.3 tree.*
+- **Custom themes are the first-class feature.** Retro look is a theme file, not a rewrite.
+
+**Against, honestly:**
+
+- It is an **MCU toolkit**, so it has no window manager, no app model, no desktop — you get widgets, nothing else. Everything that makes it a "Pocket-PC" is yours to build. That is not a flaw; it is the reason to pick it.
+- Its default visual language (rounded, antialiased, shadowed, animated) is the *opposite* of the target aesthetic. You will disable shadow/gradient/AA/animations and write a custom theme. Budget a day for this.
+- Widget bloat if you don't prune. `lv_conf.h` discipline is mandatory.
+- v8.3 is a maintenance branch, not the tip. Accept the freeze; it's an asset for a 5-year hobby project.
+
+### SDL 1.2.15 — the underrated accelerant
+
+Don't dismiss this; it's the reason you'd get a *retro* feel for free, and it's proven in exactly your configuration:
+
+- `bkauler/gui_engine`: a framebuffer UI example **statically linked with musl + SDL 1.2 = 306 KB**; with SDL_ttf + freetype + png = 560 KB.
+- `uablrek/sdl-without-x11`: builds SDL 1.2 from scratch with **musl, no X**, and gets **ScummVM building and starting**.
+- Configure for framebuffer only with `--enable-video-fbcon --without-x` and disable everything else.
+
+**But** SDL 1.2 is a *video/sound/events* library, not a widget toolkit — you'd write every widget yourself anyway, and it manages the whole screen itself, which fights your partial/dirty-row model. Its fbcon path has no touchscreen support without tslib or custom event injection.
+
+**Verdict: keep it as a compatibility layer for timeboxed app experiments (ScummVM, SDL games, SDL_mixer audio), never as the shell.**
+
+### DirectFB / DirectFB2
+
+Genuinely the right *shape* (real window system, direct fbdev, no X). But: last official DirectFB release **1.7.7 in 2015** (FOSDEM 2022 slides, Denis Kropp); DirectFB2 revived 2021–22, ~1 MB library, armv7-tested, young; **LGPL-2.1** is awkward for a statically-linked self-contained payload; autotools build; and its Fusion/surface/blitter machinery is designed for multi-process app environments you don't have. For a single-process retro shell, it buys you a window system you won't use and costs you licence and build pain. Keep on the shelf.
+
+### X11 + matchbox — the one to definitively rule out
+
+This is the postmarketOS/maemo/Openmoko path and it is the most likely wrong answer. On 64-bit x86, the Matchbox session costs **matchbox-window-manager 11 MB RSS, matchbox-panel 14 MB, mb-applet-menu-launcher 11 MB, matchbox-desktop 18 MB** (gilesorr.com WM memory survey) — *before* Xorg, *before* any GTK app, and *without* ARMv6's missing NEON hurting pixman. Add glibc (musl + modern Xorg is a known headache), fontconfig/freetype, ~40 shared libraries. You have maybe 40–90 MB of *total* free RAM while Android is resident. Ruled out on arithmetic, not taste. (The classic counter-example — the maemo list post showing GTK+/X fitting in <32 MB on a 200 MHz ARM with 64 MB RAM — is precisely a budget you don't have.)
+
+The *ideas* are still worth stealing: **Matchbox shows one window at a time**. That's your view-stack model.
+
+### Qt
+
+Qt 4 QWS with `-qt-gfx-linuxfb -qt-kbd-linuxinput -qt-mouse-linuxinput` is architecturally the correct model and is exactly what I mean by "imitate this, don't install this". But Qt 4.8 is EOL, C++, and multi-megabyte; **Qt 5.0 removed QWS entirely** (Qt 5.10 embedded-linux docs), leaving only the `linuxfb` QPA plugin, and Qt 5/6 mkspecs assume ARMv7+ glibc. Reject.
+
+### GPU
+
+The VideoCore IV is real (1 Gpixel fill advertised) but on 2.6.35 there's no DRM/KMS, no EGL, no open driver — only Broadcom blobs tied to the Android HAL. Unreachable from the Linux payload. Reject, and stop thinking about it.
+
+---
+
+## 5. Things you have probably overlooked
+
+1. **Render at 120×160 and2× integer-scale.** This is the single highest-value idea. It cuts fill cost **16×**, and — more importantly — it makes the retro look *structural* rather than stylistic. No amount of theming a 240×320 antialiased UI gets you Game Boy / MSX / early-NES; a 120×160 RGB565 canvas scaled2× does, for free, and it makes your UI fast. 240×320 = exactly 2×120×160. Take it.
+2. **RGB565 internal → XRGB8888 flush.** The panel is natively 565 (`LcdColor_t`), so a packed expansion in `flush_cb` is the cheapest possible path — and it halves or quarters your draw-buffer memory versus 32-bpp LVGL.
+3. **The driver's dirty-rectangle surface.** `LCD_DirtyRect_t` exists in `lcd_dev_info_t`. Probe whether the private ioctl space accepts rectangles as well as row ranges. If so, your flush cost becomes proportional to change, not to change × width.
+4. **3 virtual pages = a free back buffer.** Render into heap or into the non-visible page, then push. Gives you a clean Android exit (you never leave a half-drawn screen) and matches the driver's write-combine DMA path.
+5. **Make the shell toolkit-independent from day one.** Define your own tiny `tui` interface (draw ops + event queue + a `tui_display` vtable). Ship *two* backends: LVGL and a ~1.5 kLOC hand-rolled immediate-mode renderer behind `-DTUI_BACKEND=basic`. The shell code then compiles against either. This is cheap insurance on the biggest single decision, and the basic backend is also the fastest route to a visible prototype.
+6. **A view stack, not a window manager.** Full-screen views, one at a time, carousel-style task switching (Matchbox's model). Windows, drag, resize, z-order and focus are the wrong abstractions at 240×320 on a 3" 133 ppi panel with one finger.
+7. **The soft button row is the keyboard.** Model it as hardware:4 persistent chrome buttons (Menu / Apps / Back / OK) + a status strip. This is what makes a touch UI feel like a PDA rather than a web page. Palm OS, Windows CE and every Game Boy all did this.
+8. **Retro as a hard constraint list, not a theme.** No AA, no gradients, no translucency, no rounded corners, no shadow, no motion >100 ms, integer scaling only, 8×8 bitmap fonts, period palettes (C64 / Game Boy / PalmOS green / 4-grey LCD), 1px bevels instead of shadows. Enforce it in `lv_conf.h` by disabling features, not by styling around them.
+9. **MicroPython on Linux ARM as your app SDK.** Builds for plain ARM, ~1 MB. This is how a one-person project gets ten apps instead of three — you write them in Python against a thin C binding. Highest app-per-hour ratio available to you.
+10. **libvterm for the terminal app.** ~2 files from kitty, tiny, and it's the modern correct VT emulator for an embedded terminal. Backed by BusyBox it becomes a genuinely useful Pocket-PC feature.
+11. **Make Totoro a headless pocket computer with a front panel.** The SSH channel you already planned is not just debug — it's the *product's* resilience. UI crashes, SSH survives. Frame U2 this way and every recovery question answers itself.
+12. **Make "About / Get back to Android" a first-class app**, not an afterthought. On a device whose UI can seize the screen, the in-UI recovery documentation is a safety feature.
+
+---
+
+## 6. Where I think the framing is wrong
+
+- **"U2 = build a GUI" is the wrong unit of work.** U2 is *take ownership of the display and the input for a sustained, recoverable session*. The GUI is downstream and comparatively easy.
+- **"Desktop-like" is the wrong metaphor; "handheld/PDA" is the right one.** You want desktop *concepts* (launcher, apps, files, settings, status, task switching) implemented with handheld *interaction*. You already say this in the README; the research reinforces it hard. A 3" 133 ppi touch panel with no physical keyboard is not a 1995 desktop, and pretending otherwise produces a UI that feels broken.
+- **Retro should be a rendering-resolution decision, not a skin.** See #1 and #8.
+- **Toolkit choice should be reversible.** The shell, session manager, and app ABI are yours; the renderer is a swappable detail. Decide accordingly.
+- **Bench before you optimise.** A ~150-line static `totoro-fbbench` measuring cached-vs-uncached fb bandwidth, fill rate, blit rate, `0x46ff` latency, and the 120×160→2× upscale cost will settle color depth, render scale, buffer size and flush cadence in an afternoon. Every other decision depends on it. It is the highest value-per-hour action in U2.
+
+---
+
+## 7. Recommended architecture
+
+**LVGL 8.3 (pinned) as the render/widget layer, inside a bespoke Totoro shell and session layer, rendering at 120×160 logical, 2× integer-scaled, RGB565 internally, with dirty-row flush via `0x46ff`.**
+
+```
+Android (host, preserved, always recoverable)
+├─ totoro-session                 ← Android-side supervisor (su/sh)
+│    stop bootanim → SystemUI → system_server → zygote → surfaceflinger
+│    VT to KD_GRAPHICS; backlight on; disable suspend/timeout
+│    exec totoro-shell inside the ext2 chroot
+│    watchdog: exit | SIGUSR1 | hard timeout | forced-abort tap  →  restore Android
+└─ Linux userspace (musl, static, SD-backed ext2 rootfs)
+   ├─ totoro-fb        mmap fb0, back page, RGB565→888 expand, dirty-row0x46ff, 30 Hz pacing
+   ├─ totoro-ts        evdev /dev/input/event4, calibration, tap/swipe/long-press, 4-button row
+   ├─ totoro-shell     YOUR shell: view stack, launcher grid, status bar, soft buttons
+   ├─ tui/             toolkit-independent interface
+   │    ├─ backend_lvgl     (default)
+   │    └─ backend_basic    (~1.5 kLOC immediate-mode fallback)
+   ├─ apps/            files, terminal (libvterm+busybox pty), settings, about/recovery, micropython
+   └─ dropbear         always-on control + recovery channel
+```
+
+**Key LVGL v8.3 configuration:** `LV_COLOR_DEPTH 16` · `LV_MEM_SIZE` 65536 · partial draw buffer sized to ~40 logical rows · `LV_DISP_DEF_REFR_PERIOD` 30 · disable shadow, gradient, antialias, and every unused widget/anim · custom `LV_THEME_DEFAULT` with 1px bevels, radius 0, period palette · one embedded 8×8 bitmap font converted to an `lv_font_t` · custom `flush_cb` → `totoro-fb` · custom `read_cb` → `totoro-ts`.
+
+**Render scale:** 120×160 logical at 2× gives you 240×320 physical exactly. A bottom taskbar/soft-button row occupies ~20 logical rows; the viewport above it is a 120×140 play area — a pleasant, chunky, believable handheld.
+
+---
+
+## 8. Practical first-prototype strategy for U2
+
+Each increment produces a hash-verified, device-tested artifact in your existing evidence style.
+
+### U2.0 — Bench + session control *(do this first; ~2 days)*
+- `totoro-fbbench`: cached vs uncached mmap write bandwidth · 32-bpp vs 565-expanded fill · full-screen fill · blit throughput · `0x46ff` latency · 120×160→2× upscale cost. Emit a table. **No UI code.**
+- `totoro-session`: the stop/start sequence. Discover the real service names from the device's `/system/etc/init/*.rc`. Verify a *sustained* takeover (pattern + frame counter + live clock, 5 minutes, zero Android repaints) and a clean restore.
+- **Gate:** display owned ≥300 s; restore verified; bench table committed.
+
+### U2.1 — Touch *(1–2 days)*
+`totoro-ts`: evdev reader, calibration table, tap/swipe/long-press, on-screen crosshair + coordinate readout.
+**Gate:** 24-point grid accuracy, no dropped events, <60 ms touch-to-pixel latency.
+
+### U2.2 — First real screen *(3–5 days)*
+LVGL 8.3 at 120×160 @2×, retro theme, one screen: **status bar + 3×4 launcher icon grid + 4-button soft row**. Tap an icon → pressed state + log line.
+This is the "convincingly computer-like" moment. Judge it here, before building anything else.
+
+### U2.3 — The shell *(1–2 weeks)*
+View stack, status bar with real data (`/proc/meminfo`, `/proc/uptime`, battery `/sys/class/power_supplier`, SD free space, IP), Settings (backlight, session timeout, mount/unmount rootfs, SSH toggle, **exit to Android**), Files browser, About/Recovery, Terminal (libvterm + BusyBox pty).
+
+### U2.4 — Ecosystem *(ongoing)*
+Document a ~100-line `app.h` ABI (`int app_main(struct tui*, int argc, char **argv)` + registry table). MicroPython console. Timeboxed SDL 1.2 / ScummVM experiment behind a feature flag.
+
+**Safety rails from day one:** SSH always on · hard session timeout · forced-abort gesture · "safe mode" that returns to Android and leaves only SSH if the UI crashes twice.
+
+---
+
+## 9. Unknowns to resolve on-device before committing
+
+| Unknown | How to resolve | If it goes wrong |
+|---|---|---|
+| Is `fb0` mmap cached or uncached? | `totoro-fbbench`, and compare `/proc/self/smaps` `VmFlags` | Render to heap + `write()` rows instead of mmap |
+| Does the CPU have VFP / DSP / Thumb-2? | `Features:` line in `/proc/cpuinfo` | Keep `-march=armv6 -mfloat-abi=soft` unconditionally |
+| Actual `init.rc` service names + `onrestart` graph | read `/system/etc/init/*.rc` on device | Android returns after ~2 min (the documented linuxdeploy failure) |
+| Other private ioctls (flip, dirty-rect, backlight, TE) | read `lcdfb.c` ioctl table; probe harmlessly | Stay with row-range flush; bracket session by backlight sysfs |
+| `lv.mk` present in the pinned v8.3 tree | check the tree | Amalgamate LVGL sources manually (trivial) |
+| Real frame costs | `totoro-fbbench` + an LVGL benchmark mode | Drop render scale to 80×120, or to BASIC backend |
+
+One toolchain warning worth stating plainly: **build everything with the same flags that produced your working `totoro-musl-test` (`arm-linux-musleabi`, `-march=armv6`, soft float).** Autotools-based dependencies — SDL above all — habitually default to `-march=armv7-a` and hard-float and will SIGILL on this SoC. That is the single most common way this kind of project quietly wastes a week.
+
+---
+
+## Summary
+
+The conventional answers don't fit. X11 + matchbox is unaffordable by an order of magnitude; Qt Embedded is the right *model* but the wrong dependency tree; DirectFB is architecturally apt but LGPL'd, autotools-heavy, and unmaintained in its 1.x line; SDL 1.2 is a proven musl+framebuffer accelerator worth keeping in your pocket, but it is not a widget toolkit. **LVGL 8.3 — pinned, not v9 — is the only option that gives a full widget layer with zero external dependencies, a partial-rendering model that matches your dirty-row ioctl exactly, a native RGB565 internal format the panel actually is, MIT licensing, and a plain-Makefile build that drops into your existing static-musl toolchain.** Everything above it — the session manager, the view-stack shell, the app ABI, the retro design language — should be yours and toolkit-independent, with a ~1.5 kLOC hand-rolled backend as insurance. And the two things to do before writing any UI code are: **measure the framebuffer, and prove you can hold the display for five minutes and give it back.**
+
+
+
+5 citations
+Favicon for https://github.com/thedeadfish59/samurai-kernel
+Favicon for https://github.com/zecn/eve_kernel
+Favicon for https://github.com/alfiyansys/kernel_samsung_totoro
+Favicon for https://github.com/rajamalw/galaxy-s5360/
+Favicon for https://github.com/percy-g2/GNU-kernel
+Samurai Kernel for Samsung Galaxy Y GT-S5360/Ace 5830i
+https://github.com/thedeadfish59/samurai-kernel
+Favicon for https://github.com/thedeadfish59/samurai-kernel
+github.com
+zecn/eve_kernel
+https://github.com/zecn/eve_kernel
+Favicon for https://github.com/zecn/eve_kernel
+github.com
+alfiyansys/kernel_samsung_totoro
+https://github.com/alfiyansys/kernel_samsung_totoro
+Favicon for https://github.com/alfiyansys/kernel_samsung_totoro
+github.com
+rajamalw/galaxy-s5360
+https://github.com/rajamalw/galaxy-s5360/
+Favicon for https://github.com/rajamalw/galaxy-s5360/
+github.com
+percy-g2/GNU-kernel
+https://github.com/percy-g2/GNU-kernel
+Favicon for https://github.com/percy-g2/GNU-kernel
+github.com
+Previous slide
+Next slide
+5 citations
+Favicon for https://lvgl.io/docs/open/integration/embedded_linux/drivers/fbdev
+Favicon for https://lvgl.io/docs/open/integration/embedded_linux/drivers/evdev
+Favicon for https://docs.forlinx.net/rockchip/rk-development-manual/Buildroot_System/3568/OK3568_4_19_206_Buildroot_Lvgl8_2_Porting.html
+Favicon for https://www.forlinx.net/industrial-news/lvgl-on-rk3568-linux-buildroot-713.html
+Favicon for https://github.com/lvgl/lv_port_linux
+Linux Framebuffer | LVGL Open
+https://lvgl.io/docs/open/integration/embedded_linux/drivers/fbdev
+Favicon for https://lvgl.io/docs/open/integration/embedded_linux/drivers/fbdev
+lvgl.io
+evdev | LVGL Open
+https://lvgl.io/docs/open/integration/embedded_linux/drivers/evdev
+Favicon for https://lvgl.io/docs/open/integration/embedded_linux/drivers/evdev
+lvgl.io
+OK3568 4.19.206 Buildroot Lvgl8.2 Porting — Forlinx Embedded RK Development Manual documentation
+https://docs.forlinx.net/rockchip/rk-development-manual/Buildroot_System/3568/OK3568_4_19_206_Buildroot_Lvgl8_2_Porting.html
+Favicon for https://docs.forlinx.net/rockchip/rk-development-manual/Buildroot_System/3568/OK3568_4_19_206_Buildroot_Lvgl8_2_Porting.html
+docs.forlinx.net
+Porting LVGL 8.2 to OK3568-C with Linux 4.19 and Buildroot: Full Guide - Blog - Forlinx Embedded Technology Co., Ltd.
+https://www.forlinx.net/industrial-news/lvgl-on-rk3568-linux-buildroot-713.html
+Favicon for https://www.forlinx.net/industrial-news/lvgl-on-rk3568-linux-buildroot-713.html
+www.forlinx.net
+lvgl/lv_port_linux: LVGL configured to work on Linux ...
+https://github.com/lvgl/lv_port_linux
+Favicon for https://github.com/lvgl/lv_port_linux
+github.com
+Previous slide
+Next slide
+40 citations
+Favicon for https://archive.fosdem.org/2022/schedule/event/directfb/attachments/slides/5077/export/events/attachments/directfb/slides/5077/fosdem_2022_directfb2.pdf
+Favicon for https://www.phoronix.com/news/DirectFB-Is-It-Gone
+Favicon for https://www.phoronix.com/news/DirectFB2-2022
+···Show more citations
+Back to DirectFB!
+https://archive.fosdem.org/2022/schedule/event/directfb/attachments/slides/5077/export/events/attachments/directfb/slides/5077/fosdem_2022_directfb2.pdf
+Favicon for https://archive.fosdem.org/2022/schedule/event/directfb/attachments/slides/5077/export/events/attachments/directfb/slides/5077/fosdem_2022_directfb2.pdf
+archive.fosdem.org
+DirectFB Has (Temporarily?) Disappeared
+https://www.phoronix.com/news/DirectFB-Is-It-Gone
+Favicon for https://www.phoronix.com/news/DirectFB-Is-It-Gone
+www.phoronix.com
+DirectFB2 Aims To Resurrect DirectFB For Embedded ...
+https://www.phoronix.com/news/DirectFB2-2022
+Favicon for https://www.phoronix.com/news/DirectFB2-2022
+www.phoronix.com
+directfb.org | Main
+https://directfb1.org/
+Favicon for https://directfb1.org/
+directfb1.org
+[OE-core] [PATCH] directfb: retire directfb.inc
+https://www.openembedded.org/pipermail/openembedded-core/2015-March/221371.html
+Favicon for https://www.openembedded.org/pipermail/openembedded-core/2015-March/221371.html
+www.openembedded.org
+bkauler/gui_engine
+https://github.com/bkauler/gui_engine
+Favicon for https://github.com/bkauler/gui_engine
+github.com
+uablrek/sdl-without-x11
+https://github.com/uablrek/sdl-without-x11
+Favicon for https://github.com/uablrek/sdl-without-x11
+github.com
+Agar GUI toolkit with SDL 1.2 on Linux framebuffer
+https://bkhome.org/news/201902/agar-gui-toolkit-with-sdl-12-on-linux-framebuffer.html
+Favicon for https://bkhome.org/news/201902/agar-gui-toolkit-with-sdl-12-on-linux-framebuffer.html
+bkhome.org
+GitHub - 370network/SDL-1.2-pax: Simple Directmedia Layer 1.2 | modified for ProlinOS · GitHub
+https://github.laiyagushi.com/370network/SDL-1.2-pax
+Favicon for https://github.laiyagushi.com/370network/SDL-1.2-pax
+github.laiyagushi.com
+JON95Git/lvgl-rasp-sdl
+https://github.com/JON95Git/lvgl-rasp-sdl
+Favicon for https://github.com/JON95Git/lvgl-rasp-sdl
+github.com
+Handhelds - postmarketOS Wiki
+https://wiki.postmarketos.org/wiki/Handhelds
+Favicon for https://wiki.postmarketos.org/wiki/Handhelds
+wiki.postmarketos.org
+Window Managers 64-bit Memory Usage
+https://www.gilesorr.com/wm/memory64.html
+Favicon for https://www.gilesorr.com/wm/memory64.html
+www.gilesorr.com
+Low RAM usability
+https://wiki.postmarketos.org/wiki/Low_RAM_usability
+Favicon for https://wiki.postmarketos.org/wiki/Low_RAM_usability
+wiki.postmarketos.org
+[maemo-developers] GTK+/X based system on 64MB flash and ram size budget?
+http://lists.maemo.org/pipermail/maemo-developers/2007-October/012369.html
+Favicon for http://lists.maemo.org/pipermail/maemo-developers/2007-October/012369.html
+lists.maemo.org
+Matchbox (window manager)
+https://en.wikipedia.org/wiki/Matchbox_(window_manager)
+Favicon for https://en.wikipedia.org/wiki/Matchbox_(window_manager)
+en.wikipedia.org
+Qt Documentation
+https://doc.qt.io/archives/qt-4.8/qt-embeddedlinux-directfb.html
+Favicon for https://doc.qt.io/archives/qt-4.8/qt-embeddedlinux-directfb.html
+doc.qt.io
+Qt for Embedded Linux | Qt 5.10
+https://doc.qt.io/archives/qt-5.10/embedded-linux.html
+Favicon for https://doc.qt.io/archives/qt-5.10/embedded-linux.html
+doc.qt.io
+Qt 4.8: Cross-Compiling Qt for Embedded Linux Applications
+https://nickguthrie.com/embedd_gui/src/qt-everywhere-opensource-src-4.8.4/doc/html/qt-embedded-crosscompiling.html
+Favicon for https://nickguthrie.com/embedd_gui/src/qt-everywhere-opensource-src-4.8.4/doc/html/qt-embedded-crosscompiling.html
+nickguthrie.com
+I.MX-6 - Qt Wiki
+https://wiki.qt.io/I.MX-6
+Favicon for https://wiki.qt.io/I.MX-6
+wiki.qt.io
+Shiner - Qt Wiki
+https://wiki.qt.io/Shiner
+Favicon for https://wiki.qt.io/Shiner
+wiki.qt.io
+Samsung Galaxy Y - Specifications
+https://www.devicespecifications.com/en/model/141d288b
+Favicon for https://www.devicespecifications.com/en/model/141d288b
+www.devicespecifications.com
+Samsung Galaxy Y
+https://en.wikipedia.org/wiki/Samsung_Galaxy_Y
+Favicon for https://en.wikipedia.org/wiki/Samsung_Galaxy_Y
+en.wikipedia.org
+Samsung Galaxy Y (GT-S5360) All specs
+https://www.phonemore.com/specs/samsung/galaxy-y/gt-s5360/
+Favicon for https://www.phonemore.com/specs/samsung/galaxy-y/gt-s5360/
+www.phonemore.com
+Samsung GT-S5360 Galaxy Y | Device Specs
+https://phonedb.net/index.php?c=samsung_gt-s5360_galaxy_y&id=3087&m=device
+Favicon for https://phonedb.net/index.php?c=samsung_gt-s5360_galaxy_y&id=3087&m=device
+phonedb.net
+Samsung Galaxy Y - Specs | PhoneMore
+https://www.phonemore.com/specs/samsung/galaxy-y/
+Favicon for https://www.phonemore.com/specs/samsung/galaxy-y/
+www.phonemore.com
+evdev | LVGL Open
+https://lvgl.io/docs/open/integration/embedded_linux/drivers/evdev
+Favicon for https://lvgl.io/docs/open/integration/embedded_linux/drivers/evdev
+lvgl.io
+Introduction — LVGL documentation
+https://lvgl.io/docs/open/9.0/intro/
+Favicon for https://lvgl.io/docs/open/9.0/intro/
+lvgl.io
+Changelog — LVGL documentation
+https://lvgl.github.io/open-docs/HTML/9.0/CHANGELOG.html
+Favicon for https://lvgl.github.io/open-docs/HTML/9.0/CHANGELOG.html
+lvgl.github.io
+feat(dev): port evdev input driver · Pull Request #4672 · lvgl/lvgl
+https://github.com/lvgl/lvgl/pull/4672
+Favicon for https://github.com/lvgl/lvgl/pull/4672
+github.com
+v9.6.0 Change Log | LVGL Open
+https://lvgl.io/docs/open/changelog/CHANGELOG
+Favicon for https://lvgl.io/docs/open/changelog/CHANGELOG
+lvgl.io
+Client framebuffer management
+https://source.android.com/docs/core/graphics/framebuffer-mgmt
+Favicon for https://source.android.com/docs/core/graphics/framebuffer-mgmt
+source.android.com
+plops/bacon_fb_test
+https://github.com/plops/bacon_fb_test
+Favicon for https://github.com/plops/bacon_fb_test
+github.com
+src/devices/graphics/arch-sf-hwc.jd - platform/docs/source.android.com - Git at Google
+https://android.googlesource.com/platform/docs/source.android.com/+/a16639dbac0cb27601c1d1d222005a4b7ecc7e30/src/devices/graphics/arch-sf-hwc.jd
+Favicon for https://android.googlesource.com/platform/docs/source.android.com/+/a16639dbac0cb27601c1d1d222005a4b7ecc7e30/src/devices/graphics/arch-sf-hwc.jd
+android.googlesource.com
+Phone restarts in two minutes after chroot in framebuffer mode · Issue #287 · meefik/linuxdeploy
+https://github.com/meefik/linuxdeploy/issues/287
+Favicon for https://github.com/meefik/linuxdeploy/issues/287
+github.com
+Why is the FrameBuffer missing on some Android devices?
+https://android.stackexchange.com/questions/232608/why-is-the-framebuffer-missing-on-some-android-devices
+Favicon for https://android.stackexchange.com/questions/232608/why-is-the-framebuffer-missing-on-some-android-devices
+android.stackexchange.com
+netsurf/docs/building-Framebuffer.md at master
+https://github.com/netsurf-browser/netsurf/blob/master/docs/building-Framebuffer.md
+Favicon for https://github.com/netsurf-browser/netsurf/blob/master/docs/building-Framebuffer.md
+github.com
+Developer Documentation
+https://www.netsurf-browser.org/documentation/develop
+Favicon for https://www.netsurf-browser.org/documentation/develop
+www.netsurf-browser.org
+NetSurf: Build Instructions for GTK NetSurf
+https://ci.netsurf-browser.org/jenkins/job/docs-netsurf/doxygen/md_docs_building-GTK.html
+Favicon for https://ci.netsurf-browser.org/jenkins/job/docs-netsurf/doxygen/md_docs_building-GTK.html
+ci.netsurf-browser.org
+pkgs/by-name/ne/netsurf-browser/package.nix
+https://github.com/NixOS/nixpkgs/blob/release-25.11/pkgs/by-name/ne/netsurf-browser/package.nix
+Favicon for https://github.com/NixOS/nixpkgs/blob/release-25.11/pkgs/by-name/ne/netsurf-browser/package.nix
+github.com
+Getting Netsurf to work in the framebuffer - Help
+https://discourse.nixos.org/t/getting-netsurf-to-work-in-the-framebuffer/30383
+Favicon for https://discourse.nixos.org/t/getting-netsurf-to-work-in-the-framebuffer/30383
+discourse.nixos.org
