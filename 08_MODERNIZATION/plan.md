@@ -64,7 +64,11 @@ Representative results:
 
 This is the first decisive Linux-userspace milestone.
 
-### A3. Musl compatibility — ACTIVE
+### A3. Musl compatibility — STATIC PATH PASSED
+
+The host-built static musl ARMv6 path is now physically verified. The audited artifact `totoro-musl-test` has SHA-256 `15c6fb0828a2933d64270b33d585879b99e01d59e0f00fa81fc0cd6962aec4d5` and executed on the physical Totoro with `MUSL_ARMV6_OK` and `STATUS=0`.
+
+### A4. Dynamic musl compatibility — NEXT
 
 The host-side musl environment is now built far enough to isolate the remaining dependency.
 
@@ -100,7 +104,7 @@ Only after the musl compatibility gate:
 
 Never use `pivot_root`. Avoid a second `devpts` mount unless a later, evidence-based test demonstrates a real need.
 
-### A5. Access and service
+### A6. Access and service
 
 First test a small SSH implementation such as Dropbear. `adb forward` may be used as an early tethered access method; Wi-Fi/SSH is preferred if networking is confirmed.
 
@@ -113,7 +117,21 @@ Then implement exactly one useful service, for example:
 
 Do not install a broad package set before choosing the service.
 
-### A6. UX checkpoint
+### A7. Real UI milestone
+
+The first UI target is a browser-rendered local dashboard rather than a native Linux desktop. A tiny HTTP service on the Totoro will expose live device state and at least one useful touch interaction through Android's existing browser.
+
+Acceptance criteria:
+- service runs on the physical Totoro;
+- phone's own browser opens the local page;
+- page displays live Totoro information;
+- at least one control performs a real action or changes useful state;
+- touch interaction works;
+- no boot-critical storage is touched.
+
+If this is already useful/cool, preserve it before adding complexity.
+
+### A8. Useful/cool checkpoint
 
 Use the physical phone.
 
