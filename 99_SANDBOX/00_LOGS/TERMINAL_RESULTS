@@ -1,81 +1,35 @@
 mostafa@MMostafa libc % cd $ROOT/07_BUILD/toolchains/runtime-build/libc
-mostafa@MMostafa libc % $TOOLCHAIN/bin/arm-linux-androideabi-ar \
-rcs libtotoro_bionic.a \
-*.o
-mostafa@MMostafa libc % $TOOLCHAIN/bin/arm-linux-androideabi-ar t libtotoro_bionic.a | head
-__brk.o
-__ioctl.o
-__mmap2.o
-__open.o
-atexit.o
-close.o
-dlmalloc.o
-errno.o
-fflush.o
-findfp.o
-mostafa@MMostafa libc % $TOOLCHAIN/bin/arm-linux-androideabi-nm \
-libtotoro_bionic.a \
-| grep " T " \
-| head -50
-00000000 T __brk
-00000000 T __ioctl
-00000000 T __mmap2
-00000000 T __open
-00000588 T __atexit_register_cleanup
-00000034 T __cxa_atexit
-000002f8 T __cxa_finalize
-000002c8 T atexit
-00000000 T close
-0000720c T calloc
-00005d1c T free
-00007380 T independent_calloc
-000073dc T independent_comalloc
-00007564 T mallinfo
-000053a4 T malloc
-00007514 T malloc_footprint
-0000753c T malloc_max_footprint
-0000759c T malloc_stats
-000074d0 T malloc_trim
-000075bc T malloc_usable_size
-00007684 T malloc_walk_free_pages
-00007864 T malloc_walk_heap
-00007654 T mallopt
-00007340 T memalign
-00007470 T pvalloc
-000072e0 T realloc
-0000742c T valloc
-00000000 T __errno
-0000008c T __sflush
-00000000 T fflush
-0000014c T __sfp
-0000030c T __sinit
-000002e0 T _cleanup
-00000000 T fprintf
-00000000 T fstat
-00000000 T __sfvwrite
-00000000 T _fwalk
-00000000 T fwrite
-00000000 T __ioctl
-00000000 T ioctl
-00000038 T isatty
-00000000 T lseek
-00000000 T __smakebuf
-00000194 T __swhatbuf
-00000000 T memchr
-00000000 T memcpy
-00000000 T memcpy
-00000000 T memmove
-00000000 T memset
-00000000 T mmap
-mostafa@MMostafa libc % grep -R "__set_syscall_errno" \
+
+for f in __ioctl mmap munmap
+do
+$TOOLCHAIN/bin/arm-linux-androideabi-gcc \
+-c \
+-march=armv6 \
+-mtune=arm1136jf-s \
+-mfloat-abi=soft \
+-I$ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/include \
+-I$ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/private \
+-I$ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/kernel/common \
+-I$ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/kernel/arch-arm \
+$ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/$f.S \
+-o $f.o
+done
+arm-linux-androideabi-gcc: error: /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/mmap.S: No such file or directory
+arm-linux-androideabi-gcc: fatal error: no input files
+compilation terminated.
+mostafa@MMostafa libc % grep -R "__set_syscall_errno\|__errno" \
 $ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc \
 -n
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/__errno.c:31:volatile int*  __errno( void )
 /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/__set_errno.c:43:int __set_syscall_errno(int n)
 /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/tools/gensyscalls.py:97:    b       __set_syscall_errno
 /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/tools/gensyscalls.py:110:    b       __set_syscall_errno
 /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/tools/gensyscalls.py:122:    b       __set_syscall_errno
 /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/tools/gensyscalls.py:136:    b       __set_syscall_errno
 /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/tools/gensyscalls.py:226:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/Android.mk:332:        bionic/__errno.c \
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/include/errno.h:48:extern volatile int*   __errno(void);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/include/errno.h:51:#define  errno   (*__errno())
 /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/bionic/pipe.S:63:1:  .long   __set_syscall_errno
 /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/sigaltstack.S:32:1:  .long   __set_syscall_errno
 /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/epoll_wait.S:32:1:  .long   __set_syscall_errno
@@ -419,4 +373,73 @@ $ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc \
 /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/pipe2.S:18:    b       __set_syscall_errno
 /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/setresgid.S:18:    b       __set_syscall_errno
 /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/settimeofday.S:18:    b       __set_syscall_errno
+mostafa@MMostafa libc % grep -R "void.*malloc\|malloc(" \
+$ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/malloc \
+-n
+grep: /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/malloc: No such file or directory
+mostafa@MMostafa libc % find $TOOLCHAIN -name "libgcc.a"
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/arm-linux-androideabi-4.8/lib/gcc/arm-linux-androideabi/4.8/thumb/libgcc.a
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/arm-linux-androideabi-4.8/lib/gcc/arm-linux-androideabi/4.8/armv7-a/thumb/libgcc.a
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/arm-linux-androideabi-4.8/lib/gcc/arm-linux-androideabi/4.8/armv7-a/libgcc.a
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/arm-linux-androideabi-4.8/lib/gcc/arm-linux-androideabi/4.8/libgcc.a
+mostafa@MMostafa libc % $TOOLCHAIN/bin/arm-linux-androideabi-nm *.o \
+| grep " U " \
+| sort -u
+         U _GLOBAL_OFFSET_TABLE_
+         U __aeabi_uidiv
+         U __aeabi_uidivmod
+         U __aeabi_uldivmod
+         U __aeabi_unwind_cpp_pr0
+         U __aeabi_unwind_cpp_pr1
+         U __atexit_register_cleanup
+         U __errno
+         U __ioctl
+         U __isthreaded
+         U __mmap2
+         U __open
+         U __page_size
+         U __sF
+         U __sclose
+         U __sdidinit
+         U __set_syscall_errno
+         U __sflush
+         U __sfvwrite
+         U __sglue
+         U __sinit
+         U __smakebuf
+         U __sread
+         U __sseek
+         U __swrite
+         U __swsetup
+         U _cleanup
+         U _fwalk
+         U _thread_atexit_lock
+         U _thread_atexit_unlock
+         U abort
+         U close
+         U fflush
+         U fprintf
+         U free
+         U fstat
+         U ioctl
+         U isatty
+         U lseek
+         U malloc
+         U memchr
+         U memcpy
+         U memmove
+         U memset
+         U mmap
+         U mprotect
+         U mremap
+         U munmap
+         U read
+         U realloc
+         U sbrk
+         U strerror_r
+         U strlcpy
+         U strlen
+         U sysconf
+         U vfprintf
+         U write
 mostafa@MMostafa libc % 
