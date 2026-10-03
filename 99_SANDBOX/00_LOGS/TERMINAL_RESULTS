@@ -1,616 +1,994 @@
-mostafa@MMostafa ~ % adb kill-server
-adb start-server
-* daemon not running; starting now at tcp:5037
-* daemon started successfully
-mostafa@MMostafa ~ % adb kill-server
-adb start-server
-* daemon not running; starting now at tcp:5037
-* daemon started successfully
-mostafa@MMostafa ~ % adb devices    
-List of devices attached
+mostafa@MMostafa galaxy-y-totoro-lab % cd /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab
+mostafa@MMostafa galaxy-y-totoro-lab % cd 07_BUILD/toolchains/aosp-prebuilt-ndk
 
-mostafa@MMostafa ~ % adb devices
-List of devices attached
+git branch -a
 
-mostafa@MMostafa ~ % adb devices
-List of devices attached
-0123456789ABCDEF	device
-
-mostafa@MMostafa ~ % adb shell
-su
-getprop service.adb.tcp.port
-netstat -ln
-$ su
-# setprop service.adb.tcp.port 5555
-# stop adbd
-Password:
-su: Sorry
-zsh: command not found: getprop
-Active Internet connections
-Proto Recv-Q Send-Q  Local Address          Foreign Address        (state)    
-tcp4       0      0  172.30.38.9.51906                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51905                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51905                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51904                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51903                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51903                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51902                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51901                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51901                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51900                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51899                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51899                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51898                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51897                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51897                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51894                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51893                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51893                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51892                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51891                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51891                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51890                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51889                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51889                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51888                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51887                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51887                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51886                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51885                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51885                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51882                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51881                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51881                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51880                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51879                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51879                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51872                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51871                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51871                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51870                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  172.30.38.9.51869                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51868                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51868                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51867                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51867                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51866                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51865                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51865                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51862                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51861                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51861                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51860                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51859                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51859                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51858                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51857                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51857                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51853                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51852                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51852                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51851                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51850                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51850                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51847                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51846                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51846                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51845                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51844                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51844                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51711                             188.114.98.0.2083                             CLOSE_WAIT 
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51710                               FIN_WAIT_2 
-tcp4       0      0  127.0.0.1.51710                               127.0.0.1.2080                                CLOSE_WAIT 
-tcp4       0      0  172.30.38.9.51524                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51523                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51523                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51515                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  172.30.38.9.51514                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51513                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51513                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51512                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51512                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51511                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  172.30.38.9.51510                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51509                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51509                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51508                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51508                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51507                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51506                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51506                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51505                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51504                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51504                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51491                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51490                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51490                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51477                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51476                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51476                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51334                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51333                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51333                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51253                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51252                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51252                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51026                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51023                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51023                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.51008                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51007                               ESTABLISHED
-tcp4       0      0  127.0.0.1.51007                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  172.30.38.9.50980                             188.114.98.0.2083                             ESTABLISHED
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.50979                               ESTABLISHED
-tcp4       0      0  127.0.0.1.50979                               127.0.0.1.2080                                ESTABLISHED
-tcp4       0      0  127.0.0.1.5037                                127.0.0.1.51854                               TIME_WAIT  
-tcp4       0      0  127.0.0.1.5037                                127.0.0.1.51855                               TIME_WAIT  
-tcp4       0      0  127.0.0.1.51842                               127.0.0.1.2080                                TIME_WAIT  
-tcp4       0      0  127.0.0.1.51863                               127.0.0.1.2080                                TIME_WAIT  
-tcp4       0      0  172.30.38.9.51864                             188.114.98.0.2083                             TIME_WAIT  
-tcp4       0      0  127.0.0.1.2080                                127.0.0.1.51478                               TIME_WAIT  
-tcp4       0      0  172.30.38.9.51833                             188.114.98.0.2083                             TIME_WAIT  
-tcp4       0      0  127.0.0.1.51873                               127.0.0.1.2080                                TIME_WAIT  
-tcp4       0      0  172.30.38.9.51874                             188.114.98.0.2083                             TIME_WAIT  
-tcp4       0      0  172.30.38.9.51876                             188.114.98.0.2083                             TIME_WAIT  
-tcp4       0      0  127.0.0.1.51810                               127.0.0.1.2080                                TIME_WAIT  
-tcp4       0      0  172.30.38.9.51811                             188.114.98.0.2083                             TIME_WAIT  
-tcp4       0      0  127.0.0.1.51812                               127.0.0.1.2080                                TIME_WAIT  
-tcp4       0      0  172.30.38.9.51813                             188.114.98.0.2083                             TIME_WAIT  
-tcp4       0      0  127.0.0.1.51814                               127.0.0.1.2080                                TIME_WAIT  
-tcp4       0      0  172.30.38.9.51815                             188.114.98.0.2083                             TIME_WAIT  
-tcp4       0      0  127.0.0.1.51816                               127.0.0.1.2080                                TIME_WAIT  
-tcp4       0      0  172.30.38.9.51817                             188.114.98.0.2083                             TIME_WAIT  
-tcp4       0      0  127.0.0.1.51818                               127.0.0.1.2080                                TIME_WAIT  
-tcp4       0      0  172.30.38.9.51819                             188.114.98.0.2083                             TIME_WAIT  
-tcp4       0      0  127.0.0.1.51820                               127.0.0.1.2080                                TIME_WAIT  
-tcp4       0      0  172.30.38.9.51821                             188.114.98.0.2083                             TIME_WAIT  
-tcp4       0      0  127.0.0.1.51824                               127.0.0.1.2080                                TIME_WAIT  
-tcp4       0      0  172.30.38.9.51825                             188.114.98.0.2083                             TIME_WAIT  
-tcp4       0      0  127.0.0.1.51828                               127.0.0.1.2080                                TIME_WAIT  
-tcp4       0      0  127.0.0.1.51830                               127.0.0.1.2080                                TIME_WAIT  
-tcp4       0      0  172.30.38.9.51831                             188.114.98.0.2083                             TIME_WAIT  
-tcp4       0      0  172.30.38.9.51884                             188.114.98.0.2083                             TIME_WAIT  
-tcp4       0      0  127.0.0.1.51834                               127.0.0.1.2080                                TIME_WAIT  
-tcp4       0      0  172.30.38.9.51835                             188.114.98.0.2083                             TIME_WAIT  
-tcp4       0      0  127.0.0.1.5037                                127.0.0.1.51856                               TIME_WAIT  
-tcp4       0      0  127.0.0.1.51895                               127.0.0.1.2080                                TIME_WAIT  
-tcp4       0      0  127.0.0.1.51838                               127.0.0.1.2080                                TIME_WAIT  
-tcp4       0      0  172.30.38.9.51839                             188.114.98.0.2083                             TIME_WAIT  
-tcp4       0      0  127.0.0.1.51518                               127.0.0.1.2080                                TIME_WAIT  
-tcp4       0      0  172.30.38.9.51519                             188.114.98.0.2083                             TIME_WAIT  
-tcp4       0      0  127.0.0.1.51840                               127.0.0.1.2080                                TIME_WAIT  
-tcp4       0      0  172.30.38.9.58906                             17.57.146.140.5223                            ESTABLISHED
-udp4       0      0  *.5353                                        *.*                                                      
-udp4       0      0  127.0.0.1.50386                               127.0.0.1.50929                                          
-udp4       0      0  127.0.0.1.50929                               *.*                                                      
-udp4       0      0  172.30.38.9.65270                             *.*                                                      
-udp4       0      0  172.30.38.9.62850                             *.*                                                      
-udp4       0      0  172.30.38.9.55649                             *.*                                                      
-udp4       0      0  172.30.38.9.56228                             *.*                                                      
-udp6       0      0  *.5353                                        *.*                                                      
-udp6       0      0  *.5353                                        *.*                                                      
-udp6       0      0  *.5353                                        *.*                                                      
-udp4       0      0  *.5353                                        *.*                                                      
-udp4       0      0  *.1900                                        *.*                                                      
-udp4       0      0  *.51419                                       *.*                                                      
-udp4       0      0  *.57621                                       *.*                                                      
-udp4       0      0  *.63030                                       *.*                                                      
-udp4       0      0  172.30.38.9.56784                             192.168.20.15.53                                         
-udp4       0      0  127.0.0.1.5533                                *.*                                                      
-udp4       0      0  *.*                                           *.*                                                      
-udp46      0      0  *.60361                                       *.*                                                      
-udp4       0      0  *.*                                           *.*                                                      
-udp4       0      0  *.*                                           *.*                                                      
-udp4       0      0  *.*                                           *.*                                                      
-udp4       0      0  *.*                                           *.*                                                      
-udp4       0      0  *.*                                           *.*                                                      
-udp4       0      0  *.*                                           *.*                                                      
-udp4       0      0  *.*                                           *.*                                                      
-udp4       0      0  *.*                                           *.*                                                      
-udp4       0      0  *.*                                           *.*                                                      
-udp4       0      0  *.*                                           *.*                                                      
-udp4       0      0  *.*                                           *.*                                                      
-udp4       0      0  *.*                                           *.*                                                      
-udp4       0      0  *.*                                           *.*                                                      
-udp4       0      0  *.*                                           *.*                                                      
-udp4       0      0  *.*                                           *.*                                                      
-udp4       0      0  *.*                                           *.*                                                      
-udp46      0      0  *.*                                           *.*                                                      
-udp4       0      0  *.*                                           *.*                                                      
-udp6       0      0  *.5353                                        *.*                                                      
-udp4       0      0  *.5353                                        *.*                                                      
-udp4       0      0  *.137                                         *.*                                                      
-udp4       0      0  *.138                                         *.*                                                      
-Active Multipath Internet connections
-Proto/ID  Flags      Local Address          Foreign Address        (state)    
-icm6       0      0  *.*                                           *.*                                                      
-Active LOCAL (UNIX) domain sockets
-Address          Type   Recv-Q Send-Q            Inode             Conn             Refs          Nextref Addr
-bad7c3ee53ddde44 stream      0      0                0 2e892e884cb4debc                0                0
-2e892e884cb4debc stream      0      0                0 bad7c3ee53ddde44                0                0
-98c329202772b5d4 stream      0      0                0 ce3c6e5f0b63b9f6                0                0
-ce3c6e5f0b63b9f6 stream      0      0                0 98c329202772b5d4                0                0
-62d168e51d7951ec stream      0      0                0 288a327031899fea                0                0
-288a327031899fea stream      0      0                0 62d168e51d7951ec                0                0
-f70a17dd7a7ffb39 stream      0      0                0 ed6255a0ea3c22ed                0                0
-ed6255a0ea3c22ed stream      0      0                0 f70a17dd7a7ffb39                0                0
-8465d513a0e307df stream      0      0                0  8bd93ce40bbbbcf                0                0
- 8bd93ce40bbbbcf stream      0      0                0 8465d513a0e307df                0                0
-e00c66c0168393d9 stream      0      0                0 502314499286fc83                0                0
-502314499286fc83 stream      0      0                0 e00c66c0168393d9                0                0
-ac779e721dc4c32e stream      0      0                0 86683e60f0993f1f                0                0
-86683e60f0993f1f stream      0      0                0 ac779e721dc4c32e                0                0
-85e2f38cd5306242 stream      0      0                0 c47f059cc5de95cb                0                0
-c47f059cc5de95cb stream      0      0                0 85e2f38cd5306242                0                0
-fff20436549e2336 stream      0      0                0 ebd2517983cf78e5                0                0
-ebd2517983cf78e5 stream      0      0                0 fff20436549e2336                0                0
-f61ab2013336e2e7 stream      0      0                0 bffe27e0e7a7ff7d                0                0
-bffe27e0e7a7ff7d stream      0      0                0 f61ab2013336e2e7                0                0
-aa3664ff014b7417 stream      0      0                0 12226f6cb45d0319                0                0
-12226f6cb45d0319 stream      0      0                0 aa3664ff014b7417                0                0
-3522049134b9d632 stream      0      0                0 55be5e1a85a4e6ec                0                0
-55be5e1a85a4e6ec stream      0      0                0 3522049134b9d632                0                0
-c2f4ecb70dbb2c98 stream      0      0                0 23f45f10834f957e                0                0
-23f45f10834f957e stream      0      0                0 c2f4ecb70dbb2c98                0                0
-4020e73493b30081 stream      0      0                0 e2f2d8b4c21661c4                0                0 /var/run/mDNSResponder
-e2f2d8b4c21661c4 stream      0      0                0 4020e73493b30081                0                0
-afb4e332d960048c stream      0      0                0  fc92be98f57916f                0                0 /var/run/mDNSResponder
- fc92be98f57916f stream      0      0                0 afb4e332d960048c                0                0
-84ee1de2fdefd0bd stream      0      0                0 701a56e4a26d1b17                0                0 /var/run/mDNSResponder
-701a56e4a26d1b17 stream      0      0                0 84ee1de2fdefd0bd                0                0
-61b6004ada99c1ce stream      0      0 2bab030963739b35                0                0                0 /var/folders/9c/39q43q0n5w303wngs8mgqdl40000gn/T/com.spotify.client.0MaxZF/SingletonSocket
-cf61c56bfbd832cc stream      0      0                0 2a647a5cb4719395                0                0
-2a647a5cb4719395 stream      0      0                0 cf61c56bfbd832cc                0                0
-7fc59a8c0b90604b stream      0      0                0 ec8001a0d8f44a30                0                0
-ec8001a0d8f44a30 stream      0      0                0 7fc59a8c0b90604b                0                0
-c9d43bd0076ca94c stream      0      0                0 2e63821bb5ac0569                0                0
-2e63821bb5ac0569 stream      0      0                0 c9d43bd0076ca94c                0                0
-e6ca2c637a010294 stream      0      0                0 83eb77ec52a85b38                0                0
-83eb77ec52a85b38 stream      0      0                0 e6ca2c637a010294                0                0
-2a3471e958f5afec stream      0      0                0  f6b6a943c85c889                0                0
- f6b6a943c85c889 stream      0      0                0 2a3471e958f5afec                0                0
-eb41c442fc59f36a stream      0      0                0 5608976da4e6493c                0                0
-5608976da4e6493c stream      0      0                0 eb41c442fc59f36a                0                0
-d9ce74f1b2809851 stream      0      0                0 1130920672546148                0                0
-1130920672546148 stream      0      0                0 d9ce74f1b2809851                0                0
-714ebc52af1ac71b stream      0      0                0 16ce2966005d117b                0                0 /var/run/mDNSResponder
-16ce2966005d117b stream      0      0                0 714ebc52af1ac71b                0                0
-3ab161303e40e2c2 stream      0      0                0 8375d7bfe98872ed                0                0 /var/run/mDNSResponder
-8375d7bfe98872ed stream      0      0                0 3ab161303e40e2c2                0                0
-e4f2c26ca0a691a2 stream      0      0                0 6ce2eadeeb8bbc2a                0                0
-6ce2eadeeb8bbc2a stream      0      0                0 e4f2c26ca0a691a2                0                0
-82e714b326068664 stream      0      0                0  d3e904c4094f8e4                0                0 /var/run/mDNSResponder
- d3e904c4094f8e4 stream      0      0                0 82e714b326068664                0                0
-decaf2b58552b62b stream      0      0                0 f893aa32b75ba146                0                0 /Users/mostafa/Library/Caches/cua-driver/cua-driver.sock
-f893aa32b75ba146 stream      0      0                0 decaf2b58552b62b                0                0
-cda0f6cef5e4fadb stream      0      0                0 cbe2fd5d41aced2b                0                0
-cbe2fd5d41aced2b stream      0      0                0 cda0f6cef5e4fadb                0                0
-662f82c9b255b3fa stream      0      0                0 faabac6763102f71                0                0 /var/run/mDNSResponder
-faabac6763102f71 stream      0      0                0 662f82c9b255b3fa                0                0
-a593452857ecacc2 stream      0      0                0 df1b4492789739ac                0                0
-df1b4492789739ac stream      0      0                0 a593452857ecacc2                0                0
-fe17ef1bf3f8d3fb stream      0      0                0 60aa7ec1188887a0                0                0 /var/run/mDNSResponder
-60aa7ec1188887a0 stream      0      0                0 fe17ef1bf3f8d3fb                0                0
-6dd9d950abb95f04 stream      0      0                0 7490a86e809a7411                0                0 /Users/mostafa/Library/Caches/cua-driver/cua-driver.sock
-7490a86e809a7411 stream      0      0                0 6dd9d950abb95f04                0                0
-2e4b70ea27c23131 stream      0      0                0 48689c5969f139b9                0                0
-48689c5969f139b9 stream      0      0                0 2e4b70ea27c23131                0                0
-f0b8728978462cd2 stream      0      0 fb0236f239087ac0                0                0                0 /Users/mostafa/Library/Caches/cua-driver/cua-driver.sock
-f7cc20b30e072247 stream      0      0                0 926dd4d02345315e                0                0
-926dd4d02345315e stream      0      0                0 f7cc20b30e072247                0                0
- acc0ffdf444c977 stream      0      0                0 9bf536860351726b                0                0 /var/run/mDNSResponder
-9bf536860351726b stream      0      0                0  acc0ffdf444c977                0                0
-  2f9a98f28e7cff stream      0      0                0 19a15b7883985dc1                0                0 /var/run/mDNSResponder
-19a15b7883985dc1 stream      0      0                0   2f9a98f28e7cff                0                0
-7cda582939a5cdf1 stream      0      0                0 b84f21baf99b4f0c                0                0
-b84f21baf99b4f0c stream      0      0                0 7cda582939a5cdf1                0                0
-1275d8957c4dfa9a stream      0      0                0 6199fb53745befdd                0                0 /var/run/mDNSResponder
-6199fb53745befdd stream      0      0                0 1275d8957c4dfa9a                0                0
-641dfe95d5e2afab stream      0      0                0  2dc03b54a3c81fc                0                0 /var/run/mDNSResponder
- 2dc03b54a3c81fc stream      0      0                0 641dfe95d5e2afab                0                0
-8c631f28ed0e61c8 stream      0      0                0 3f9af7428e37ce80                0                0 /var/run/mDNSResponder
-3f9af7428e37ce80 stream      0      0                0 8c631f28ed0e61c8                0                0
-c491d8559007eec4 stream      0      0                0   b68935adde0c3f                0                0 /var/run/mDNSResponder
-  b68935adde0c3f stream      0      0                0 c491d8559007eec4                0                0
- 82714eebf8a93f7 stream      0      0                0 c303f9089237c25c                0                0 /var/run/mDNSResponder
-c303f9089237c25c stream      0      0                0  82714eebf8a93f7                0                0
-d941e53c262d08a2 stream      0      0                0 802dd4de7d9081e7                0                0 /var/run/mDNSResponder
-802dd4de7d9081e7 stream      0      0                0 d941e53c262d08a2                0                0
-9fd1c85054377f49 stream      0      0                0 b6ef81d63dc558d2                0                0
-b6ef81d63dc558d2 stream      0      0                0 9fd1c85054377f49                0                0
-4d4747052013eb6d stream      0      0                0 1b708e6dd5b43ffa                0                0
-1b708e6dd5b43ffa stream      0      0                0 4d4747052013eb6d                0                0
-877fe6ffeb2ce058 stream      0      0                0 48d9a474626b78ec                0                0
-48d9a474626b78ec stream      0      0                0 877fe6ffeb2ce058                0                0
-3ba1e9821261179f stream      0      0                0 fc759904995735d5                0                0
-fc759904995735d5 stream      0      0                0 3ba1e9821261179f                0                0
-cd6f58f349828a20 stream      0      0                0 1f51934d17f4d47f                0                0
-1f51934d17f4d47f stream      0      0                0 cd6f58f349828a20                0                0
-62773408354452b6 stream      0      0                0 7ddda3bd458fc237                0                0
-7ddda3bd458fc237 stream      0      0                0 62773408354452b6                0                0
-  b38fbf19b103f0 stream      0      0                0 26ced93c96976bd9                0                0
-26ced93c96976bd9 stream      0      0                0   b38fbf19b103f0                0                0
-ff9e4f519a02c4e9 stream      0      0                0 488a425588073919                0                0
-488a425588073919 stream      0      0                0 ff9e4f519a02c4e9                0                0
-5ff571fb8d16ff58 stream      0      0                0 17b639ab83435e65                0                0
-17b639ab83435e65 stream      0      0                0 5ff571fb8d16ff58                0                0
-34a35e0494815f2f stream      0      0                0 828f177a1ec33903                0                0 /var/run/mDNSResponder
-828f177a1ec33903 stream      0      0                0 34a35e0494815f2f                0                0
-65dcad435d99dcd9 stream      0      0                0 fe8ce3a3a7e9edac                0                0 /var/run/mDNSResponder
-fe8ce3a3a7e9edac stream      0      0                0 65dcad435d99dcd9                0                0
-4bf16c895883c74c stream      0      0                0  25d39f7f8b29d3d                0                0
- 25d39f7f8b29d3d stream      0      0                0 4bf16c895883c74c                0                0
-123dfb130c2a1c48 stream      0      0                0 eca64cb8ab462853                0                0
-eca64cb8ab462853 stream      0      0                0 123dfb130c2a1c48                0                0
-bf07a5136ef92212 stream      0      0 2d57408fb20c445c                0                0                0 /var/folders/9c/39q43q0n5w303wngs8mgqdl40000gn/T/scoped_diroR7qzo/SingletonSocket
-da087bf1a61a00bb stream      0      0                0 bbe17778210669b6                0                0 /var/folders/9c/39q43q0n5w303wngs8mgqdl40000gn/T/.rqEhFs/s
-bbe17778210669b6 stream      0      0                0 da087bf1a61a00bb                0                0
-b7b866d5eff025f0 stream      0      0 af9ee13f36f745c4                0                0                0 /var/folders/9c/39q43q0n5w303wngs8mgqdl40000gn/T/.rqEhFs/s
-499be86835a5686d stream      0      0 446fd4e845129a79                0                0                0 /var/folders/9c/39q43q0n5w303wngs8mgqdl40000gn/T/.aTzPLr/s
-bcdbfa293d790f36 stream      0      0                0 88e92a08fa111729                0                0 /var/run/mDNSResponder
-88e92a08fa111729 stream      0      0                0 bcdbfa293d790f36                0                0
-ae2109daeb360805 stream      0      0                0 cb559a3c637c58a9                0                0 /var/run/mDNSResponder
-cb559a3c637c58a9 stream      0      0                0 ae2109daeb360805                0                0
-6f88fff3d751f206 stream      0      0                0 2fdbb5e0f5a8ed3c                0                0 /var/run/mDNSResponder
-2fdbb5e0f5a8ed3c stream      0      0                0 6f88fff3d751f206                0                0
-abba6b5f417cfe6c stream      0      0                0 4abdc4149012ca4a                0                0 /var/run/mDNSResponder
-4abdc4149012ca4a stream      0      0                0 abba6b5f417cfe6c                0                0
-6d1ea5832a6dd410 stream      0      0                0 2d42c2777fd3ef27                0                0 /var/run/mDNSResponder
-2d42c2777fd3ef27 stream      0      0                0 6d1ea5832a6dd410                0                0
-89f0e47883f898c0 stream      0      0                0 8948d199ff2d9137                0                0 /var/run/mDNSResponder
-8948d199ff2d9137 stream      0      0                0 89f0e47883f898c0                0                0
-57ac301f5f0d7646 stream      0      0                0 edfb184181b4adfd                0                0 /var/run/mDNSResponder
-edfb184181b4adfd stream      0      0                0 57ac301f5f0d7646                0                0
-5fc980b98b1e6100 stream      0      0                0 dbc36430dbac4315                0                0 /var/run/mDNSResponder
-dbc36430dbac4315 stream      0      0                0 5fc980b98b1e6100                0                0
-69df2023381bd1ec stream      0      0                0 dc1dd128bec508a9                0                0 /var/run/mDNSResponder
-dc1dd128bec508a9 stream      0      0                0 69df2023381bd1ec                0                0
-3fab5829be5a9922 stream      0      0                0 a0bbad584f7b34ea                0                0 /var/run/mDNSResponder
-a0bbad584f7b34ea stream      0      0                0 3fab5829be5a9922                0                0
-b21aa89816f17ce8 stream      0      0                0 c0c0efacbe34ecad                0                0
-c0c0efacbe34ecad stream      0      0                0 b21aa89816f17ce8                0                0
-7d9d26625f7f7d5c stream      0      0                0 6236aee600498c65                0                0
-6236aee600498c65 stream      0      0                0 7d9d26625f7f7d5c                0                0
-3361345159bca100 stream      0      0                0 8ba3fc76e5c8d6bb                0                0
-8ba3fc76e5c8d6bb stream      0      0                0 3361345159bca100                0                0
-210e16d677837a9b stream      0      0                0 99b5682853a223ae                0                0
-99b5682853a223ae stream      0      0                0 210e16d677837a9b                0                0
-ee8bd9a6e924aa0e stream      0      0                0 57237d34bc0f4101                0                0
-57237d34bc0f4101 stream      0      0                0 ee8bd9a6e924aa0e                0                0
-6c06448c63ee497c stream      0      0                0 67d87ed54e649462                0                0
-67d87ed54e649462 stream      0      0                0 6c06448c63ee497c                0                0
-c2d4ef94adee9706 stream      0      0                0 cba682e1472cd5ff                0                0
-cba682e1472cd5ff stream      0      0                0 c2d4ef94adee9706                0                0
-3350dc04a7c48563 stream      0      0                0 f74ee7a42dde4cbf                0                0
-f74ee7a42dde4cbf stream      0      0                0 3350dc04a7c48563                0                0
-10d341e852e359a5 stream      0      0                0 aa43e52dee15c1b8                0                0
-aa43e52dee15c1b8 stream      0      0                0 10d341e852e359a5                0                0
-62c72025930d7403 stream      0      0                0  38e368f8ae74c84                0                0 /var/run/mDNSResponder
- 38e368f8ae74c84 stream      0      0                0 62c72025930d7403                0                0
-32616e93bf122f15 stream      0      0                0 2fc85e61b08327f0                0                0 /var/run/usbmuxd
-2fc85e61b08327f0 stream      0      0                0 32616e93bf122f15                0                0
-cb80c1abcb1521eb stream      0      0                0 5e97cf0fceb7ab7a                0                0
-5e97cf0fceb7ab7a stream      0      0                0 cb80c1abcb1521eb                0                0
-b94e7a3f8a8f00d1 stream      0      0                0 ba6c49a756027639                0                0
-ba6c49a756027639 stream      0      0                0 b94e7a3f8a8f00d1                0                0
-adfa485bfc1760a9 stream      0      0                0 2d964fec61ea99ac                0                0 /var/run/mDNSResponder
-2d964fec61ea99ac stream      0      0                0 adfa485bfc1760a9                0                0
-688cc204b4185a41 stream      0      0                0 12af4d54d50d4e25                0                0 /var/run/mDNSResponder
-12af4d54d50d4e25 stream      0      0                0 688cc204b4185a41                0                0
-19a6d5a246d32331 stream      0      0                0 cb7270822e213a00                0                0 /var/run/mDNSResponder
-cb7270822e213a00 stream      0      0                0 19a6d5a246d32331                0                0
-1e2aa49f2be486c0 stream      0      0                0 754cac8334600cd2                0                0 /var/run/mDNSResponder
-754cac8334600cd2 stream      0      0                0 1e2aa49f2be486c0                0                0
-6afa481264e323cb stream      0      0                0 962e5e6dfc61d888                0                0 /var/run/mDNSResponder
-962e5e6dfc61d888 stream      0      0                0 6afa481264e323cb                0                0
-26be70195ad8b624 stream      0      0                0 e37c2cf6cd3c786d                0                0 /var/run/mDNSResponder
-e37c2cf6cd3c786d stream      0      0                0 26be70195ad8b624                0                0
-fc670c67d3ec7402 stream      0      0                0 a80e02d3afb1685d                0                0 /var/run/mDNSResponder
-a80e02d3afb1685d stream      0      0                0 fc670c67d3ec7402                0                0
-a610334c11ce41e0 stream      0      0                0 50af39e11ce52aef                0                0 /var/run/usbmuxd
-50af39e11ce52aef stream      0      0                0 a610334c11ce41e0                0                0
-7f9ce9871283ed78 stream      0      0                0 6d89154901266aa7                0                0 /var/run/mDNSResponder
-6d89154901266aa7 stream      0      0                0 7f9ce9871283ed78                0                0
-ce6c2fe272a06b0e stream      0      0                0 57d5b19de9955436                0                0 /var/run/mDNSResponder
-57d5b19de9955436 stream      0      0                0 ce6c2fe272a06b0e                0                0
-7da472582b4f9fea stream      0      0 71e5efb2903a376c                0                0                0 /var/run/filesystemui.socket
-130329792318222d stream      0      0 bf348855f0bbae65                0                0                0 /var/run/com.apple.launchd.5IOMwwWs9P/Listeners
-4512519fdac3c357 stream      0      0 a8168ef1d12a27d3                0                0                0 /var/run/pppconfd
-d2e4108d3525c212 stream      0      0                0 d9df3c20cefeb4ad                0                0
-d9df3c20cefeb4ad stream      0      0                0 d2e4108d3525c212                0                0
-f9042aefd499e49e stream      0      0 9331eb97bd1356ff                0                0                0 /var/run/usbmuxd
-c502773813bbb350 stream      0      0 bf178d5bb8bd1b8c                0                0                0 /var/rpc/ncalrpc/srvsvc
-66593a13856316b5 stream      0      0 c294b7e1578c12c9                0                0                0 /var/rpc/ncacn_np/srvsvc
-b538d807bfe61670 stream      0      0 2f8e98830eecd85d                0                0                0 /var/rpc/ncalrpc/wkssvc
-6bcc5783f6521574 stream      0      0 f838c101dee88b2f                0                0                0 /var/rpc/ncacn_np/wkssvc
-6ab2454e20d28dba stream      0      0 a3c1169fb337c5fa                0                0                0 /var/rpc/ncacn_np/mdssvc
-55ee1ed1657cb83d stream      0      0 261bdb838237367c                0                0                0 /var/rpc/ncalrpc/lsarpc
-a8bc4e4979cc0823 stream      0      0 ffd2fe9e2f3248bf                0                0                0 /var/rpc/ncacn_np/lsarpc
-d8e406ef3e716fb8 stream      0      0 9b4e27a0e0bcf395                0                0                0 /var/run/mDNSResponder
-1db701482f4c0c06 stream      0      0 86e0e8b69e7b89ba                0                0                0 /var/run/systemkeychaincheck.socket
-ef31260e4d800046 stream      0      0 b07c7018d6f44592                0                0                0 /private/var/run/.sim_diagnosticd_socket
-469ab9d11588756a stream      0      0 ec970d026edf698b                0                0                0 /var/run/portmap.socket
-d8a58579782cf08f stream      0      0 d520c001ee6cbf96                0                0                0 /var/run/vpncontrol.sock
-3c89a352673c4677 stream      0      0 b5a0e80a99b02b5d                0                0                0 /var/rpc/ncalrpc/NETLOGON
-7bc37063eff00e11 stream      0      0 25b5be9cfc807130                0                0                0 /private/var/run/cupsd
-fe92ffe50435eb03 dgram       0      0                0 4e0c3867bdfc2db7                0 cabdf9fb565ebad2
-cabdf9fb565ebad2 dgram       0      0                0 4e0c3867bdfc2db7                0 4f65cbe337a698f5
-4f65cbe337a698f5 dgram       0      0                0 4e0c3867bdfc2db7                0 aade3d2669edbdf3
-61ce491f2da7ef33 dgram       0      0                0 f1e2d8cea95d3c04 f1e2d8cea95d3c04                0
-f1e2d8cea95d3c04 dgram       0      0                0 61ce491f2da7ef33 61ce491f2da7ef33                0
-aade3d2669edbdf3 dgram       0      0                0 4e0c3867bdfc2db7                0 cd69491ec4529ed1
-cd69491ec4529ed1 dgram       0      0                0 4e0c3867bdfc2db7                0  59f793dec640a45
-e81a27091420353d dgram       0      0                0 b02c050ecb805256 b02c050ecb805256                0
-b02c050ecb805256 dgram       0      0                0 e81a27091420353d e81a27091420353d                0
- 59f793dec640a45 dgram       0      0                0 4e0c3867bdfc2db7                0  f0fa2c9b1c88db5
- 92bb64e17391633 dgram       0      0                0 12acf11568d1eb76 12acf11568d1eb76                0
-12acf11568d1eb76 dgram       0      0                0  92bb64e17391633  92bb64e17391633                0
- f0fa2c9b1c88db5 dgram       0      0                0 4e0c3867bdfc2db7                0 3eb51c7c07c5598a
-3eb51c7c07c5598a dgram       0      0                0 4e0c3867bdfc2db7                0 6cc3aa06b5b6fc4b
-6cc3aa06b5b6fc4b dgram       0      0                0 4e0c3867bdfc2db7                0 2c1d017917e122c7
-2c1d017917e122c7 dgram       0      0                0 4e0c3867bdfc2db7                0 f75fafef27ef7549
-f75fafef27ef7549 dgram       0      0                0 4e0c3867bdfc2db7                0 e7cb5879af5a3390
-e7cb5879af5a3390 dgram       0      0                0 4e0c3867bdfc2db7                0 4b83682b40bb4a91
-4b83682b40bb4a91 dgram       0      0                0 4e0c3867bdfc2db7                0  d74c6d673715809
- d74c6d673715809 dgram       0      0                0 4e0c3867bdfc2db7                0 27d77fe703c88792
-27d77fe703c88792 dgram       0      0                0 4e0c3867bdfc2db7                0 bbedab3649607417
-bbedab3649607417 dgram       0      0                0 4e0c3867bdfc2db7                0 7e09ffde4cd552ab
-7e09ffde4cd552ab dgram       0      0                0 4e0c3867bdfc2db7                0 9f563948428d099e
-9f563948428d099e dgram       0      0                0 4e0c3867bdfc2db7                0 41018421043c144c
-41018421043c144c dgram       0      0                0 4e0c3867bdfc2db7                0   b71cf1a0725980
-dc03091d47792f08 dgram       0      0                0 8c036c1c776324ba 8c036c1c776324ba                0
-8c036c1c776324ba dgram       0      0                0 dc03091d47792f08 dc03091d47792f08                0
-  b71cf1a0725980 dgram       0      0                0 4e0c3867bdfc2db7                0 d1da4b496301a862
-d1da4b496301a862 dgram       0      0                0 4e0c3867bdfc2db7                0 bca247cf7d710a69
-bca247cf7d710a69 dgram       0      0                0 4e0c3867bdfc2db7                0 233dba2209aceccc
-3030fb17c5b8a16b dgram       0      0                0 b1603c1bba547aff b1603c1bba547aff                0
-b1603c1bba547aff dgram       0      0                0 3030fb17c5b8a16b 3030fb17c5b8a16b                0
-233dba2209aceccc dgram       0      0                0 4e0c3867bdfc2db7                0 9c8a2528b2e5ec1c
-9c8a2528b2e5ec1c dgram       0      0                0 4e0c3867bdfc2db7                0 56e976f8ec77d2d1
-56e976f8ec77d2d1 dgram       0      0                0 4e0c3867bdfc2db7                0 f718d52e74376fd4
-f718d52e74376fd4 dgram       0      0                0 4e0c3867bdfc2db7                0 311b9ad0fbe38282
-311b9ad0fbe38282 dgram       0      0                0 4e0c3867bdfc2db7                0 99542ce7187c62df
-99542ce7187c62df dgram       0      0                0 4e0c3867bdfc2db7                0 2eec07e607576889
-2eec07e607576889 dgram       0      0                0 4e0c3867bdfc2db7                0 8340479e837850e2
-8340479e837850e2 dgram       0      0                0 4e0c3867bdfc2db7                0 50bed05af98ea986
-50bed05af98ea986 dgram       0      0                0 4e0c3867bdfc2db7                0 a6db348e74c275d6
-a6db348e74c275d6 dgram       0      0                0 4e0c3867bdfc2db7                0 93b6787e1bcf0bb4
-2f7aa1be23990287 dgram       0      0                0 4611fa00c8eb6997 4611fa00c8eb6997                0
-4611fa00c8eb6997 dgram       0      0                0 2f7aa1be23990287 2f7aa1be23990287                0
-93b6787e1bcf0bb4 dgram       0      0                0 4e0c3867bdfc2db7                0 e2d16968b0eb4f5c
-e2d16968b0eb4f5c dgram       0      0                0 4e0c3867bdfc2db7                0 5c717d2a56eee381
-5c717d2a56eee381 dgram       0      0                0 4e0c3867bdfc2db7                0 bad4b6fc7b355342
-bad4b6fc7b355342 dgram       0      0                0 4e0c3867bdfc2db7                0 d0b27b2f47774ffd
-d0b27b2f47774ffd dgram       0      0                0 4e0c3867bdfc2db7                0 b40a114f8fdf6940
-b40a114f8fdf6940 dgram       0      0                0 4e0c3867bdfc2db7                0  80952cc3cdad591
- 80952cc3cdad591 dgram       0      0                0 4e0c3867bdfc2db7                0 d59a9f9e7eb58641
-d59a9f9e7eb58641 dgram       0      0                0 4e0c3867bdfc2db7                0 cd7f9b63606f13b9
-cd7f9b63606f13b9 dgram       0      0                0 4e0c3867bdfc2db7                0 793376c35f7f7030
-793376c35f7f7030 dgram       0      0                0 4e0c3867bdfc2db7                0 736893301047bb4f
-736893301047bb4f dgram       0      0                0 4e0c3867bdfc2db7                0 a57d19578399fef0
-a57d19578399fef0 dgram       0      0                0 4e0c3867bdfc2db7                0 bee7ec0a04c4ddb5
-bee7ec0a04c4ddb5 dgram       0      0                0 4e0c3867bdfc2db7                0 459450de32c54f2c
-459450de32c54f2c dgram       0      0                0 4e0c3867bdfc2db7                0 fcaab32f65ecc3de
-fcaab32f65ecc3de dgram       0      0                0 4e0c3867bdfc2db7                0 b1f4c59d31c08f45
-b1f4c59d31c08f45 dgram       0      0                0 4e0c3867bdfc2db7                0 fc97121a7a372242
-fc97121a7a372242 dgram       0      0                0 4e0c3867bdfc2db7                0 c74bc6595f430887
-c74bc6595f430887 dgram       0      0                0 4e0c3867bdfc2db7                0 f9c2ea7b04a0f450
-f9c2ea7b04a0f450 dgram       0      0                0 4e0c3867bdfc2db7                0 a706d2d262bab683
-ea98491508a10c30 dgram       0      0                0 4e0c3867bdfc2db7                0 3ca6a57d24a46417
-a706d2d262bab683 dgram       0      0                0 4e0c3867bdfc2db7                0 ea98491508a10c30
-3ca6a57d24a46417 dgram       0      0                0 4e0c3867bdfc2db7                0 b2d5568dafcdcc12
-b2d5568dafcdcc12 dgram       0      0                0 4e0c3867bdfc2db7                0 ae90bf48755ef5d8
-ae90bf48755ef5d8 dgram       0      0                0 4e0c3867bdfc2db7                0 a9e0f7c3a6f81cb3
-a9e0f7c3a6f81cb3 dgram       0      0                0 4e0c3867bdfc2db7                0  979571986dfeac0
- 979571986dfeac0 dgram       0      0                0 4e0c3867bdfc2db7                0 9f44f553ed7d202c
-fb0df30327c4c302 dgram       0      0                0 3563dfad7412a494 3563dfad7412a494                0
-3563dfad7412a494 dgram       0      0                0 fb0df30327c4c302 fb0df30327c4c302                0
-9f44f553ed7d202c dgram       0      0                0 4e0c3867bdfc2db7                0 47e829d8ee6b8cff
-47e829d8ee6b8cff dgram       0      0                0 4e0c3867bdfc2db7                0 a978ca5ab464b520
-ea956d0c8db422f9 dgram       0      0                0 1ca06342ae16fb48 1ca06342ae16fb48                0
-1ca06342ae16fb48 dgram       0      0                0 ea956d0c8db422f9 ea956d0c8db422f9                0
-a978ca5ab464b520 dgram       0      0                0 4e0c3867bdfc2db7                0 fc46f9e80b0be24b
-e3666838ea1cc9f8 dgram       0      0                0 6706d4a3dcd61efc 6706d4a3dcd61efc                0
-6706d4a3dcd61efc dgram       0      0                0 e3666838ea1cc9f8 e3666838ea1cc9f8                0
-fc46f9e80b0be24b dgram       0      0                0 4e0c3867bdfc2db7                0 72991513d8deefe6
-72991513d8deefe6 dgram       0      0                0 4e0c3867bdfc2db7                0 e5bee314223073b3
-e5bee314223073b3 dgram       0      0                0 4e0c3867bdfc2db7                0 c6da99412dedd657
-c6da99412dedd657 dgram       0      0                0 4e0c3867bdfc2db7                0 6bb23588033bcbae
-904d8992484ef3f9 dgram       0      0                0 2a9913393ab55a30 2a9913393ab55a30                0
-2a9913393ab55a30 dgram       0      0                0 904d8992484ef3f9 904d8992484ef3f9                0
-6bb23588033bcbae dgram       0      0                0 4e0c3867bdfc2db7                0 97e53ca6a3df73b8
-97e53ca6a3df73b8 dgram       0      0                0 4e0c3867bdfc2db7                0 263205591c4d7f44
-263205591c4d7f44 dgram       0      0                0 4e0c3867bdfc2db7                0                0
-4e0c3867bdfc2db7 dgram       0      0   d2bf87a70d8146                0 fe92ffe50435eb03                0 /private//var/run/syslog
-Registered kernel control modules
-id       flags    pcbcount rcvbuf   sndbuf   name 
-       1        5        0     8192    32768 com.apple.network.tcp_ccdebug 
-       2       28        1     8192   131072 com.apple.flow-divert 
-       3        1       23    65536    65536 com.apple.net.netagent 
-       4        9        0   524288   524288 com.apple.content-filter 
-       5       29        4   524288   524288 com.apple.net.utun_control 
-       6       21        0    65536    65536 com.apple.net.ipsec_control 
-       7        0       17     8192     2048 com.apple.netsrc 
-       8       18        3     8192     2048 com.apple.network.statistics 
-       9        1        0     8192     2048 com.apple.network.advisory 
-       a        1        0    65536    65536 com.apple.net.rvi_control 
-       b        4        0    65536     2048 com.apple.spmi.nfc 
-       c        4        0    65536     2048 com.apple.uart.debug-console 
-       d        4        0     8192     2048 com.apple.uart.sk.debug-console 
-       e        4        0    65536     2048 com.apple.uart.wlan-debug 
-       f        4        0     8192     2048 com.apple.uart.sk.wlan-debug 
-Active kernel event sockets
-Proto Recv-Q Send-Q vendor  class  subcl
-kevt       0      0      1      1      2
-kevt       0      0      1      1     14
-kevt       0      0      1      6      1
-kevt       0      0      1      1      6
-kevt       0      0      1      1      1
-kevt       0      0      1      1      2
-kevt       0      0      1      1      2
-kevt       0      0      1      1      7
-kevt       0      0      1      1      1
-kevt       0      0      1      1      2
-kevt       0      0      1      1      0
-kevt       0      0      1      1      3
-kevt       0      0      1      3      3
-Active kernel control sockets
-Proto Recv-Q Send-Q   unit     id name
-kctl       0      0      1      2 com.apple.flow-divert
-kctl       0      0      1      3 com.apple.net.netagent
-kctl       0      0      2      3 com.apple.net.netagent
-kctl       0      0      3      3 com.apple.net.netagent
-kctl       0      0      4      3 com.apple.net.netagent
-kctl       0      0      5      3 com.apple.net.netagent
-kctl       0      0      6      3 com.apple.net.netagent
-kctl       0      0      7      3 com.apple.net.netagent
-kctl       0      0      8      3 com.apple.net.netagent
-kctl       0      0      9      3 com.apple.net.netagent
-kctl       0      0     10      3 com.apple.net.netagent
-kctl       0      0     11      3 com.apple.net.netagent
-kctl       0      0     12      3 com.apple.net.netagent
-kctl       0      0     13      3 com.apple.net.netagent
-kctl       0      0     14      3 com.apple.net.netagent
-kctl       0      0     15      3 com.apple.net.netagent
-kctl       0      0     16      3 com.apple.net.netagent
-kctl       0      0     17      3 com.apple.net.netagent
-kctl       0      0     18      3 com.apple.net.netagent
-kctl       0      0     19      3 com.apple.net.netagent
-kctl       0      0     20      3 com.apple.net.netagent
-kctl       0      0     21      3 com.apple.net.netagent
-kctl       0      0     22      3 com.apple.net.netagent
-kctl       0      0     23      3 com.apple.net.netagent
-kctl     100      0      1      5 com.apple.net.utun_control
-kctl       0      0      2      5 com.apple.net.utun_control
-kctl       0      0      3      5 com.apple.net.utun_control
-kctl       0      0      4      5 com.apple.net.utun_control
-kctl       0      0      1      7 com.apple.netsrc
-kctl       0      0      2      7 com.apple.netsrc
-kctl       0      0      3      7 com.apple.netsrc
-kctl       0      0      4      7 com.apple.netsrc
-kctl       0      0      5      7 com.apple.netsrc
-kctl       0      0      6      7 com.apple.netsrc
-kctl       0      0      7      7 com.apple.netsrc
-kctl       0      0      8      7 com.apple.netsrc
-kctl       0      0      9      7 com.apple.netsrc
-kctl       0      0     10      7 com.apple.netsrc
-kctl       0      0     11      7 com.apple.netsrc
-kctl       0      0     12      7 com.apple.netsrc
-kctl       0      0     13      7 com.apple.netsrc
-kctl       0      0     14      7 com.apple.netsrc
-kctl       0      0     15      7 com.apple.netsrc
-kctl       0      0     16      7 com.apple.netsrc
-kctl       0      0     17      7 com.apple.netsrc
-kctl       0      0      1      8 com.apple.network.statistics
-kctl       0      0      2      8 com.apple.network.statistics
-kctl       0      0      3      8 com.apple.network.statistics
-Active pfkey sockets
-Proto  Recv-Q Send-Q Local Address                            Foreign Address                          
-Active routing sockets
-Proto  Recv-Q Send-Q Local Address                            Foreign Address                          
-unspec      0      0                                                                                   
-unspec      0      0                                                                                   
-unspec      0      0                                                                                   
-unspec    854      0                                                                                   
-unspec   7232      0                                                                                   
-mostafa@MMostafa ~ % 
+git log --oneline --all --grep="android-10" | head
+* main
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/main
+mostafa@MMostafa aosp-prebuilt-ndk % git fetch --unshallow
+remote: Finding sources: 100% (48116/48116)
+remote: Total 48116 (delta 26768), reused 47018 (delta 26768)
+Receiving objects: 100% (48116/48116), 736.09 MiB | 5.46 MiB/s, done.
+Resolving deltas: 100% (26768/26768), done.
+remote: Counting objects: 971, done
+remote: Finding sources: 100% (971/971)
+remote: Total 971 (delta 0), reused 971 (delta 0)
+Receiving objects: 100% (971/971), 297.14 KiB | 7.07 MiB/s, done.
+From https://android.googlesource.com/platform/prebuilts/ndk
+ * [new tag]           afw-test-harness-1.5 -> afw-test-harness-1.5
+ * [new tag]           afw-test-harness-2.1 -> afw-test-harness-2.1
+ * [new tag]           aml_cfg_341510000 -> aml_cfg_341510000
+ * [new tag]           aml_hef_341114030 -> aml_hef_341114030
+ * [new tag]           aml_hef_341311010 -> aml_hef_341311010
+ * [new tag]           aml_hef_341415040 -> aml_hef_341415040
+ * [new tag]           aml_hef_341512030 -> aml_hef_341512030
+ * [new tag]           aml_hef_341613000 -> aml_hef_341613000
+ * [new tag]           aml_hef_341717050 -> aml_hef_341717050
+ * [new tag]           aml_hef_341811030 -> aml_hef_341811030
+ * [new tag]           aml_rkp_341012000 -> aml_rkp_341012000
+ * [new tag]           aml_rkp_341015010 -> aml_rkp_341015010
+ * [new tag]           aml_rkp_341114000 -> aml_rkp_341114000
+ * [new tag]           aml_rkp_341311000 -> aml_rkp_341311000
+ * [new tag]           aml_rkp_341510000 -> aml_rkp_341510000
+ * [new tag]           aml_rkp_341810000 -> aml_rkp_341810000
+ * [new tag]           aml_tz3_311312010 -> aml_tz3_311312010
+ * [new tag]           android-10.0.0_r12 -> android-10.0.0_r12
+ * [new tag]           android-10.0.0_r13 -> android-10.0.0_r13
+ * [new tag]           android-10.0.0_r14 -> android-10.0.0_r14
+ * [new tag]           android-10.0.0_r15 -> android-10.0.0_r15
+ * [new tag]           android-10.0.0_r16 -> android-10.0.0_r16
+ * [new tag]           android-10.0.0_r18 -> android-10.0.0_r18
+ * [new tag]           android-10.0.0_r19 -> android-10.0.0_r19
+ * [new tag]           android-10.0.0_r20 -> android-10.0.0_r20
+ * [new tag]           android-10.0.0_r21 -> android-10.0.0_r21
+ * [new tag]           android-10.0.0_r22 -> android-10.0.0_r22
+ * [new tag]           android-10.0.0_r23 -> android-10.0.0_r23
+ * [new tag]           android-10.0.0_r24 -> android-10.0.0_r24
+ * [new tag]           android-10.0.0_r25 -> android-10.0.0_r25
+ * [new tag]           android-10.0.0_r26 -> android-10.0.0_r26
+ * [new tag]           android-10.0.0_r27 -> android-10.0.0_r27
+ * [new tag]           android-10.0.0_r28 -> android-10.0.0_r28
+ * [new tag]           android-10.0.0_r29 -> android-10.0.0_r29
+ * [new tag]           android-10.0.0_r30 -> android-10.0.0_r30
+ * [new tag]           android-10.0.0_r31 -> android-10.0.0_r31
+ * [new tag]           android-10.0.0_r32 -> android-10.0.0_r32
+ * [new tag]           android-10.0.0_r33 -> android-10.0.0_r33
+ * [new tag]           android-10.0.0_r34 -> android-10.0.0_r34
+ * [new tag]           android-10.0.0_r35 -> android-10.0.0_r35
+ * [new tag]           android-10.0.0_r36 -> android-10.0.0_r36
+ * [new tag]           android-10.0.0_r37 -> android-10.0.0_r37
+ * [new tag]           android-10.0.0_r38 -> android-10.0.0_r38
+ * [new tag]           android-10.0.0_r39 -> android-10.0.0_r39
+ * [new tag]           android-10.0.0_r40 -> android-10.0.0_r40
+ * [new tag]           android-10.0.0_r41 -> android-10.0.0_r41
+ * [new tag]           android-10.0.0_r42 -> android-10.0.0_r42
+ * [new tag]           android-10.0.0_r43 -> android-10.0.0_r43
+ * [new tag]           android-10.0.0_r44 -> android-10.0.0_r44
+ * [new tag]           android-10.0.0_r45 -> android-10.0.0_r45
+ * [new tag]           android-10.0.0_r7 -> android-10.0.0_r7
+ * [new tag]           android-10.0.0_r8 -> android-10.0.0_r8
+ * [new tag]           android-10.0.0_r9 -> android-10.0.0_r9
+ * [new tag]           android-11.0.0_r16 -> android-11.0.0_r16
+ * [new tag]           android-11.0.0_r18 -> android-11.0.0_r18
+ * [new tag]           android-11.0.0_r19 -> android-11.0.0_r19
+ * [new tag]           android-11.0.0_r20 -> android-11.0.0_r20
+ * [new tag]           android-11.0.0_r21 -> android-11.0.0_r21
+ * [new tag]           android-11.0.0_r22 -> android-11.0.0_r22
+ * [new tag]           android-11.0.0_r23 -> android-11.0.0_r23
+ * [new tag]           android-11.0.0_r24 -> android-11.0.0_r24
+ * [new tag]           android-11.0.0_r26 -> android-11.0.0_r26
+ * [new tag]           android-11.0.0_r27 -> android-11.0.0_r27
+ * [new tag]           android-11.0.0_r28 -> android-11.0.0_r28
+ * [new tag]           android-11.0.0_r29 -> android-11.0.0_r29
+ * [new tag]           android-11.0.0_r30 -> android-11.0.0_r30
+ * [new tag]           android-11.0.0_r31 -> android-11.0.0_r31
+ * [new tag]           android-11.0.0_r32 -> android-11.0.0_r32
+ * [new tag]           android-11.0.0_r33 -> android-11.0.0_r33
+ * [new tag]           android-11.0.0_r34 -> android-11.0.0_r34
+ * [new tag]           android-11.0.0_r35 -> android-11.0.0_r35
+ * [new tag]           android-11.0.0_r36 -> android-11.0.0_r36
+ * [new tag]           android-11.0.0_r37 -> android-11.0.0_r37
+ * [new tag]           android-11.0.0_r38 -> android-11.0.0_r38
+ * [new tag]           android-11.0.0_r39 -> android-11.0.0_r39
+ * [new tag]           android-11.0.0_r40 -> android-11.0.0_r40
+ * [new tag]           android-11.0.0_r41 -> android-11.0.0_r41
+ * [new tag]           android-11.0.0_r42 -> android-11.0.0_r42
+ * [new tag]           android-11.0.0_r43 -> android-11.0.0_r43
+ * [new tag]           android-11.0.0_r44 -> android-11.0.0_r44
+ * [new tag]           android-11.0.0_r45 -> android-11.0.0_r45
+ * [new tag]           android-11.0.0_r46 -> android-11.0.0_r46
+ * [new tag]           android-11.0.0_r47 -> android-11.0.0_r47
+ * [new tag]           android-11.0.0_r48 -> android-11.0.0_r48
+ * [new tag]           android-12.0.0_r16 -> android-12.0.0_r16
+ * [new tag]           android-12.0.0_r18 -> android-12.0.0_r18
+ * [new tag]           android-12.0.0_r19 -> android-12.0.0_r19
+ * [new tag]           android-12.0.0_r20 -> android-12.0.0_r20
+ * [new tag]           android-12.0.0_r21 -> android-12.0.0_r21
+ * [new tag]           android-12.0.0_r26 -> android-12.0.0_r26
+ * [new tag]           android-12.0.0_r27 -> android-12.0.0_r27
+ * [new tag]           android-12.0.0_r28 -> android-12.0.0_r28
+ * [new tag]           android-12.0.0_r29 -> android-12.0.0_r29
+ * [new tag]           android-12.0.0_r32 -> android-12.0.0_r32
+ * [new tag]           android-12.1.0_r10 -> android-12.1.0_r10
+ * [new tag]           android-12.1.0_r11 -> android-12.1.0_r11
+ * [new tag]           android-12.1.0_r12 -> android-12.1.0_r12
+ * [new tag]           android-12.1.0_r13 -> android-12.1.0_r13
+ * [new tag]           android-12.1.0_r14 -> android-12.1.0_r14
+ * [new tag]           android-12.1.0_r15 -> android-12.1.0_r15
+ * [new tag]           android-12.1.0_r16 -> android-12.1.0_r16
+ * [new tag]           android-12.1.0_r17 -> android-12.1.0_r17
+ * [new tag]           android-12.1.0_r18 -> android-12.1.0_r18
+ * [new tag]           android-12.1.0_r19 -> android-12.1.0_r19
+ * [new tag]           android-12.1.0_r20 -> android-12.1.0_r20
+ * [new tag]           android-12.1.0_r21 -> android-12.1.0_r21
+ * [new tag]           android-12.1.0_r22 -> android-12.1.0_r22
+ * [new tag]           android-12.1.0_r23 -> android-12.1.0_r23
+ * [new tag]           android-12.1.0_r24 -> android-12.1.0_r24
+ * [new tag]           android-12.1.0_r25 -> android-12.1.0_r25
+ * [new tag]           android-12.1.0_r26 -> android-12.1.0_r26
+ * [new tag]           android-12.1.0_r7 -> android-12.1.0_r7
+ * [new tag]           android-12.1.0_r8 -> android-12.1.0_r8
+ * [new tag]           android-12.1.0_r9 -> android-12.1.0_r9
+ * [new tag]           android-13.0.0_r32 -> android-13.0.0_r32
+ * [new tag]           android-13.0.0_r33 -> android-13.0.0_r33
+ * [new tag]           android-13.0.0_r34 -> android-13.0.0_r34
+ * [new tag]           android-13.0.0_r35 -> android-13.0.0_r35
+ * [new tag]           android-13.0.0_r36 -> android-13.0.0_r36
+ * [new tag]           android-13.0.0_r37 -> android-13.0.0_r37
+ * [new tag]           android-13.0.0_r38 -> android-13.0.0_r38
+ * [new tag]           android-13.0.0_r39 -> android-13.0.0_r39
+ * [new tag]           android-13.0.0_r40 -> android-13.0.0_r40
+ * [new tag]           android-13.0.0_r41 -> android-13.0.0_r41
+ * [new tag]           android-13.0.0_r42 -> android-13.0.0_r42
+ * [new tag]           android-13.0.0_r43 -> android-13.0.0_r43
+ * [new tag]           android-13.0.0_r44 -> android-13.0.0_r44
+ * [new tag]           android-13.0.0_r45 -> android-13.0.0_r45
+ * [new tag]           android-13.0.0_r46 -> android-13.0.0_r46
+ * [new tag]           android-13.0.0_r47 -> android-13.0.0_r47
+ * [new tag]           android-13.0.0_r48 -> android-13.0.0_r48
+ * [new tag]           android-13.0.0_r49 -> android-13.0.0_r49
+ * [new tag]           android-13.0.0_r50 -> android-13.0.0_r50
+ * [new tag]           android-13.0.0_r51 -> android-13.0.0_r51
+ * [new tag]           android-13.0.0_r52 -> android-13.0.0_r52
+ * [new tag]           android-13.0.0_r53 -> android-13.0.0_r53
+ * [new tag]           android-13.0.0_r54 -> android-13.0.0_r54
+ * [new tag]           android-13.0.0_r56 -> android-13.0.0_r56
+ * [new tag]           android-13.0.0_r58 -> android-13.0.0_r58
+ * [new tag]           android-13.0.0_r59 -> android-13.0.0_r59
+ * [new tag]           android-13.0.0_r60 -> android-13.0.0_r60
+ * [new tag]           android-13.0.0_r61 -> android-13.0.0_r61
+ * [new tag]           android-13.0.0_r62 -> android-13.0.0_r62
+ * [new tag]           android-13.0.0_r63 -> android-13.0.0_r63
+ * [new tag]           android-13.0.0_r64 -> android-13.0.0_r64
+ * [new tag]           android-13.0.0_r65 -> android-13.0.0_r65
+ * [new tag]           android-13.0.0_r66 -> android-13.0.0_r66
+ * [new tag]           android-13.0.0_r67 -> android-13.0.0_r67
+ * [new tag]           android-13.0.0_r68 -> android-13.0.0_r68
+ * [new tag]           android-13.0.0_r69 -> android-13.0.0_r69
+ * [new tag]           android-13.0.0_r70 -> android-13.0.0_r70
+ * [new tag]           android-13.0.0_r71 -> android-13.0.0_r71
+ * [new tag]           android-13.0.0_r72 -> android-13.0.0_r72
+ * [new tag]           android-13.0.0_r73 -> android-13.0.0_r73
+ * [new tag]           android-13.0.0_r74 -> android-13.0.0_r74
+ * [new tag]           android-13.0.0_r75 -> android-13.0.0_r75
+ * [new tag]           android-13.0.0_r76 -> android-13.0.0_r76
+ * [new tag]           android-13.0.0_r77 -> android-13.0.0_r77
+ * [new tag]           android-13.0.0_r78 -> android-13.0.0_r78
+ * [new tag]           android-13.0.0_r79 -> android-13.0.0_r79
+ * [new tag]           android-13.0.0_r80 -> android-13.0.0_r80
+ * [new tag]           android-13.0.0_r81 -> android-13.0.0_r81
+ * [new tag]           android-13.0.0_r82 -> android-13.0.0_r82
+ * [new tag]           android-13.0.0_r83 -> android-13.0.0_r83
+ * [new tag]           android-13.0.0_r84 -> android-13.0.0_r84
+ * [new tag]           android-14.0.0_r16 -> android-14.0.0_r16
+ * [new tag]           android-14.0.0_r17 -> android-14.0.0_r17
+ * [new tag]           android-14.0.0_r18 -> android-14.0.0_r18
+ * [new tag]           android-14.0.0_r19 -> android-14.0.0_r19
+ * [new tag]           android-14.0.0_r20 -> android-14.0.0_r20
+ * [new tag]           android-14.0.0_r21 -> android-14.0.0_r21
+ * [new tag]           android-14.0.0_r22 -> android-14.0.0_r22
+ * [new tag]           android-14.0.0_r23 -> android-14.0.0_r23
+ * [new tag]           android-14.0.0_r24 -> android-14.0.0_r24
+ * [new tag]           android-14.0.0_r25 -> android-14.0.0_r25
+ * [new tag]           android-14.0.0_r26 -> android-14.0.0_r26
+ * [new tag]           android-14.0.0_r27 -> android-14.0.0_r27
+ * [new tag]           android-14.0.0_r38 -> android-14.0.0_r38
+ * [new tag]           android-14.0.0_r39 -> android-14.0.0_r39
+ * [new tag]           android-14.0.0_r40 -> android-14.0.0_r40
+ * [new tag]           android-14.0.0_r41 -> android-14.0.0_r41
+ * [new tag]           android-14.0.0_r42 -> android-14.0.0_r42
+ * [new tag]           android-14.0.0_r43 -> android-14.0.0_r43
+ * [new tag]           android-14.0.0_r44 -> android-14.0.0_r44
+ * [new tag]           android-14.0.0_r45 -> android-14.0.0_r45
+ * [new tag]           android-15.0.0_r1 -> android-15.0.0_r1
+ * [new tag]           android-15.0.0_r2 -> android-15.0.0_r2
+ * [new tag]           android-15.0.0_r3 -> android-15.0.0_r3
+ * [new tag]           android-15.0.0_r4 -> android-15.0.0_r4
+ * [new tag]           android-15.0.0_r5 -> android-15.0.0_r5
+ * [new tag]           android-4.1.1_r1 -> android-4.1.1_r1
+ * [new tag]           android-4.1.1_r1.1 -> android-4.1.1_r1.1
+ * [new tag]           android-4.1.1_r2 -> android-4.1.1_r2
+ * [new tag]           android-4.1.1_r3 -> android-4.1.1_r3
+ * [new tag]           android-4.1.1_r4 -> android-4.1.1_r4
+ * [new tag]           android-4.1.1_r5 -> android-4.1.1_r5
+ * [new tag]           android-4.1.1_r6 -> android-4.1.1_r6
+ * [new tag]           android-4.1.1_r6.1 -> android-4.1.1_r6.1
+ * [new tag]           android-4.1.2_r1 -> android-4.1.2_r1
+ * [new tag]           android-4.1.2_r2 -> android-4.1.2_r2
+ * [new tag]           android-4.1.2_r2.1 -> android-4.1.2_r2.1
+ * [new tag]           android-4.2.1_r1 -> android-4.2.1_r1
+ * [new tag]           android-4.2.1_r1.1 -> android-4.2.1_r1.1
+ * [new tag]           android-4.2.1_r1.2 -> android-4.2.1_r1.2
+ * [new tag]           android-4.2.2_r1 -> android-4.2.2_r1
+ * [new tag]           android-4.2.2_r1.1 -> android-4.2.2_r1.1
+ * [new tag]           android-4.2.2_r1.2 -> android-4.2.2_r1.2
+ * [new tag]           android-4.2_r1 -> android-4.2_r1
+ * [new tag]           android-4.3.1_r1 -> android-4.3.1_r1
+ * [new tag]           android-4.3_r0.9 -> android-4.3_r0.9
+ * [new tag]           android-4.3_r0.9.1 -> android-4.3_r0.9.1
+ * [new tag]           android-4.3_r1 -> android-4.3_r1
+ * [new tag]           android-4.3_r1.1 -> android-4.3_r1.1
+ * [new tag]           android-4.3_r2 -> android-4.3_r2
+ * [new tag]           android-4.3_r2.1 -> android-4.3_r2.1
+ * [new tag]           android-4.3_r2.2 -> android-4.3_r2.2
+ * [new tag]           android-4.3_r2.3 -> android-4.3_r2.3
+ * [new tag]           android-4.3_r3 -> android-4.3_r3
+ * [new tag]           android-4.3_r3.1 -> android-4.3_r3.1
+ * [new tag]           android-4.4.1_r1 -> android-4.4.1_r1
+ * [new tag]           android-4.4.1_r1.0.1 -> android-4.4.1_r1.0.1
+ * [new tag]           android-4.4.2_r1 -> android-4.4.2_r1
+ * [new tag]           android-4.4.2_r1.0.1 -> android-4.4.2_r1.0.1
+ * [new tag]           android-4.4.2_r2 -> android-4.4.2_r2
+ * [new tag]           android-4.4.2_r2.0.1 -> android-4.4.2_r2.0.1
+ * [new tag]           android-4.4.3_r1 -> android-4.4.3_r1
+ * [new tag]           android-4.4.3_r1.0.1 -> android-4.4.3_r1.0.1
+ * [new tag]           android-4.4.3_r1.1 -> android-4.4.3_r1.1
+ * [new tag]           android-4.4.3_r1.1.0.1 -> android-4.4.3_r1.1.0.1
+ * [new tag]           android-4.4.4_r1 -> android-4.4.4_r1
+ * [new tag]           android-4.4.4_r1.0.1 -> android-4.4.4_r1.0.1
+ * [new tag]           android-4.4.4_r2 -> android-4.4.4_r2
+ * [new tag]           android-4.4.4_r2.0.1 -> android-4.4.4_r2.0.1
+ * [new tag]           android-4.4_r0.7 -> android-4.4_r0.7
+ * [new tag]           android-4.4_r0.8 -> android-4.4_r0.8
+ * [new tag]           android-4.4_r0.9 -> android-4.4_r0.9
+ * [new tag]           android-4.4_r1 -> android-4.4_r1
+ * [new tag]           android-4.4_r1.0.1 -> android-4.4_r1.0.1
+ * [new tag]           android-4.4_r1.1 -> android-4.4_r1.1
+ * [new tag]           android-4.4_r1.1.0.1 -> android-4.4_r1.1.0.1
+ * [new tag]           android-4.4_r1.2 -> android-4.4_r1.2
+ * [new tag]           android-4.4_r1.2.0.1 -> android-4.4_r1.2.0.1
+ * [new tag]           android-4.4w_r1 -> android-4.4w_r1
+ * [new tag]           android-5.1.1_r12 -> android-5.1.1_r12
+ * [new tag]           android-5.1.1_r17 -> android-5.1.1_r17
+ * [new tag]           android-5.1.1_r22 -> android-5.1.1_r22
+ * [new tag]           android-5.1.1_r28 -> android-5.1.1_r28
+ * [new tag]           android-5.1.1_r5 -> android-5.1.1_r5
+ * [new tag]           android-6.0.0_r1 -> android-6.0.0_r1
+ * [new tag]           android-6.0.0_r11 -> android-6.0.0_r11
+ * [new tag]           android-6.0.0_r12 -> android-6.0.0_r12
+ * [new tag]           android-6.0.0_r13 -> android-6.0.0_r13
+ * [new tag]           android-6.0.0_r2 -> android-6.0.0_r2
+ * [new tag]           android-6.0.0_r23 -> android-6.0.0_r23
+ * [new tag]           android-6.0.0_r24 -> android-6.0.0_r24
+ * [new tag]           android-6.0.0_r25 -> android-6.0.0_r25
+ * [new tag]           android-6.0.0_r26 -> android-6.0.0_r26
+ * [new tag]           android-6.0.0_r3 -> android-6.0.0_r3
+ * [new tag]           android-6.0.0_r4 -> android-6.0.0_r4
+ * [new tag]           android-6.0.0_r41 -> android-6.0.0_r41
+ * [new tag]           android-6.0.0_r5 -> android-6.0.0_r5
+ * [new tag]           android-6.0.0_r6 -> android-6.0.0_r6
+ * [new tag]           android-6.0.0_r7 -> android-6.0.0_r7
+ * [new tag]           android-6.0.1_r1 -> android-6.0.1_r1
+ * [new tag]           android-6.0.1_r10 -> android-6.0.1_r10
+ * [new tag]           android-6.0.1_r11 -> android-6.0.1_r11
+ * [new tag]           android-6.0.1_r12 -> android-6.0.1_r12
+ * [new tag]           android-6.0.1_r13 -> android-6.0.1_r13
+ * [new tag]           android-6.0.1_r16 -> android-6.0.1_r16
+ * [new tag]           android-6.0.1_r17 -> android-6.0.1_r17
+ * [new tag]           android-6.0.1_r18 -> android-6.0.1_r18
+ * [new tag]           android-6.0.1_r20 -> android-6.0.1_r20
+ * [new tag]           android-6.0.1_r21 -> android-6.0.1_r21
+ * [new tag]           android-6.0.1_r22 -> android-6.0.1_r22
+ * [new tag]           android-6.0.1_r24 -> android-6.0.1_r24
+ * [new tag]           android-6.0.1_r25 -> android-6.0.1_r25
+ * [new tag]           android-6.0.1_r26 -> android-6.0.1_r26
+ * [new tag]           android-6.0.1_r27 -> android-6.0.1_r27
+ * [new tag]           android-6.0.1_r28 -> android-6.0.1_r28
+ * [new tag]           android-6.0.1_r3 -> android-6.0.1_r3
+ * [new tag]           android-6.0.1_r30 -> android-6.0.1_r30
+ * [new tag]           android-6.0.1_r31 -> android-6.0.1_r31
+ * [new tag]           android-6.0.1_r32 -> android-6.0.1_r32
+ * [new tag]           android-6.0.1_r33 -> android-6.0.1_r33
+ * [new tag]           android-6.0.1_r4 -> android-6.0.1_r4
+ * [new tag]           android-6.0.1_r40 -> android-6.0.1_r40
+ * [new tag]           android-6.0.1_r41 -> android-6.0.1_r41
+ * [new tag]           android-6.0.1_r42 -> android-6.0.1_r42
+ * [new tag]           android-6.0.1_r43 -> android-6.0.1_r43
+ * [new tag]           android-6.0.1_r45 -> android-6.0.1_r45
+ * [new tag]           android-6.0.1_r46 -> android-6.0.1_r46
+ * [new tag]           android-6.0.1_r47 -> android-6.0.1_r47
+ * [new tag]           android-6.0.1_r48 -> android-6.0.1_r48
+ * [new tag]           android-6.0.1_r49 -> android-6.0.1_r49
+ * [new tag]           android-6.0.1_r5 -> android-6.0.1_r5
+ * [new tag]           android-6.0.1_r50 -> android-6.0.1_r50
+ * [new tag]           android-6.0.1_r51 -> android-6.0.1_r51
+ * [new tag]           android-6.0.1_r52 -> android-6.0.1_r52
+ * [new tag]           android-6.0.1_r53 -> android-6.0.1_r53
+ * [new tag]           android-6.0.1_r54 -> android-6.0.1_r54
+ * [new tag]           android-6.0.1_r55 -> android-6.0.1_r55
+ * [new tag]           android-6.0.1_r56 -> android-6.0.1_r56
+ * [new tag]           android-6.0.1_r57 -> android-6.0.1_r57
+ * [new tag]           android-6.0.1_r58 -> android-6.0.1_r58
+ * [new tag]           android-6.0.1_r59 -> android-6.0.1_r59
+ * [new tag]           android-6.0.1_r60 -> android-6.0.1_r60
+ * [new tag]           android-6.0.1_r61 -> android-6.0.1_r61
+ * [new tag]           android-6.0.1_r62 -> android-6.0.1_r62
+ * [new tag]           android-6.0.1_r63 -> android-6.0.1_r63
+ * [new tag]           android-6.0.1_r65 -> android-6.0.1_r65
+ * [new tag]           android-6.0.1_r66 -> android-6.0.1_r66
+ * [new tag]           android-6.0.1_r67 -> android-6.0.1_r67
+ * [new tag]           android-6.0.1_r68 -> android-6.0.1_r68
+ * [new tag]           android-6.0.1_r69 -> android-6.0.1_r69
+ * [new tag]           android-6.0.1_r7 -> android-6.0.1_r7
+ * [new tag]           android-6.0.1_r70 -> android-6.0.1_r70
+ * [new tag]           android-6.0.1_r72 -> android-6.0.1_r72
+ * [new tag]           android-6.0.1_r73 -> android-6.0.1_r73
+ * [new tag]           android-6.0.1_r74 -> android-6.0.1_r74
+ * [new tag]           android-6.0.1_r77 -> android-6.0.1_r77
+ * [new tag]           android-6.0.1_r78 -> android-6.0.1_r78
+ * [new tag]           android-6.0.1_r79 -> android-6.0.1_r79
+ * [new tag]           android-6.0.1_r8 -> android-6.0.1_r8
+ * [new tag]           android-6.0.1_r80 -> android-6.0.1_r80
+ * [new tag]           android-6.0.1_r81 -> android-6.0.1_r81
+ * [new tag]           android-6.0.1_r9 -> android-6.0.1_r9
+ * [new tag]           android-7.0.0_r1 -> android-7.0.0_r1
+ * [new tag]           android-7.0.0_r12 -> android-7.0.0_r12
+ * [new tag]           android-7.0.0_r13 -> android-7.0.0_r13
+ * [new tag]           android-7.0.0_r14 -> android-7.0.0_r14
+ * [new tag]           android-7.0.0_r15 -> android-7.0.0_r15
+ * [new tag]           android-7.0.0_r17 -> android-7.0.0_r17
+ * [new tag]           android-7.0.0_r19 -> android-7.0.0_r19
+ * [new tag]           android-7.0.0_r21 -> android-7.0.0_r21
+ * [new tag]           android-7.0.0_r24 -> android-7.0.0_r24
+ * [new tag]           android-7.0.0_r27 -> android-7.0.0_r27
+ * [new tag]           android-7.0.0_r28 -> android-7.0.0_r28
+ * [new tag]           android-7.0.0_r29 -> android-7.0.0_r29
+ * [new tag]           android-7.0.0_r3 -> android-7.0.0_r3
+ * [new tag]           android-7.0.0_r30 -> android-7.0.0_r30
+ * [new tag]           android-7.0.0_r31 -> android-7.0.0_r31
+ * [new tag]           android-7.0.0_r32 -> android-7.0.0_r32
+ * [new tag]           android-7.0.0_r33 -> android-7.0.0_r33
+ * [new tag]           android-7.0.0_r34 -> android-7.0.0_r34
+ * [new tag]           android-7.0.0_r35 -> android-7.0.0_r35
+ * [new tag]           android-7.0.0_r36 -> android-7.0.0_r36
+ * [new tag]           android-7.0.0_r4 -> android-7.0.0_r4
+ * [new tag]           android-7.0.0_r5 -> android-7.0.0_r5
+ * [new tag]           android-7.0.0_r6 -> android-7.0.0_r6
+ * [new tag]           android-7.0.0_r7 -> android-7.0.0_r7
+ * [new tag]           android-7.1.0_r1 -> android-7.1.0_r1
+ * [new tag]           android-7.1.0_r2 -> android-7.1.0_r2
+ * [new tag]           android-7.1.0_r3 -> android-7.1.0_r3
+ * [new tag]           android-7.1.0_r4 -> android-7.1.0_r4
+ * [new tag]           android-7.1.0_r5 -> android-7.1.0_r5
+ * [new tag]           android-7.1.0_r6 -> android-7.1.0_r6
+ * [new tag]           android-7.1.0_r7 -> android-7.1.0_r7
+ * [new tag]           android-7.1.1_r1 -> android-7.1.1_r1
+ * [new tag]           android-7.1.1_r10 -> android-7.1.1_r10
+ * [new tag]           android-7.1.1_r11 -> android-7.1.1_r11
+ * [new tag]           android-7.1.1_r12 -> android-7.1.1_r12
+ * [new tag]           android-7.1.1_r13 -> android-7.1.1_r13
+ * [new tag]           android-7.1.1_r14 -> android-7.1.1_r14
+ * [new tag]           android-7.1.1_r15 -> android-7.1.1_r15
+ * [new tag]           android-7.1.1_r16 -> android-7.1.1_r16
+ * [new tag]           android-7.1.1_r17 -> android-7.1.1_r17
+ * [new tag]           android-7.1.1_r2 -> android-7.1.1_r2
+ * [new tag]           android-7.1.1_r20 -> android-7.1.1_r20
+ * [new tag]           android-7.1.1_r21 -> android-7.1.1_r21
+ * [new tag]           android-7.1.1_r22 -> android-7.1.1_r22
+ * [new tag]           android-7.1.1_r23 -> android-7.1.1_r23
+ * [new tag]           android-7.1.1_r24 -> android-7.1.1_r24
+ * [new tag]           android-7.1.1_r25 -> android-7.1.1_r25
+ * [new tag]           android-7.1.1_r26 -> android-7.1.1_r26
+ * [new tag]           android-7.1.1_r27 -> android-7.1.1_r27
+ * [new tag]           android-7.1.1_r28 -> android-7.1.1_r28
+ * [new tag]           android-7.1.1_r3 -> android-7.1.1_r3
+ * [new tag]           android-7.1.1_r31 -> android-7.1.1_r31
+ * [new tag]           android-7.1.1_r32 -> android-7.1.1_r32
+ * [new tag]           android-7.1.1_r33 -> android-7.1.1_r33
+ * [new tag]           android-7.1.1_r35 -> android-7.1.1_r35
+ * [new tag]           android-7.1.1_r38 -> android-7.1.1_r38
+ * [new tag]           android-7.1.1_r39 -> android-7.1.1_r39
+ * [new tag]           android-7.1.1_r4 -> android-7.1.1_r4
+ * [new tag]           android-7.1.1_r40 -> android-7.1.1_r40
+ * [new tag]           android-7.1.1_r41 -> android-7.1.1_r41
+ * [new tag]           android-7.1.1_r42 -> android-7.1.1_r42
+ * [new tag]           android-7.1.1_r43 -> android-7.1.1_r43
+ * [new tag]           android-7.1.1_r44 -> android-7.1.1_r44
+ * [new tag]           android-7.1.1_r45 -> android-7.1.1_r45
+ * [new tag]           android-7.1.1_r46 -> android-7.1.1_r46
+ * [new tag]           android-7.1.1_r47 -> android-7.1.1_r47
+ * [new tag]           android-7.1.1_r48 -> android-7.1.1_r48
+ * [new tag]           android-7.1.1_r49 -> android-7.1.1_r49
+ * [new tag]           android-7.1.1_r50 -> android-7.1.1_r50
+ * [new tag]           android-7.1.1_r51 -> android-7.1.1_r51
+ * [new tag]           android-7.1.1_r52 -> android-7.1.1_r52
+ * [new tag]           android-7.1.1_r53 -> android-7.1.1_r53
+ * [new tag]           android-7.1.1_r54 -> android-7.1.1_r54
+ * [new tag]           android-7.1.1_r55 -> android-7.1.1_r55
+ * [new tag]           android-7.1.1_r56 -> android-7.1.1_r56
+ * [new tag]           android-7.1.1_r57 -> android-7.1.1_r57
+ * [new tag]           android-7.1.1_r58 -> android-7.1.1_r58
+ * [new tag]           android-7.1.1_r59 -> android-7.1.1_r59
+ * [new tag]           android-7.1.1_r6 -> android-7.1.1_r6
+ * [new tag]           android-7.1.1_r60 -> android-7.1.1_r60
+ * [new tag]           android-7.1.1_r61 -> android-7.1.1_r61
+ * [new tag]           android-7.1.1_r7 -> android-7.1.1_r7
+ * [new tag]           android-7.1.1_r8 -> android-7.1.1_r8
+ * [new tag]           android-7.1.1_r9 -> android-7.1.1_r9
+ * [new tag]           android-7.1.2_r1 -> android-7.1.2_r1
+ * [new tag]           android-7.1.2_r10 -> android-7.1.2_r10
+ * [new tag]           android-7.1.2_r11 -> android-7.1.2_r11
+ * [new tag]           android-7.1.2_r12 -> android-7.1.2_r12
+ * [new tag]           android-7.1.2_r13 -> android-7.1.2_r13
+ * [new tag]           android-7.1.2_r14 -> android-7.1.2_r14
+ * [new tag]           android-7.1.2_r15 -> android-7.1.2_r15
+ * [new tag]           android-7.1.2_r16 -> android-7.1.2_r16
+ * [new tag]           android-7.1.2_r17 -> android-7.1.2_r17
+ * [new tag]           android-7.1.2_r18 -> android-7.1.2_r18
+ * [new tag]           android-7.1.2_r19 -> android-7.1.2_r19
+ * [new tag]           android-7.1.2_r2 -> android-7.1.2_r2
+ * [new tag]           android-7.1.2_r23 -> android-7.1.2_r23
+ * [new tag]           android-7.1.2_r24 -> android-7.1.2_r24
+ * [new tag]           android-7.1.2_r25 -> android-7.1.2_r25
+ * [new tag]           android-7.1.2_r27 -> android-7.1.2_r27
+ * [new tag]           android-7.1.2_r28 -> android-7.1.2_r28
+ * [new tag]           android-7.1.2_r29 -> android-7.1.2_r29
+ * [new tag]           android-7.1.2_r3 -> android-7.1.2_r3
+ * [new tag]           android-7.1.2_r30 -> android-7.1.2_r30
+ * [new tag]           android-7.1.2_r32 -> android-7.1.2_r32
+ * [new tag]           android-7.1.2_r33 -> android-7.1.2_r33
+ * [new tag]           android-7.1.2_r36 -> android-7.1.2_r36
+ * [new tag]           android-7.1.2_r37 -> android-7.1.2_r37
+ * [new tag]           android-7.1.2_r38 -> android-7.1.2_r38
+ * [new tag]           android-7.1.2_r39 -> android-7.1.2_r39
+ * [new tag]           android-7.1.2_r4 -> android-7.1.2_r4
+ * [new tag]           android-7.1.2_r5 -> android-7.1.2_r5
+ * [new tag]           android-7.1.2_r6 -> android-7.1.2_r6
+ * [new tag]           android-7.1.2_r8 -> android-7.1.2_r8
+ * [new tag]           android-7.1.2_r9 -> android-7.1.2_r9
+ * [new tag]           android-8.0.0_r1 -> android-8.0.0_r1
+ * [new tag]           android-8.0.0_r10 -> android-8.0.0_r10
+ * [new tag]           android-8.0.0_r11 -> android-8.0.0_r11
+ * [new tag]           android-8.0.0_r12 -> android-8.0.0_r12
+ * [new tag]           android-8.0.0_r13 -> android-8.0.0_r13
+ * [new tag]           android-8.0.0_r15 -> android-8.0.0_r15
+ * [new tag]           android-8.0.0_r16 -> android-8.0.0_r16
+ * [new tag]           android-8.0.0_r17 -> android-8.0.0_r17
+ * [new tag]           android-8.0.0_r2 -> android-8.0.0_r2
+ * [new tag]           android-8.0.0_r28 -> android-8.0.0_r28
+ * [new tag]           android-8.0.0_r29 -> android-8.0.0_r29
+ * [new tag]           android-8.0.0_r3 -> android-8.0.0_r3
+ * [new tag]           android-8.0.0_r30 -> android-8.0.0_r30
+ * [new tag]           android-8.0.0_r31 -> android-8.0.0_r31
+ * [new tag]           android-8.0.0_r32 -> android-8.0.0_r32
+ * [new tag]           android-8.0.0_r35 -> android-8.0.0_r35
+ * [new tag]           android-8.0.0_r36 -> android-8.0.0_r36
+ * [new tag]           android-8.0.0_r37 -> android-8.0.0_r37
+ * [new tag]           android-8.0.0_r38 -> android-8.0.0_r38
+ * [new tag]           android-8.0.0_r39 -> android-8.0.0_r39
+ * [new tag]           android-8.0.0_r4 -> android-8.0.0_r4
+ * [new tag]           android-8.0.0_r40 -> android-8.0.0_r40
+ * [new tag]           android-8.0.0_r41 -> android-8.0.0_r41
+ * [new tag]           android-8.0.0_r42 -> android-8.0.0_r42
+ * [new tag]           android-8.0.0_r43 -> android-8.0.0_r43
+ * [new tag]           android-8.0.0_r44 -> android-8.0.0_r44
+ * [new tag]           android-8.0.0_r45 -> android-8.0.0_r45
+ * [new tag]           android-8.0.0_r46 -> android-8.0.0_r46
+ * [new tag]           android-8.0.0_r47 -> android-8.0.0_r47
+ * [new tag]           android-8.0.0_r48 -> android-8.0.0_r48
+ * [new tag]           android-8.0.0_r49 -> android-8.0.0_r49
+ * [new tag]           android-8.0.0_r50 -> android-8.0.0_r50
+ * [new tag]           android-8.0.0_r51 -> android-8.0.0_r51
+ * [new tag]           android-8.0.0_r7 -> android-8.0.0_r7
+ * [new tag]           android-8.0.0_r9 -> android-8.0.0_r9
+ * [new tag]           android-9.0.0_r1 -> android-9.0.0_r1
+ * [new tag]           android-9.0.0_r10 -> android-9.0.0_r10
+ * [new tag]           android-9.0.0_r11 -> android-9.0.0_r11
+ * [new tag]           android-9.0.0_r12 -> android-9.0.0_r12
+ * [new tag]           android-9.0.0_r16 -> android-9.0.0_r16
+ * [new tag]           android-9.0.0_r17 -> android-9.0.0_r17
+ * [new tag]           android-9.0.0_r18 -> android-9.0.0_r18
+ * [new tag]           android-9.0.0_r19 -> android-9.0.0_r19
+ * [new tag]           android-9.0.0_r2 -> android-9.0.0_r2
+ * [new tag]           android-9.0.0_r20 -> android-9.0.0_r20
+ * [new tag]           android-9.0.0_r21 -> android-9.0.0_r21
+ * [new tag]           android-9.0.0_r22 -> android-9.0.0_r22
+ * [new tag]           android-9.0.0_r3 -> android-9.0.0_r3
+ * [new tag]           android-9.0.0_r30 -> android-9.0.0_r30
+ * [new tag]           android-9.0.0_r31 -> android-9.0.0_r31
+ * [new tag]           android-9.0.0_r32 -> android-9.0.0_r32
+ * [new tag]           android-9.0.0_r33 -> android-9.0.0_r33
+ * [new tag]           android-9.0.0_r34 -> android-9.0.0_r34
+ * [new tag]           android-9.0.0_r35 -> android-9.0.0_r35
+ * [new tag]           android-9.0.0_r36 -> android-9.0.0_r36
+ * [new tag]           android-9.0.0_r37 -> android-9.0.0_r37
+ * [new tag]           android-9.0.0_r38 -> android-9.0.0_r38
+ * [new tag]           android-9.0.0_r39 -> android-9.0.0_r39
+ * [new tag]           android-9.0.0_r40 -> android-9.0.0_r40
+ * [new tag]           android-9.0.0_r41 -> android-9.0.0_r41
+ * [new tag]           android-9.0.0_r42 -> android-9.0.0_r42
+ * [new tag]           android-9.0.0_r43 -> android-9.0.0_r43
+ * [new tag]           android-9.0.0_r44 -> android-9.0.0_r44
+ * [new tag]           android-9.0.0_r45 -> android-9.0.0_r45
+ * [new tag]           android-9.0.0_r46 -> android-9.0.0_r46
+ * [new tag]           android-9.0.0_r47 -> android-9.0.0_r47
+ * [new tag]           android-9.0.0_r48 -> android-9.0.0_r48
+ * [new tag]           android-9.0.0_r49 -> android-9.0.0_r49
+ * [new tag]           android-9.0.0_r5 -> android-9.0.0_r5
+ * [new tag]           android-9.0.0_r50 -> android-9.0.0_r50
+ * [new tag]           android-9.0.0_r51 -> android-9.0.0_r51
+ * [new tag]           android-9.0.0_r52 -> android-9.0.0_r52
+ * [new tag]           android-9.0.0_r53 -> android-9.0.0_r53
+ * [new tag]           android-9.0.0_r54 -> android-9.0.0_r54
+ * [new tag]           android-9.0.0_r55 -> android-9.0.0_r55
+ * [new tag]           android-9.0.0_r56 -> android-9.0.0_r56
+ * [new tag]           android-9.0.0_r57 -> android-9.0.0_r57
+ * [new tag]           android-9.0.0_r58 -> android-9.0.0_r58
+ * [new tag]           android-9.0.0_r59 -> android-9.0.0_r59
+ * [new tag]           android-9.0.0_r6 -> android-9.0.0_r6
+ * [new tag]           android-9.0.0_r60 -> android-9.0.0_r60
+ * [new tag]           android-9.0.0_r61 -> android-9.0.0_r61
+ * [new tag]           android-9.0.0_r7 -> android-9.0.0_r7
+ * [new tag]           android-9.0.0_r8 -> android-9.0.0_r8
+ * [new tag]           android-9.0.0_r9 -> android-9.0.0_r9
+ * [new tag]           android-automotiveos-14.0.0_lts2 -> android-automotiveos-14.0.0_lts2
+ * [new tag]           android-automotiveos-14.0.0_lts3 -> android-automotiveos-14.0.0_lts3
+ * [new tag]           android-automotiveos-14.0.0_lts4 -> android-automotiveos-14.0.0_lts4
+ * [new tag]           android-automotiveos-14.0.0_lts5 -> android-automotiveos-14.0.0_lts5
+ * [new tag]           android-automotiveos-14.0.0_lts6 -> android-automotiveos-14.0.0_lts6
+ * [new tag]           android-automotiveos-14.0.0_lts7 -> android-automotiveos-14.0.0_lts7
+ * [new tag]           android-cts-15.0_r1 -> android-cts-15.0_r1
+ * [new tag]           android-cts-4.1_r1 -> android-cts-4.1_r1
+ * [new tag]           android-cts-4.1_r2 -> android-cts-4.1_r2
+ * [new tag]           android-cts-4.1_r4 -> android-cts-4.1_r4
+ * [new tag]           android-cts-4.2_r1 -> android-cts-4.2_r1
+ * [new tag]           android-cts-4.2_r2 -> android-cts-4.2_r2
+ * [new tag]           android-cts-4.4_r1 -> android-cts-4.4_r1
+ * [new tag]           android-cts-4.4_r4 -> android-cts-4.4_r4
+ * [new tag]           android-cts-6.0_r1 -> android-cts-6.0_r1
+ * [new tag]           android-cts-6.0_r12 -> android-cts-6.0_r12
+ * [new tag]           android-cts-6.0_r13 -> android-cts-6.0_r13
+ * [new tag]           android-cts-6.0_r14 -> android-cts-6.0_r14
+ * [new tag]           android-cts-6.0_r15 -> android-cts-6.0_r15
+ * [new tag]           android-cts-6.0_r16 -> android-cts-6.0_r16
+ * [new tag]           android-cts-6.0_r17 -> android-cts-6.0_r17
+ * [new tag]           android-cts-6.0_r18 -> android-cts-6.0_r18
+ * [new tag]           android-cts-6.0_r19 -> android-cts-6.0_r19
+ * [new tag]           android-cts-6.0_r2 -> android-cts-6.0_r2
+ * [new tag]           android-cts-6.0_r20 -> android-cts-6.0_r20
+ * [new tag]           android-cts-6.0_r21 -> android-cts-6.0_r21
+ * [new tag]           android-cts-6.0_r22 -> android-cts-6.0_r22
+ * [new tag]           android-cts-6.0_r23 -> android-cts-6.0_r23
+ * [new tag]           android-cts-6.0_r24 -> android-cts-6.0_r24
+ * [new tag]           android-cts-6.0_r25 -> android-cts-6.0_r25
+ * [new tag]           android-cts-6.0_r26 -> android-cts-6.0_r26
+ * [new tag]           android-cts-6.0_r27 -> android-cts-6.0_r27
+ * [new tag]           android-cts-6.0_r28 -> android-cts-6.0_r28
+ * [new tag]           android-cts-6.0_r29 -> android-cts-6.0_r29
+ * [new tag]           android-cts-6.0_r3 -> android-cts-6.0_r3
+ * [new tag]           android-cts-6.0_r30 -> android-cts-6.0_r30
+ * [new tag]           android-cts-6.0_r31 -> android-cts-6.0_r31
+ * [new tag]           android-cts-6.0_r32 -> android-cts-6.0_r32
+ * [new tag]           android-cts-6.0_r4 -> android-cts-6.0_r4
+ * [new tag]           android-cts-6.0_r5 -> android-cts-6.0_r5
+ * [new tag]           android-cts-6.0_r6 -> android-cts-6.0_r6
+ * [new tag]           android-cts-6.0_r7 -> android-cts-6.0_r7
+ * [new tag]           android-cts-6.0_r8 -> android-cts-6.0_r8
+ * [new tag]           android-cts-6.0_r9 -> android-cts-6.0_r9
+ * [new tag]           android-cts-7.0_r1 -> android-cts-7.0_r1
+ * [new tag]           android-cts-7.0_r10 -> android-cts-7.0_r10
+ * [new tag]           android-cts-7.0_r11 -> android-cts-7.0_r11
+ * [new tag]           android-cts-7.0_r12 -> android-cts-7.0_r12
+ * [new tag]           android-cts-7.0_r13 -> android-cts-7.0_r13
+ * [new tag]           android-cts-7.0_r14 -> android-cts-7.0_r14
+ * [new tag]           android-cts-7.0_r15 -> android-cts-7.0_r15
+ * [new tag]           android-cts-7.0_r16 -> android-cts-7.0_r16
+ * [new tag]           android-cts-7.0_r17 -> android-cts-7.0_r17
+ * [new tag]           android-cts-7.0_r18 -> android-cts-7.0_r18
+ * [new tag]           android-cts-7.0_r19 -> android-cts-7.0_r19
+ * [new tag]           android-cts-7.0_r2 -> android-cts-7.0_r2
+ * [new tag]           android-cts-7.0_r20 -> android-cts-7.0_r20
+ * [new tag]           android-cts-7.0_r21 -> android-cts-7.0_r21
+ * [new tag]           android-cts-7.0_r22 -> android-cts-7.0_r22
+ * [new tag]           android-cts-7.0_r23 -> android-cts-7.0_r23
+ * [new tag]           android-cts-7.0_r24 -> android-cts-7.0_r24
+ * [new tag]           android-cts-7.0_r25 -> android-cts-7.0_r25
+ * [new tag]           android-cts-7.0_r26 -> android-cts-7.0_r26
+ * [new tag]           android-cts-7.0_r27 -> android-cts-7.0_r27
+ * [new tag]           android-cts-7.0_r28 -> android-cts-7.0_r28
+ * [new tag]           android-cts-7.0_r29 -> android-cts-7.0_r29
+ * [new tag]           android-cts-7.0_r3 -> android-cts-7.0_r3
+ * [new tag]           android-cts-7.0_r30 -> android-cts-7.0_r30
+ * [new tag]           android-cts-7.0_r31 -> android-cts-7.0_r31
+ * [new tag]           android-cts-7.0_r32 -> android-cts-7.0_r32
+ * [new tag]           android-cts-7.0_r33 -> android-cts-7.0_r33
+ * [new tag]           android-cts-7.0_r4 -> android-cts-7.0_r4
+ * [new tag]           android-cts-7.0_r5 -> android-cts-7.0_r5
+ * [new tag]           android-cts-7.0_r6 -> android-cts-7.0_r6
+ * [new tag]           android-cts-7.0_r7 -> android-cts-7.0_r7
+ * [new tag]           android-cts-7.0_r8 -> android-cts-7.0_r8
+ * [new tag]           android-cts-7.0_r9 -> android-cts-7.0_r9
+ * [new tag]           android-cts-7.1_r1 -> android-cts-7.1_r1
+ * [new tag]           android-cts-7.1_r10 -> android-cts-7.1_r10
+ * [new tag]           android-cts-7.1_r11 -> android-cts-7.1_r11
+ * [new tag]           android-cts-7.1_r12 -> android-cts-7.1_r12
+ * [new tag]           android-cts-7.1_r13 -> android-cts-7.1_r13
+ * [new tag]           android-cts-7.1_r14 -> android-cts-7.1_r14
+ * [new tag]           android-cts-7.1_r15 -> android-cts-7.1_r15
+ * [new tag]           android-cts-7.1_r16 -> android-cts-7.1_r16
+ * [new tag]           android-cts-7.1_r17 -> android-cts-7.1_r17
+ * [new tag]           android-cts-7.1_r18 -> android-cts-7.1_r18
+ * [new tag]           android-cts-7.1_r19 -> android-cts-7.1_r19
+ * [new tag]           android-cts-7.1_r2 -> android-cts-7.1_r2
+ * [new tag]           android-cts-7.1_r20 -> android-cts-7.1_r20
+ * [new tag]           android-cts-7.1_r21 -> android-cts-7.1_r21
+ * [new tag]           android-cts-7.1_r22 -> android-cts-7.1_r22
+ * [new tag]           android-cts-7.1_r23 -> android-cts-7.1_r23
+ * [new tag]           android-cts-7.1_r24 -> android-cts-7.1_r24
+ * [new tag]           android-cts-7.1_r25 -> android-cts-7.1_r25
+ * [new tag]           android-cts-7.1_r26 -> android-cts-7.1_r26
+ * [new tag]           android-cts-7.1_r27 -> android-cts-7.1_r27
+ * [new tag]           android-cts-7.1_r28 -> android-cts-7.1_r28
+ * [new tag]           android-cts-7.1_r29 -> android-cts-7.1_r29
+ * [new tag]           android-cts-7.1_r3 -> android-cts-7.1_r3
+ * [new tag]           android-cts-7.1_r4 -> android-cts-7.1_r4
+ * [new tag]           android-cts-7.1_r5 -> android-cts-7.1_r5
+ * [new tag]           android-cts-7.1_r6 -> android-cts-7.1_r6
+ * [new tag]           android-cts-7.1_r7 -> android-cts-7.1_r7
+ * [new tag]           android-cts-7.1_r8 -> android-cts-7.1_r8
+ * [new tag]           android-cts-7.1_r9 -> android-cts-7.1_r9
+ * [new tag]           android-cts-8.0_r1 -> android-cts-8.0_r1
+ * [new tag]           android-cts-8.0_r10 -> android-cts-8.0_r10
+ * [new tag]           android-cts-8.0_r11 -> android-cts-8.0_r11
+ * [new tag]           android-cts-8.0_r12 -> android-cts-8.0_r12
+ * [new tag]           android-cts-8.0_r13 -> android-cts-8.0_r13
+ * [new tag]           android-cts-8.0_r14 -> android-cts-8.0_r14
+ * [new tag]           android-cts-8.0_r15 -> android-cts-8.0_r15
+ * [new tag]           android-cts-8.0_r16 -> android-cts-8.0_r16
+ * [new tag]           android-cts-8.0_r17 -> android-cts-8.0_r17
+ * [new tag]           android-cts-8.0_r18 -> android-cts-8.0_r18
+ * [new tag]           android-cts-8.0_r19 -> android-cts-8.0_r19
+ * [new tag]           android-cts-8.0_r2 -> android-cts-8.0_r2
+ * [new tag]           android-cts-8.0_r20 -> android-cts-8.0_r20
+ * [new tag]           android-cts-8.0_r21 -> android-cts-8.0_r21
+ * [new tag]           android-cts-8.0_r22 -> android-cts-8.0_r22
+ * [new tag]           android-cts-8.0_r23 -> android-cts-8.0_r23
+ * [new tag]           android-cts-8.0_r24 -> android-cts-8.0_r24
+ * [new tag]           android-cts-8.0_r25 -> android-cts-8.0_r25
+ * [new tag]           android-cts-8.0_r26 -> android-cts-8.0_r26
+ * [new tag]           android-cts-8.0_r3 -> android-cts-8.0_r3
+ * [new tag]           android-cts-8.0_r4 -> android-cts-8.0_r4
+ * [new tag]           android-cts-8.0_r5 -> android-cts-8.0_r5
+ * [new tag]           android-cts-8.0_r6 -> android-cts-8.0_r6
+ * [new tag]           android-cts-8.0_r7 -> android-cts-8.0_r7
+ * [new tag]           android-cts-8.0_r8 -> android-cts-8.0_r8
+ * [new tag]           android-cts-8.0_r9 -> android-cts-8.0_r9
+ * [new tag]           android-cts-9.0_r1 -> android-cts-9.0_r1
+ * [new tag]           android-cts-9.0_r10 -> android-cts-9.0_r10
+ * [new tag]           android-cts-9.0_r11 -> android-cts-9.0_r11
+ * [new tag]           android-cts-9.0_r12 -> android-cts-9.0_r12
+ * [new tag]           android-cts-9.0_r13 -> android-cts-9.0_r13
+ * [new tag]           android-cts-9.0_r14 -> android-cts-9.0_r14
+ * [new tag]           android-cts-9.0_r15 -> android-cts-9.0_r15
+ * [new tag]           android-cts-9.0_r16 -> android-cts-9.0_r16
+ * [new tag]           android-cts-9.0_r17 -> android-cts-9.0_r17
+ * [new tag]           android-cts-9.0_r18 -> android-cts-9.0_r18
+ * [new tag]           android-cts-9.0_r19 -> android-cts-9.0_r19
+ * [new tag]           android-cts-9.0_r2 -> android-cts-9.0_r2
+ * [new tag]           android-cts-9.0_r20 -> android-cts-9.0_r20
+ * [new tag]           android-cts-9.0_r3 -> android-cts-9.0_r3
+ * [new tag]           android-cts-9.0_r4 -> android-cts-9.0_r4
+ * [new tag]           android-cts-9.0_r5 -> android-cts-9.0_r5
+ * [new tag]           android-cts-9.0_r6 -> android-cts-9.0_r6
+ * [new tag]           android-cts-9.0_r7 -> android-cts-9.0_r7
+ * [new tag]           android-cts-9.0_r8 -> android-cts-9.0_r8
+ * [new tag]           android-cts-9.0_r9 -> android-cts-9.0_r9
+ * [new tag]           android-l-preview_r2 -> android-l-preview_r2
+ * [new tag]           android-m-preview -> android-m-preview
+ * [new tag]           android-m-preview-1 -> android-m-preview-1
+ * [new tag]           android-m-preview-2 -> android-m-preview-2
+ * [new tag]           android-mainline-10.0.0_r10 -> android-mainline-10.0.0_r10
+ * [new tag]           android-mainline-10.0.0_r4 -> android-mainline-10.0.0_r4
+ * [new tag]           android-mainline-10.0.0_r5 -> android-mainline-10.0.0_r5
+ * [new tag]           android-mainline-10.0.0_r6 -> android-mainline-10.0.0_r6
+ * [new tag]           android-mainline-10.0.0_r7 -> android-mainline-10.0.0_r7
+ * [new tag]           android-mainline-10.0.0_r8 -> android-mainline-10.0.0_r8
+ * [new tag]           android-mainline-10.0.0_r9 -> android-mainline-10.0.0_r9
+ * [new tag]           android-mainline-11.0.0_r12 -> android-mainline-11.0.0_r12
+ * [new tag]           android-mainline-11.0.0_r13 -> android-mainline-11.0.0_r13
+ * [new tag]           android-mainline-11.0.0_r14 -> android-mainline-11.0.0_r14
+ * [new tag]           android-mainline-11.0.0_r15 -> android-mainline-11.0.0_r15
+ * [new tag]           android-mainline-11.0.0_r16 -> android-mainline-11.0.0_r16
+ * [new tag]           android-mainline-11.0.0_r17 -> android-mainline-11.0.0_r17
+ * [new tag]           android-mainline-11.0.0_r18 -> android-mainline-11.0.0_r18
+ * [new tag]           android-mainline-11.0.0_r20 -> android-mainline-11.0.0_r20
+ * [new tag]           android-mainline-11.0.0_r21 -> android-mainline-11.0.0_r21
+ * [new tag]           android-mainline-11.0.0_r22 -> android-mainline-11.0.0_r22
+ * [new tag]           android-mainline-11.0.0_r23 -> android-mainline-11.0.0_r23
+ * [new tag]           android-mainline-11.0.0_r24 -> android-mainline-11.0.0_r24
+ * [new tag]           android-mainline-11.0.0_r25 -> android-mainline-11.0.0_r25
+ * [new tag]           android-mainline-11.0.0_r26 -> android-mainline-11.0.0_r26
+ * [new tag]           android-mainline-11.0.0_r27 -> android-mainline-11.0.0_r27
+ * [new tag]           android-mainline-11.0.0_r28 -> android-mainline-11.0.0_r28
+ * [new tag]           android-mainline-11.0.0_r30 -> android-mainline-11.0.0_r30
+ * [new tag]           android-mainline-11.0.0_r31 -> android-mainline-11.0.0_r31
+ * [new tag]           android-mainline-11.0.0_r32 -> android-mainline-11.0.0_r32
+ * [new tag]           android-mainline-11.0.0_r34 -> android-mainline-11.0.0_r34
+ * [new tag]           android-mainline-11.0.0_r35 -> android-mainline-11.0.0_r35
+ * [new tag]           android-mainline-11.0.0_r36 -> android-mainline-11.0.0_r36
+ * [new tag]           android-mainline-11.0.0_r37 -> android-mainline-11.0.0_r37
+ * [new tag]           android-mainline-11.0.0_r38 -> android-mainline-11.0.0_r38
+ * [new tag]           android-mainline-11.0.0_r39 -> android-mainline-11.0.0_r39
+ * [new tag]           android-mainline-11.0.0_r40 -> android-mainline-11.0.0_r40
+ * [new tag]           android-mainline-11.0.0_r41 -> android-mainline-11.0.0_r41
+ * [new tag]           android-mainline-11.0.0_r42 -> android-mainline-11.0.0_r42
+ * [new tag]           android-mainline-11.0.0_r43 -> android-mainline-11.0.0_r43
+ * [new tag]           android-mainline-11.0.0_r44 -> android-mainline-11.0.0_r44
+ * [new tag]           android-mainline-12.0.0_r100 -> android-mainline-12.0.0_r100
+ * [new tag]           android-mainline-12.0.0_r113 -> android-mainline-12.0.0_r113
+ * [new tag]           android-mainline-12.0.0_r115 -> android-mainline-12.0.0_r115
+ * [new tag]           android-mainline-12.0.0_r122 -> android-mainline-12.0.0_r122
+ * [new tag]           android-mainline-12.0.0_r19 -> android-mainline-12.0.0_r19
+ * [new tag]           android-mainline-12.0.0_r22 -> android-mainline-12.0.0_r22
+ * [new tag]           android-mainline-12.0.0_r39 -> android-mainline-12.0.0_r39
+ * [new tag]           android-mainline-12.0.0_r42 -> android-mainline-12.0.0_r42
+ * [new tag]           android-mainline-12.0.0_r49 -> android-mainline-12.0.0_r49
+ * [new tag]           android-mainline-12.0.0_r5 -> android-mainline-12.0.0_r5
+ * [new tag]           android-mainline-12.0.0_r56 -> android-mainline-12.0.0_r56
+ * [new tag]           android-mainline-12.0.0_r59 -> android-mainline-12.0.0_r59
+ * [new tag]           android-mainline-12.0.0_r63 -> android-mainline-12.0.0_r63
+ * [new tag]           android-mainline-12.0.0_r69 -> android-mainline-12.0.0_r69
+ * [new tag]           android-mainline-12.0.0_r70 -> android-mainline-12.0.0_r70
+ * [new tag]           android-mainline-12.0.0_r77 -> android-mainline-12.0.0_r77
+ * [new tag]           android-mainline-12.0.0_r98 -> android-mainline-12.0.0_r98
+ * [new tag]           android-mainline-12.0.0_r99 -> android-mainline-12.0.0_r99
+ * [new tag]           android-n-iot-preview-2 -> android-n-iot-preview-2
+ * [new tag]           android-n-iot-preview-4 -> android-n-iot-preview-4
+ * [new tag]           android-n-iot-release-ihome-igv1 -> android-n-iot-release-ihome-igv1
+ * [new tag]           android-n-iot-release-lg-thinq-wk7 -> android-n-iot-release-lg-thinq-wk7
+ * [new tag]           android-n-iot-release-polk-at1 -> android-n-iot-release-polk-at1
+ * [new tag]           android-n-iot-release-smart-display -> android-n-iot-release-smart-display
+ * [new tag]           android-n-iot-release-smart-display-r2 -> android-n-iot-release-smart-display-r2
+ * [new tag]           android-n-mr1-preview-1 -> android-n-mr1-preview-1
+ * [new tag]           android-n-mr1-preview-2 -> android-n-mr1-preview-2
+ * [new tag]           android-n-mr2-preview-1 -> android-n-mr2-preview-1
+ * [new tag]           android-n-mr2-preview-2 -> android-n-mr2-preview-2
+ * [new tag]           android-n-preview-1 -> android-n-preview-1
+ * [new tag]           android-n-preview-2 -> android-n-preview-2
+ * [new tag]           android-n-preview-3 -> android-n-preview-3
+ * [new tag]           android-n-preview-4 -> android-n-preview-4
+ * [new tag]           android-n-preview-5 -> android-n-preview-5
+ * [new tag]           android-o-iot-preview-5 -> android-o-iot-preview-5
+ * [new tag]           android-o-mr1-iot-preview-6 -> android-o-mr1-iot-preview-6
+ * [new tag]           android-o-mr1-iot-preview-7 -> android-o-mr1-iot-preview-7
+ * [new tag]           android-o-mr1-iot-preview-8 -> android-o-mr1-iot-preview-8
+ * [new tag]           android-o-mr1-iot-release-1.0.0 -> android-o-mr1-iot-release-1.0.0
+ * [new tag]           android-o-mr1-iot-release-1.0.1 -> android-o-mr1-iot-release-1.0.1
+ * [new tag]           android-o-mr1-iot-release-1.0.10 -> android-o-mr1-iot-release-1.0.10
+ * [new tag]           android-o-mr1-iot-release-1.0.12 -> android-o-mr1-iot-release-1.0.12
+ * [new tag]           android-o-mr1-iot-release-1.0.13 -> android-o-mr1-iot-release-1.0.13
+ * [new tag]           android-o-mr1-iot-release-1.0.14 -> android-o-mr1-iot-release-1.0.14
+ * [new tag]           android-o-mr1-iot-release-1.0.2 -> android-o-mr1-iot-release-1.0.2
+ * [new tag]           android-o-mr1-iot-release-1.0.3 -> android-o-mr1-iot-release-1.0.3
+ * [new tag]           android-o-mr1-iot-release-1.0.4 -> android-o-mr1-iot-release-1.0.4
+ * [new tag]           android-o-mr1-iot-release-1.0.5 -> android-o-mr1-iot-release-1.0.5
+ * [new tag]           android-o-mr1-iot-release-1.0.7 -> android-o-mr1-iot-release-1.0.7
+ * [new tag]           android-o-mr1-iot-release-1.0.8 -> android-o-mr1-iot-release-1.0.8
+ * [new tag]           android-o-mr1-iot-release-cube-fcs -> android-o-mr1-iot-release-cube-fcs
+ * [new tag]           android-o-mr1-iot-release-cube-fsi -> android-o-mr1-iot-release-cube-fsi
+ * [new tag]           android-o-mr1-iot-release-cube_r2 -> android-o-mr1-iot-release-cube_r2
+ * [new tag]           android-o-mr1-iot-release-smart-clock-fcs -> android-o-mr1-iot-release-smart-clock-fcs
+ * [new tag]           android-o-mr1-iot-release-smart-clock-fsi -> android-o-mr1-iot-release-smart-clock-fsi
+ * [new tag]           android-o-mr1-iot-release-smart-clock-r2 -> android-o-mr1-iot-release-smart-clock-r2
+ * [new tag]           android-o-mr1-iot-release-smart-clock-r6 -> android-o-mr1-iot-release-smart-clock-r6
+ * [new tag]           android-o-mr1-iot-release-smart-display-r14 -> android-o-mr1-iot-release-smart-display-r14
+ * [new tag]           android-o-mr1-iot-release-smart-display-r22 -> android-o-mr1-iot-release-smart-display-r22
+ * [new tag]           android-o-mr1-iot-release-smart-display-r3 -> android-o-mr1-iot-release-smart-display-r3
+ * [new tag]           android-o-mr1-iot-release-smart-display-r30 -> android-o-mr1-iot-release-smart-display-r30
+ * [new tag]           android-o-mr1-iot-release-smart-display-r39 -> android-o-mr1-iot-release-smart-display-r39
+ * [new tag]           android-o-mr1-iot-release-smart-display-r4 -> android-o-mr1-iot-release-smart-display-r4
+ * [new tag]           android-o-mr1-iot-release-smart-display-r40.1J -> android-o-mr1-iot-release-smart-display-r40.1J
+ * [new tag]           android-o-mr1-iot-release-smart-display-r5 -> android-o-mr1-iot-release-smart-display-r5
+ * [new tag]           android-o-mr1-iot-release-smart-display-r8 -> android-o-mr1-iot-release-smart-display-r8
+ * [new tag]           android-o-mr1-iot-release-smart-display-r9 -> android-o-mr1-iot-release-smart-display-r9
+ * [new tag]           android-o-mr1-preview-1 -> android-o-mr1-preview-1
+ * [new tag]           android-o-mr1-preview-2 -> android-o-mr1-preview-2
+ * [new tag]           android-o-preview-1 -> android-o-preview-1
+ * [new tag]           android-o-preview-2 -> android-o-preview-2
+ * [new tag]           android-o-preview-3 -> android-o-preview-3
+ * [new tag]           android-o-preview-4 -> android-o-preview-4
+ * [new tag]           android-p-preview-1 -> android-p-preview-1
+ * [new tag]           android-p-preview-2 -> android-p-preview-2
+ * [new tag]           android-p-preview-3 -> android-p-preview-3
+ * [new tag]           android-p-preview-4 -> android-p-preview-4
+ * [new tag]           android-p-preview-5 -> android-p-preview-5
+ * [new tag]           android-platform-15.0.0_r1 -> android-platform-15.0.0_r1
+ * [new tag]           android-platform-15.0.0_r10 -> android-platform-15.0.0_r10
+ * [new tag]           android-platform-15.0.0_r11 -> android-platform-15.0.0_r11
+ * [new tag]           android-platform-15.0.0_r12 -> android-platform-15.0.0_r12
+ * [new tag]           android-platform-15.0.0_r13 -> android-platform-15.0.0_r13
+ * [new tag]           android-platform-15.0.0_r14 -> android-platform-15.0.0_r14
+ * [new tag]           android-platform-15.0.0_r15 -> android-platform-15.0.0_r15
+ * [new tag]           android-platform-15.0.0_r16 -> android-platform-15.0.0_r16
+ * [new tag]           android-platform-15.0.0_r17 -> android-platform-15.0.0_r17
+ * [new tag]           android-platform-15.0.0_r18 -> android-platform-15.0.0_r18
+ * [new tag]           android-platform-15.0.0_r19 -> android-platform-15.0.0_r19
+ * [new tag]           android-platform-15.0.0_r2 -> android-platform-15.0.0_r2
+ * [new tag]           android-platform-15.0.0_r20 -> android-platform-15.0.0_r20
+ * [new tag]           android-platform-15.0.0_r3 -> android-platform-15.0.0_r3
+ * [new tag]           android-platform-15.0.0_r4 -> android-platform-15.0.0_r4
+ * [new tag]           android-platform-15.0.0_r5 -> android-platform-15.0.0_r5
+ * [new tag]           android-platform-15.0.0_r6 -> android-platform-15.0.0_r6
+ * [new tag]           android-platform-15.0.0_r7 -> android-platform-15.0.0_r7
+ * [new tag]           android-platform-15.0.0_r8 -> android-platform-15.0.0_r8
+ * [new tag]           android-platform-15.0.0_r9 -> android-platform-15.0.0_r9
+ * [new tag]           android-q-preview-1 -> android-q-preview-1
+ * [new tag]           android-q-preview-2.5 -> android-q-preview-2.5
+ * [new tag]           android-q-preview-4 -> android-q-preview-4
+ * [new tag]           android-q-preview-5 -> android-q-preview-5
+ * [new tag]           android-q-preview-6 -> android-q-preview-6
+ * [new tag]           android-r-beta-2 -> android-r-beta-2
+ * [new tag]           android-r-beta-3 -> android-r-beta-3
+ * [new tag]           android-r-preview-1 -> android-r-preview-1
+ * [new tag]           android-r-preview-2 -> android-r-preview-2
+ * [new tag]           android-r-preview-3 -> android-r-preview-3
+ * [new tag]           android-r-preview-4 -> android-r-preview-4
+ * [new tag]           android-s-beta-1 -> android-s-beta-1
+ * [new tag]           android-s-beta-2 -> android-s-beta-2
+ * [new tag]           android-s-beta-3 -> android-s-beta-3
+ * [new tag]           android-s-beta-4 -> android-s-beta-4
+ * [new tag]           android-s-beta-5 -> android-s-beta-5
+ * [new tag]           android-s-preview-1 -> android-s-preview-1
+ * [new tag]           android-s-qpr3-beta-1 -> android-s-qpr3-beta-1
+ * [new tag]           android-s-v2-beta-2 -> android-s-v2-beta-2
+ * [new tag]           android-s-v2-beta-3 -> android-s-v2-beta-3
+ * [new tag]           android-s-v2-preview-1 -> android-s-v2-preview-1
+ * [new tag]           android-s-v2-preview-2 -> android-s-v2-preview-2
+ * [new tag]           android-sdk-4.4.2_r1 -> android-sdk-4.4.2_r1
+ * [new tag]           android-sdk-4.4.2_r1.0.1 -> android-sdk-4.4.2_r1.0.1
+ * [new tag]           android-sdk-support_r11 -> android-sdk-support_r11
+ * [new tag]           android-security-15.0.0_r1 -> android-security-15.0.0_r1
+ * [new tag]           android-security-15.0.0_r10 -> android-security-15.0.0_r10
+ * [new tag]           android-security-15.0.0_r11 -> android-security-15.0.0_r11
+ * [new tag]           android-security-15.0.0_r12 -> android-security-15.0.0_r12
+ * [new tag]           android-security-15.0.0_r13 -> android-security-15.0.0_r13
+ * [new tag]           android-security-15.0.0_r14 -> android-security-15.0.0_r14
+ * [new tag]           android-security-15.0.0_r15 -> android-security-15.0.0_r15
+ * [new tag]           android-security-15.0.0_r16 -> android-security-15.0.0_r16
+ * [new tag]           android-security-15.0.0_r17 -> android-security-15.0.0_r17
+ * [new tag]           android-security-15.0.0_r2 -> android-security-15.0.0_r2
+ * [new tag]           android-security-15.0.0_r3 -> android-security-15.0.0_r3
+ * [new tag]           android-security-15.0.0_r4 -> android-security-15.0.0_r4
+ * [new tag]           android-security-15.0.0_r5 -> android-security-15.0.0_r5
+ * [new tag]           android-security-15.0.0_r6 -> android-security-15.0.0_r6
+ * [new tag]           android-security-15.0.0_r7 -> android-security-15.0.0_r7
+ * [new tag]           android-security-15.0.0_r8 -> android-security-15.0.0_r8
+ * [new tag]           android-security-15.0.0_r9 -> android-security-15.0.0_r9
+ * [new tag]           android-security-8.0.0_r52 -> android-security-8.0.0_r52
+ * [new tag]           android-security-8.0.0_r53 -> android-security-8.0.0_r53
+ * [new tag]           android-security-8.0.0_r54 -> android-security-8.0.0_r54
+ * [new tag]           android-security-9.0.0_r62 -> android-security-9.0.0_r62
+ * [new tag]           android-security-9.0.0_r63 -> android-security-9.0.0_r63
+ * [new tag]           android-security-9.0.0_r64 -> android-security-9.0.0_r64
+ * [new tag]           android-security-9.0.0_r65 -> android-security-9.0.0_r65
+ * [new tag]           android-security-9.0.0_r66 -> android-security-9.0.0_r66
+ * [new tag]           android-security-9.0.0_r67 -> android-security-9.0.0_r67
+ * [new tag]           android-security-9.0.0_r68 -> android-security-9.0.0_r68
+ * [new tag]           android-security-9.0.0_r69 -> android-security-9.0.0_r69
+ * [new tag]           android-security-9.0.0_r70 -> android-security-9.0.0_r70
+ * [new tag]           android-security-9.0.0_r71 -> android-security-9.0.0_r71
+ * [new tag]           android-security-9.0.0_r72 -> android-security-9.0.0_r72
+ * [new tag]           android-security-9.0.0_r73 -> android-security-9.0.0_r73
+ * [new tag]           android-security-9.0.0_r74 -> android-security-9.0.0_r74
+ * [new tag]           android-security-9.0.0_r75 -> android-security-9.0.0_r75
+ * [new tag]           android-security-9.0.0_r76 -> android-security-9.0.0_r76
+ * [new tag]           android-t-beta-3 -> android-t-beta-3
+ * [new tag]           android-t-preview-1 -> android-t-preview-1
+ * [new tag]           android-t-preview-2 -> android-t-preview-2
+ * [new tag]           android-u-beta-1-gpl -> android-u-beta-1-gpl
+ * [new tag]           android-vts-15.0_r1 -> android-vts-15.0_r1
+ * [new tag]           android-vts-8.0_r1 -> android-vts-8.0_r1
+ * [new tag]           android-vts-8.0_r10 -> android-vts-8.0_r10
+ * [new tag]           android-vts-8.0_r11 -> android-vts-8.0_r11
+ * [new tag]           android-vts-8.0_r12 -> android-vts-8.0_r12
+ * [new tag]           android-vts-8.0_r13 -> android-vts-8.0_r13
+ * [new tag]           android-vts-8.0_r2 -> android-vts-8.0_r2
+ * [new tag]           android-vts-8.0_r6 -> android-vts-8.0_r6
+ * [new tag]           android-vts-8.0_r7 -> android-vts-8.0_r7
+ * [new tag]           android-vts-8.0_r8 -> android-vts-8.0_r8
+ * [new tag]           android-vts-8.0_r9 -> android-vts-8.0_r9
+ * [new tag]           android-vts-9.0_r10 -> android-vts-9.0_r10
+ * [new tag]           android-vts-9.0_r11 -> android-vts-9.0_r11
+ * [new tag]           android-vts-9.0_r12 -> android-vts-9.0_r12
+ * [new tag]           android-vts-9.0_r13 -> android-vts-9.0_r13
+ * [new tag]           android-vts-9.0_r14 -> android-vts-9.0_r14
+ * [new tag]           android-vts-9.0_r15 -> android-vts-9.0_r15
+ * [new tag]           android-vts-9.0_r16 -> android-vts-9.0_r16
+ * [new tag]           android-vts-9.0_r17 -> android-vts-9.0_r17
+ * [new tag]           android-vts-9.0_r18 -> android-vts-9.0_r18
+ * [new tag]           android-vts-9.0_r19 -> android-vts-9.0_r19
+ * [new tag]           android-vts-9.0_r4 -> android-vts-9.0_r4
+ * [new tag]           android-vts-9.0_r5 -> android-vts-9.0_r5
+ * [new tag]           android-vts-9.0_r6 -> android-vts-9.0_r6
+ * [new tag]           android-vts-9.0_r7 -> android-vts-9.0_r7
+ * [new tag]           android-vts-9.0_r8 -> android-vts-9.0_r8
+ * [new tag]           android-vts-9.0_r9 -> android-vts-9.0_r9
+ * [new tag]           android-wear-5.0.0_r1 -> android-wear-5.0.0_r1
+ * [new tag]           android-wear-5.1.0_r1 -> android-wear-5.1.0_r1
+ * [new tag]           android-wear-5.1.1_r1 -> android-wear-5.1.1_r1
+ * [new tag]           android-wear-7.1.1_r1 -> android-wear-7.1.1_r1
+ * [new tag]           android-wear-8.0.0_r1 -> android-wear-8.0.0_r1
+ * [new tag]           android-wear-8.0.0_r2 -> android-wear-8.0.0_r2
+ * [new tag]           android-wear-9.0.0_r1 -> android-wear-9.0.0_r1
+ * [new tag]           android-wear-9.0.0_r10 -> android-wear-9.0.0_r10
+ * [new tag]           android-wear-9.0.0_r11 -> android-wear-9.0.0_r11
+ * [new tag]           android-wear-9.0.0_r12 -> android-wear-9.0.0_r12
+ * [new tag]           android-wear-9.0.0_r13 -> android-wear-9.0.0_r13
+ * [new tag]           android-wear-9.0.0_r14 -> android-wear-9.0.0_r14
+ * [new tag]           android-wear-9.0.0_r15 -> android-wear-9.0.0_r15
+ * [new tag]           android-wear-9.0.0_r16 -> android-wear-9.0.0_r16
+ * [new tag]           android-wear-9.0.0_r17 -> android-wear-9.0.0_r17
+ * [new tag]           android-wear-9.0.0_r18 -> android-wear-9.0.0_r18
+ * [new tag]           android-wear-9.0.0_r19 -> android-wear-9.0.0_r19
+ * [new tag]           android-wear-9.0.0_r2 -> android-wear-9.0.0_r2
+ * [new tag]           android-wear-9.0.0_r20 -> android-wear-9.0.0_r20
+ * [new tag]           android-wear-9.0.0_r21 -> android-wear-9.0.0_r21
+ * [new tag]           android-wear-9.0.0_r22 -> android-wear-9.0.0_r22
+ * [new tag]           android-wear-9.0.0_r23 -> android-wear-9.0.0_r23
+ * [new tag]           android-wear-9.0.0_r24 -> android-wear-9.0.0_r24
+ * [new tag]           android-wear-9.0.0_r25 -> android-wear-9.0.0_r25
+ * [new tag]           android-wear-9.0.0_r26 -> android-wear-9.0.0_r26
+ * [new tag]           android-wear-9.0.0_r27 -> android-wear-9.0.0_r27
+ * [new tag]           android-wear-9.0.0_r28 -> android-wear-9.0.0_r28
+ * [new tag]           android-wear-9.0.0_r29 -> android-wear-9.0.0_r29
+ * [new tag]           android-wear-9.0.0_r3 -> android-wear-9.0.0_r3
+ * [new tag]           android-wear-9.0.0_r30 -> android-wear-9.0.0_r30
+ * [new tag]           android-wear-9.0.0_r31 -> android-wear-9.0.0_r31
+ * [new tag]           android-wear-9.0.0_r32 -> android-wear-9.0.0_r32
+ * [new tag]           android-wear-9.0.0_r33 -> android-wear-9.0.0_r33
+ * [new tag]           android-wear-9.0.0_r34 -> android-wear-9.0.0_r34
+ * [new tag]           android-wear-9.0.0_r4 -> android-wear-9.0.0_r4
+ * [new tag]           android-wear-9.0.0_r5 -> android-wear-9.0.0_r5
+ * [new tag]           android-wear-9.0.0_r6 -> android-wear-9.0.0_r6
+ * [new tag]           android-wear-9.0.0_r7 -> android-wear-9.0.0_r7
+ * [new tag]           android-wear-9.0.0_r8 -> android-wear-9.0.0_r8
+ * [new tag]           android-wear-9.0.0_r9 -> android-wear-9.0.0_r9
+ * [new tag]           android-wear-n-preview-1 -> android-wear-n-preview-1
+ * [new tag]           android-wear-n-preview-2 -> android-wear-n-preview-2
+ * [new tag]           android-wear-o-preview-3 -> android-wear-o-preview-3
+ * [new tag]           android-wear-o-preview-4 -> android-wear-o-preview-4
+ * [new tag]           android-wear-p-preview-2 -> android-wear-p-preview-2
+ * [new tag]           gradle_1.5.0 -> gradle_1.5.0
+ * [new tag]           gradle_2.0.0 -> gradle_2.0.0
+ * [new tag]           gradle_2.3.0 -> gradle_2.3.0
+ * [new tag]           gradle_3.1.2 -> gradle_3.1.2
+ * [new tag]           studio-1.4 -> studio-1.4
+ * [new tag]           studio-1.5 -> studio-1.5
+ * [new tag]           studio-2.0 -> studio-2.0
+ * [new tag]           studio-2.0-rc1 -> studio-2.0-rc1
+ * [new tag]           studio-2.3 -> studio-2.3
+ * [new tag]           studio-3.1.2 -> studio-3.1.2
+ * [new tag]           studio-master-dev_before_26911779 -> studio-master-dev_before_26911779
+ * [new tag]           studio-master-dev_before_27917934 -> studio-master-dev_before_27917934
+ * [new tag]           t_frc_ase_330444010 -> t_frc_ase_330444010
+ * [new tag]           t_frc_odp_330442000 -> t_frc_odp_330442000
+ * [new tag]           t_frc_odp_330442040 -> t_frc_odp_330442040
+ * [new tag]           webview-m40_r1 -> webview-m40_r1
+ * [new tag]           webview-m40_r2 -> webview-m40_r2
+ * [new tag]           webview-m40_r3 -> webview-m40_r3
+ * [new tag]           webview-m40_r4 -> webview-m40_r4
+mostafa@MMostafa aosp-prebuilt-ndk % git ls-tree -r HEAD | grep "android-10/arch-arm"
+mostafa@MMostafa aosp-prebuilt-ndk % git ls-tree -r HEAD | grep "android-10/arch-arm"
+mostafa@MMostafa aosp-prebuilt-ndk % 
