@@ -1,22 +1,95 @@
-mostafa@MMostafa libc % cd $ROOT/07_BUILD/toolchains/runtime-build/libc
+mostafa@MMostafa libc % grep -R "__isthreaded\|_thread_atexit_lock\|_thread_atexit_unlock" \
+$ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc \
+-n
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/pthread.c:307:    __isthreaded = 1;
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/thread_atexit.c:36:void  _thread_atexit_lock( void )
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/thread_atexit.c:41:void _thread_atexit_unlock( void )
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/netbsd/net/reentrant.h:86: * (some uses of thread operations are conditional on __isthreaded, but
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/netbsd/net/reentrant.h:215:extern int __isthreaded;
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/netbsd/net/reentrant.h:225:#define	thr_enabled()		(__isthreaded)
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/private/thread_private.h:20:extern int __isthreaded;
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/private/thread_private.h:138:					if (__isthreaded)		\
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/private/thread_private.h:142:					if (__isthreaded)		\
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/private/thread_private.h:146:					if (__isthreaded)		\
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/private/thread_private.h:150:void	_thread_atexit_lock(void);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/private/thread_private.h:151:void	_thread_atexit_unlock(void);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/private/thread_private.h:154:					if (__isthreaded)		\
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/private/thread_private.h:155:						_thread_atexit_lock();	\
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/private/thread_private.h:158:					if (__isthreaded)		\
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/private/thread_private.h:159:						_thread_atexit_unlock();\
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/stdlib/exit.c:45:int     __isthreaded    = 0;
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/tzcode/localtime.c:68:    if (__isthreaded)
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/tzcode/localtime.c:74:    if (__isthreaded)
+mostafa@MMostafa libc % find $ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc \
+-name "malloc*" \
+-o -name "free.c" \
+-o -name "realloc.c"
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/malloc_debug_leak.c
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/malloc_debug_common.h
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/malloc_debug_common.c
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/malloc_debug_qemu.c
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/include/malloc.h
+mostafa@MMostafa libc % grep -R "mmap(" \
+$ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc \
+-n
 
-for f in __ioctl mmap munmap
-do
-$TOOLCHAIN/bin/arm-linux-androideabi-gcc \
--c \
--march=armv6 \
--mtune=arm1136jf-s \
--mfloat-abi=soft \
--I$ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/include \
--I$ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/private \
--I$ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/kernel/common \
--I$ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/kernel/arch-arm \
-$ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/$f.S \
--o $f.o
-done
-arm-linux-androideabi-gcc: error: /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/mmap.S: No such file or directory
-arm-linux-androideabi-gcc: fatal error: no input files
-compilation terminated.
+grep -R "munmap(" \
+$ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc \
+-n
+
+grep -R "mprotect(" \
+$ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc \
+-n
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/pthread.c:245:    stack = mmap((void *)gStackBase, size,
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/system_properties.c:75:    pa = mmap(0, sz, PROT_READ, MAP_SHARED, fd, 0);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:90:       are serviced via mmap(), where the worst case wastage is about
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:1412:#define CALL_MMAP(s)         mmap(0, (s), MMAP_PROT, MMAP_FLAGS, -1, 0)
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:1422:            mmap(0, (s), MMAP_PROT, MMAP_FLAGS, dev_zero_fd, 0)) : \
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:1423:            mmap(0, (s), MMAP_PROT, MMAP_FLAGS, dev_zero_fd, 0))
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:1430:static void* win32mmap(size_t size) {
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:1436:static void* win32direct_mmap(size_t size) {
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:1460:#define CALL_MMAP(s)         win32mmap(s)
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:1462:#define DIRECT_MMAP(s)       win32direct_mmap(s)
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:2154:#define use_mmap(M)           ((M)->mflags &   USE_MMAP_BIT)
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:2155:#define enable_mmap(M)        ((M)->mflags |=  USE_MMAP_BIT)
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:2156:#define disable_mmap(M)       ((M)->mflags &= ~USE_MMAP_BIT)
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:2664:  assert(use_mmap(m));
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:3479:  if (use_mmap(m) && nb >= mparams.mmap_threshold) {
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:4126:  was_enabled = use_mmap(m);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:4127:  disable_mmap(m);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:4130:    enable_mmap(m);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/malloc_debug_qemu.c:633:        qtrace = mmap(0, PAGESIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/__set_errno.c:45:        /* some syscalls, mmap() for example, have valid return
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/include/sys/mman.h:47:extern void*  mmap(void *, size_t, int, int, int, off_t);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/unistd/mmap.c:35:void*   mmap( void*  addr,  size_t  size, int  prot, int  flags, int  fd,  long  offset )
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/stdio/vfprintf.c:1092:*argtable = (va_list *)mmap(NULL, *argtablesiz,
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/stdio/vfprintf.c:1191:*typetable = (unsigned char *)mmap(NULL,
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/stdio/vfprintf.c:1197:unsigned char *new = (unsigned char *)mmap(NULL,
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/stdlib/atexit.c:79:	p = mmap(NULL, pgsize, PROT_READ | PROT_WRITE,
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/stdlib/atexit.c:197:	p = mmap(NULL, pgsize, PROT_READ | PROT_WRITE,
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/SYSCALLS.TXT:97:void *      mmap(void *, size_t, int, int, int, long)  stub
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/pthread.c:256:        munmap(stack, size);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/pthread.c:351:            munmap(stack, stackSize);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/system_properties.c:82:        munmap(pa, sz);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:1405:#define CALL_MUNMAP(a, s)    munmap((a), (s))
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:1443:static int win32munmap(void* ptr, size_t size) {
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/dlmalloc.c:1461:#define CALL_MUNMAP(a, s)    win32munmap((a), (s))
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/include/sys/mman.h:48:extern int    munmap(void *, size_t);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/stdio/vfprintf.c:816:	munmap(argtable, argtablesiz);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/stdio/vfprintf.c:1176:munmap(typetable, *argtablesiz);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/stdio/vfprintf.c:1201:munmap(*typetable, *tablesize);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/stdlib/atexit.c:175:	munmap(q, pgsize);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/SYSCALLS.TXT:99:int         munmap(void *, size_t)  91
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/pthread.c:255:    if(mprotect(stack, guard_size, PROT_NONE)){
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/include/sys/mman.h:50:extern int    mprotect(const void *, size_t, int);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/stdlib/atexit.c:49: * Outside the following functions, all pages are mprotect()'ed
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/stdlib/atexit.c:75:	else if (mprotect(p, pgsize, PROT_READ | PROT_WRITE))
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/stdlib/atexit.c:99:	if (mprotect(p, pgsize, PROT_READ))
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/stdlib/atexit.c:146:	if (mprotect(p, pgsize, PROT_READ | PROT_WRITE) == 0) {
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/stdlib/atexit.c:148:	mprotect(p, pgsize, PROT_READ);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/stdlib/atexit.c:209:	if (mprotect(p, pgsize, PROT_READ | PROT_WRITE))
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/stdlib/atexit.c:215:	mprotect(p, pgsize, PROT_READ);
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/SYSCALLS.TXT:102:int         mprotect(const void *, size_t, int)  125
 mostafa@MMostafa libc % grep -R "__set_syscall_errno\|__errno" \
 $ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc \
 -n
@@ -373,15 +446,7 @@ $ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc \
 /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/pipe2.S:18:    b       __set_syscall_errno
 /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/setresgid.S:18:    b       __set_syscall_errno
 /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/settimeofday.S:18:    b       __set_syscall_errno
-mostafa@MMostafa libc % grep -R "void.*malloc\|malloc(" \
-$ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/malloc \
--n
-grep: /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/malloc: No such file or directory
-mostafa@MMostafa libc % find $TOOLCHAIN -name "libgcc.a"
-/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/arm-linux-androideabi-4.8/lib/gcc/arm-linux-androideabi/4.8/thumb/libgcc.a
-/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/arm-linux-androideabi-4.8/lib/gcc/arm-linux-androideabi/4.8/armv7-a/thumb/libgcc.a
-/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/arm-linux-androideabi-4.8/lib/gcc/arm-linux-androideabi/4.8/armv7-a/libgcc.a
-/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/arm-linux-androideabi-4.8/lib/gcc/arm-linux-androideabi/4.8/libgcc.a
+mostafa@MMostafa libc % cd $ROOT/07_BUILD/toolchains/runtime-build/libc
 mostafa@MMostafa libc % $TOOLCHAIN/bin/arm-linux-androideabi-nm *.o \
 | grep " U " \
 | sort -u
