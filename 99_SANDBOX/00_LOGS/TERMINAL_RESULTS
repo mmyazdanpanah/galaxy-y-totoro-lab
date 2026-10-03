@@ -1,994 +1,422 @@
-mostafa@MMostafa galaxy-y-totoro-lab % cd /Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab
-mostafa@MMostafa galaxy-y-totoro-lab % cd 07_BUILD/toolchains/aosp-prebuilt-ndk
-
-git branch -a
-
-git log --oneline --all --grep="android-10" | head
-* main
-  remotes/origin/HEAD -> origin/main
-  remotes/origin/main
-mostafa@MMostafa aosp-prebuilt-ndk % git fetch --unshallow
-remote: Finding sources: 100% (48116/48116)
-remote: Total 48116 (delta 26768), reused 47018 (delta 26768)
-Receiving objects: 100% (48116/48116), 736.09 MiB | 5.46 MiB/s, done.
-Resolving deltas: 100% (26768/26768), done.
-remote: Counting objects: 971, done
-remote: Finding sources: 100% (971/971)
-remote: Total 971 (delta 0), reused 971 (delta 0)
-Receiving objects: 100% (971/971), 297.14 KiB | 7.07 MiB/s, done.
-From https://android.googlesource.com/platform/prebuilts/ndk
- * [new tag]           afw-test-harness-1.5 -> afw-test-harness-1.5
- * [new tag]           afw-test-harness-2.1 -> afw-test-harness-2.1
- * [new tag]           aml_cfg_341510000 -> aml_cfg_341510000
- * [new tag]           aml_hef_341114030 -> aml_hef_341114030
- * [new tag]           aml_hef_341311010 -> aml_hef_341311010
- * [new tag]           aml_hef_341415040 -> aml_hef_341415040
- * [new tag]           aml_hef_341512030 -> aml_hef_341512030
- * [new tag]           aml_hef_341613000 -> aml_hef_341613000
- * [new tag]           aml_hef_341717050 -> aml_hef_341717050
- * [new tag]           aml_hef_341811030 -> aml_hef_341811030
- * [new tag]           aml_rkp_341012000 -> aml_rkp_341012000
- * [new tag]           aml_rkp_341015010 -> aml_rkp_341015010
- * [new tag]           aml_rkp_341114000 -> aml_rkp_341114000
- * [new tag]           aml_rkp_341311000 -> aml_rkp_341311000
- * [new tag]           aml_rkp_341510000 -> aml_rkp_341510000
- * [new tag]           aml_rkp_341810000 -> aml_rkp_341810000
- * [new tag]           aml_tz3_311312010 -> aml_tz3_311312010
- * [new tag]           android-10.0.0_r12 -> android-10.0.0_r12
- * [new tag]           android-10.0.0_r13 -> android-10.0.0_r13
- * [new tag]           android-10.0.0_r14 -> android-10.0.0_r14
- * [new tag]           android-10.0.0_r15 -> android-10.0.0_r15
- * [new tag]           android-10.0.0_r16 -> android-10.0.0_r16
- * [new tag]           android-10.0.0_r18 -> android-10.0.0_r18
- * [new tag]           android-10.0.0_r19 -> android-10.0.0_r19
- * [new tag]           android-10.0.0_r20 -> android-10.0.0_r20
- * [new tag]           android-10.0.0_r21 -> android-10.0.0_r21
- * [new tag]           android-10.0.0_r22 -> android-10.0.0_r22
- * [new tag]           android-10.0.0_r23 -> android-10.0.0_r23
- * [new tag]           android-10.0.0_r24 -> android-10.0.0_r24
- * [new tag]           android-10.0.0_r25 -> android-10.0.0_r25
- * [new tag]           android-10.0.0_r26 -> android-10.0.0_r26
- * [new tag]           android-10.0.0_r27 -> android-10.0.0_r27
- * [new tag]           android-10.0.0_r28 -> android-10.0.0_r28
- * [new tag]           android-10.0.0_r29 -> android-10.0.0_r29
- * [new tag]           android-10.0.0_r30 -> android-10.0.0_r30
- * [new tag]           android-10.0.0_r31 -> android-10.0.0_r31
- * [new tag]           android-10.0.0_r32 -> android-10.0.0_r32
- * [new tag]           android-10.0.0_r33 -> android-10.0.0_r33
- * [new tag]           android-10.0.0_r34 -> android-10.0.0_r34
- * [new tag]           android-10.0.0_r35 -> android-10.0.0_r35
- * [new tag]           android-10.0.0_r36 -> android-10.0.0_r36
- * [new tag]           android-10.0.0_r37 -> android-10.0.0_r37
- * [new tag]           android-10.0.0_r38 -> android-10.0.0_r38
- * [new tag]           android-10.0.0_r39 -> android-10.0.0_r39
- * [new tag]           android-10.0.0_r40 -> android-10.0.0_r40
- * [new tag]           android-10.0.0_r41 -> android-10.0.0_r41
- * [new tag]           android-10.0.0_r42 -> android-10.0.0_r42
- * [new tag]           android-10.0.0_r43 -> android-10.0.0_r43
- * [new tag]           android-10.0.0_r44 -> android-10.0.0_r44
- * [new tag]           android-10.0.0_r45 -> android-10.0.0_r45
- * [new tag]           android-10.0.0_r7 -> android-10.0.0_r7
- * [new tag]           android-10.0.0_r8 -> android-10.0.0_r8
- * [new tag]           android-10.0.0_r9 -> android-10.0.0_r9
- * [new tag]           android-11.0.0_r16 -> android-11.0.0_r16
- * [new tag]           android-11.0.0_r18 -> android-11.0.0_r18
- * [new tag]           android-11.0.0_r19 -> android-11.0.0_r19
- * [new tag]           android-11.0.0_r20 -> android-11.0.0_r20
- * [new tag]           android-11.0.0_r21 -> android-11.0.0_r21
- * [new tag]           android-11.0.0_r22 -> android-11.0.0_r22
- * [new tag]           android-11.0.0_r23 -> android-11.0.0_r23
- * [new tag]           android-11.0.0_r24 -> android-11.0.0_r24
- * [new tag]           android-11.0.0_r26 -> android-11.0.0_r26
- * [new tag]           android-11.0.0_r27 -> android-11.0.0_r27
- * [new tag]           android-11.0.0_r28 -> android-11.0.0_r28
- * [new tag]           android-11.0.0_r29 -> android-11.0.0_r29
- * [new tag]           android-11.0.0_r30 -> android-11.0.0_r30
- * [new tag]           android-11.0.0_r31 -> android-11.0.0_r31
- * [new tag]           android-11.0.0_r32 -> android-11.0.0_r32
- * [new tag]           android-11.0.0_r33 -> android-11.0.0_r33
- * [new tag]           android-11.0.0_r34 -> android-11.0.0_r34
- * [new tag]           android-11.0.0_r35 -> android-11.0.0_r35
- * [new tag]           android-11.0.0_r36 -> android-11.0.0_r36
- * [new tag]           android-11.0.0_r37 -> android-11.0.0_r37
- * [new tag]           android-11.0.0_r38 -> android-11.0.0_r38
- * [new tag]           android-11.0.0_r39 -> android-11.0.0_r39
- * [new tag]           android-11.0.0_r40 -> android-11.0.0_r40
- * [new tag]           android-11.0.0_r41 -> android-11.0.0_r41
- * [new tag]           android-11.0.0_r42 -> android-11.0.0_r42
- * [new tag]           android-11.0.0_r43 -> android-11.0.0_r43
- * [new tag]           android-11.0.0_r44 -> android-11.0.0_r44
- * [new tag]           android-11.0.0_r45 -> android-11.0.0_r45
- * [new tag]           android-11.0.0_r46 -> android-11.0.0_r46
- * [new tag]           android-11.0.0_r47 -> android-11.0.0_r47
- * [new tag]           android-11.0.0_r48 -> android-11.0.0_r48
- * [new tag]           android-12.0.0_r16 -> android-12.0.0_r16
- * [new tag]           android-12.0.0_r18 -> android-12.0.0_r18
- * [new tag]           android-12.0.0_r19 -> android-12.0.0_r19
- * [new tag]           android-12.0.0_r20 -> android-12.0.0_r20
- * [new tag]           android-12.0.0_r21 -> android-12.0.0_r21
- * [new tag]           android-12.0.0_r26 -> android-12.0.0_r26
- * [new tag]           android-12.0.0_r27 -> android-12.0.0_r27
- * [new tag]           android-12.0.0_r28 -> android-12.0.0_r28
- * [new tag]           android-12.0.0_r29 -> android-12.0.0_r29
- * [new tag]           android-12.0.0_r32 -> android-12.0.0_r32
- * [new tag]           android-12.1.0_r10 -> android-12.1.0_r10
- * [new tag]           android-12.1.0_r11 -> android-12.1.0_r11
- * [new tag]           android-12.1.0_r12 -> android-12.1.0_r12
- * [new tag]           android-12.1.0_r13 -> android-12.1.0_r13
- * [new tag]           android-12.1.0_r14 -> android-12.1.0_r14
- * [new tag]           android-12.1.0_r15 -> android-12.1.0_r15
- * [new tag]           android-12.1.0_r16 -> android-12.1.0_r16
- * [new tag]           android-12.1.0_r17 -> android-12.1.0_r17
- * [new tag]           android-12.1.0_r18 -> android-12.1.0_r18
- * [new tag]           android-12.1.0_r19 -> android-12.1.0_r19
- * [new tag]           android-12.1.0_r20 -> android-12.1.0_r20
- * [new tag]           android-12.1.0_r21 -> android-12.1.0_r21
- * [new tag]           android-12.1.0_r22 -> android-12.1.0_r22
- * [new tag]           android-12.1.0_r23 -> android-12.1.0_r23
- * [new tag]           android-12.1.0_r24 -> android-12.1.0_r24
- * [new tag]           android-12.1.0_r25 -> android-12.1.0_r25
- * [new tag]           android-12.1.0_r26 -> android-12.1.0_r26
- * [new tag]           android-12.1.0_r7 -> android-12.1.0_r7
- * [new tag]           android-12.1.0_r8 -> android-12.1.0_r8
- * [new tag]           android-12.1.0_r9 -> android-12.1.0_r9
- * [new tag]           android-13.0.0_r32 -> android-13.0.0_r32
- * [new tag]           android-13.0.0_r33 -> android-13.0.0_r33
- * [new tag]           android-13.0.0_r34 -> android-13.0.0_r34
- * [new tag]           android-13.0.0_r35 -> android-13.0.0_r35
- * [new tag]           android-13.0.0_r36 -> android-13.0.0_r36
- * [new tag]           android-13.0.0_r37 -> android-13.0.0_r37
- * [new tag]           android-13.0.0_r38 -> android-13.0.0_r38
- * [new tag]           android-13.0.0_r39 -> android-13.0.0_r39
- * [new tag]           android-13.0.0_r40 -> android-13.0.0_r40
- * [new tag]           android-13.0.0_r41 -> android-13.0.0_r41
- * [new tag]           android-13.0.0_r42 -> android-13.0.0_r42
- * [new tag]           android-13.0.0_r43 -> android-13.0.0_r43
- * [new tag]           android-13.0.0_r44 -> android-13.0.0_r44
- * [new tag]           android-13.0.0_r45 -> android-13.0.0_r45
- * [new tag]           android-13.0.0_r46 -> android-13.0.0_r46
- * [new tag]           android-13.0.0_r47 -> android-13.0.0_r47
- * [new tag]           android-13.0.0_r48 -> android-13.0.0_r48
- * [new tag]           android-13.0.0_r49 -> android-13.0.0_r49
- * [new tag]           android-13.0.0_r50 -> android-13.0.0_r50
- * [new tag]           android-13.0.0_r51 -> android-13.0.0_r51
- * [new tag]           android-13.0.0_r52 -> android-13.0.0_r52
- * [new tag]           android-13.0.0_r53 -> android-13.0.0_r53
- * [new tag]           android-13.0.0_r54 -> android-13.0.0_r54
- * [new tag]           android-13.0.0_r56 -> android-13.0.0_r56
- * [new tag]           android-13.0.0_r58 -> android-13.0.0_r58
- * [new tag]           android-13.0.0_r59 -> android-13.0.0_r59
- * [new tag]           android-13.0.0_r60 -> android-13.0.0_r60
- * [new tag]           android-13.0.0_r61 -> android-13.0.0_r61
- * [new tag]           android-13.0.0_r62 -> android-13.0.0_r62
- * [new tag]           android-13.0.0_r63 -> android-13.0.0_r63
- * [new tag]           android-13.0.0_r64 -> android-13.0.0_r64
- * [new tag]           android-13.0.0_r65 -> android-13.0.0_r65
- * [new tag]           android-13.0.0_r66 -> android-13.0.0_r66
- * [new tag]           android-13.0.0_r67 -> android-13.0.0_r67
- * [new tag]           android-13.0.0_r68 -> android-13.0.0_r68
- * [new tag]           android-13.0.0_r69 -> android-13.0.0_r69
- * [new tag]           android-13.0.0_r70 -> android-13.0.0_r70
- * [new tag]           android-13.0.0_r71 -> android-13.0.0_r71
- * [new tag]           android-13.0.0_r72 -> android-13.0.0_r72
- * [new tag]           android-13.0.0_r73 -> android-13.0.0_r73
- * [new tag]           android-13.0.0_r74 -> android-13.0.0_r74
- * [new tag]           android-13.0.0_r75 -> android-13.0.0_r75
- * [new tag]           android-13.0.0_r76 -> android-13.0.0_r76
- * [new tag]           android-13.0.0_r77 -> android-13.0.0_r77
- * [new tag]           android-13.0.0_r78 -> android-13.0.0_r78
- * [new tag]           android-13.0.0_r79 -> android-13.0.0_r79
- * [new tag]           android-13.0.0_r80 -> android-13.0.0_r80
- * [new tag]           android-13.0.0_r81 -> android-13.0.0_r81
- * [new tag]           android-13.0.0_r82 -> android-13.0.0_r82
- * [new tag]           android-13.0.0_r83 -> android-13.0.0_r83
- * [new tag]           android-13.0.0_r84 -> android-13.0.0_r84
- * [new tag]           android-14.0.0_r16 -> android-14.0.0_r16
- * [new tag]           android-14.0.0_r17 -> android-14.0.0_r17
- * [new tag]           android-14.0.0_r18 -> android-14.0.0_r18
- * [new tag]           android-14.0.0_r19 -> android-14.0.0_r19
- * [new tag]           android-14.0.0_r20 -> android-14.0.0_r20
- * [new tag]           android-14.0.0_r21 -> android-14.0.0_r21
- * [new tag]           android-14.0.0_r22 -> android-14.0.0_r22
- * [new tag]           android-14.0.0_r23 -> android-14.0.0_r23
- * [new tag]           android-14.0.0_r24 -> android-14.0.0_r24
- * [new tag]           android-14.0.0_r25 -> android-14.0.0_r25
- * [new tag]           android-14.0.0_r26 -> android-14.0.0_r26
- * [new tag]           android-14.0.0_r27 -> android-14.0.0_r27
- * [new tag]           android-14.0.0_r38 -> android-14.0.0_r38
- * [new tag]           android-14.0.0_r39 -> android-14.0.0_r39
- * [new tag]           android-14.0.0_r40 -> android-14.0.0_r40
- * [new tag]           android-14.0.0_r41 -> android-14.0.0_r41
- * [new tag]           android-14.0.0_r42 -> android-14.0.0_r42
- * [new tag]           android-14.0.0_r43 -> android-14.0.0_r43
- * [new tag]           android-14.0.0_r44 -> android-14.0.0_r44
- * [new tag]           android-14.0.0_r45 -> android-14.0.0_r45
- * [new tag]           android-15.0.0_r1 -> android-15.0.0_r1
- * [new tag]           android-15.0.0_r2 -> android-15.0.0_r2
- * [new tag]           android-15.0.0_r3 -> android-15.0.0_r3
- * [new tag]           android-15.0.0_r4 -> android-15.0.0_r4
- * [new tag]           android-15.0.0_r5 -> android-15.0.0_r5
- * [new tag]           android-4.1.1_r1 -> android-4.1.1_r1
- * [new tag]           android-4.1.1_r1.1 -> android-4.1.1_r1.1
- * [new tag]           android-4.1.1_r2 -> android-4.1.1_r2
- * [new tag]           android-4.1.1_r3 -> android-4.1.1_r3
- * [new tag]           android-4.1.1_r4 -> android-4.1.1_r4
- * [new tag]           android-4.1.1_r5 -> android-4.1.1_r5
- * [new tag]           android-4.1.1_r6 -> android-4.1.1_r6
- * [new tag]           android-4.1.1_r6.1 -> android-4.1.1_r6.1
- * [new tag]           android-4.1.2_r1 -> android-4.1.2_r1
- * [new tag]           android-4.1.2_r2 -> android-4.1.2_r2
- * [new tag]           android-4.1.2_r2.1 -> android-4.1.2_r2.1
- * [new tag]           android-4.2.1_r1 -> android-4.2.1_r1
- * [new tag]           android-4.2.1_r1.1 -> android-4.2.1_r1.1
- * [new tag]           android-4.2.1_r1.2 -> android-4.2.1_r1.2
- * [new tag]           android-4.2.2_r1 -> android-4.2.2_r1
- * [new tag]           android-4.2.2_r1.1 -> android-4.2.2_r1.1
- * [new tag]           android-4.2.2_r1.2 -> android-4.2.2_r1.2
- * [new tag]           android-4.2_r1 -> android-4.2_r1
- * [new tag]           android-4.3.1_r1 -> android-4.3.1_r1
- * [new tag]           android-4.3_r0.9 -> android-4.3_r0.9
- * [new tag]           android-4.3_r0.9.1 -> android-4.3_r0.9.1
- * [new tag]           android-4.3_r1 -> android-4.3_r1
- * [new tag]           android-4.3_r1.1 -> android-4.3_r1.1
- * [new tag]           android-4.3_r2 -> android-4.3_r2
- * [new tag]           android-4.3_r2.1 -> android-4.3_r2.1
- * [new tag]           android-4.3_r2.2 -> android-4.3_r2.2
- * [new tag]           android-4.3_r2.3 -> android-4.3_r2.3
- * [new tag]           android-4.3_r3 -> android-4.3_r3
- * [new tag]           android-4.3_r3.1 -> android-4.3_r3.1
- * [new tag]           android-4.4.1_r1 -> android-4.4.1_r1
- * [new tag]           android-4.4.1_r1.0.1 -> android-4.4.1_r1.0.1
- * [new tag]           android-4.4.2_r1 -> android-4.4.2_r1
- * [new tag]           android-4.4.2_r1.0.1 -> android-4.4.2_r1.0.1
- * [new tag]           android-4.4.2_r2 -> android-4.4.2_r2
- * [new tag]           android-4.4.2_r2.0.1 -> android-4.4.2_r2.0.1
- * [new tag]           android-4.4.3_r1 -> android-4.4.3_r1
- * [new tag]           android-4.4.3_r1.0.1 -> android-4.4.3_r1.0.1
- * [new tag]           android-4.4.3_r1.1 -> android-4.4.3_r1.1
- * [new tag]           android-4.4.3_r1.1.0.1 -> android-4.4.3_r1.1.0.1
- * [new tag]           android-4.4.4_r1 -> android-4.4.4_r1
- * [new tag]           android-4.4.4_r1.0.1 -> android-4.4.4_r1.0.1
- * [new tag]           android-4.4.4_r2 -> android-4.4.4_r2
- * [new tag]           android-4.4.4_r2.0.1 -> android-4.4.4_r2.0.1
- * [new tag]           android-4.4_r0.7 -> android-4.4_r0.7
- * [new tag]           android-4.4_r0.8 -> android-4.4_r0.8
- * [new tag]           android-4.4_r0.9 -> android-4.4_r0.9
- * [new tag]           android-4.4_r1 -> android-4.4_r1
- * [new tag]           android-4.4_r1.0.1 -> android-4.4_r1.0.1
- * [new tag]           android-4.4_r1.1 -> android-4.4_r1.1
- * [new tag]           android-4.4_r1.1.0.1 -> android-4.4_r1.1.0.1
- * [new tag]           android-4.4_r1.2 -> android-4.4_r1.2
- * [new tag]           android-4.4_r1.2.0.1 -> android-4.4_r1.2.0.1
- * [new tag]           android-4.4w_r1 -> android-4.4w_r1
- * [new tag]           android-5.1.1_r12 -> android-5.1.1_r12
- * [new tag]           android-5.1.1_r17 -> android-5.1.1_r17
- * [new tag]           android-5.1.1_r22 -> android-5.1.1_r22
- * [new tag]           android-5.1.1_r28 -> android-5.1.1_r28
- * [new tag]           android-5.1.1_r5 -> android-5.1.1_r5
- * [new tag]           android-6.0.0_r1 -> android-6.0.0_r1
- * [new tag]           android-6.0.0_r11 -> android-6.0.0_r11
- * [new tag]           android-6.0.0_r12 -> android-6.0.0_r12
- * [new tag]           android-6.0.0_r13 -> android-6.0.0_r13
- * [new tag]           android-6.0.0_r2 -> android-6.0.0_r2
- * [new tag]           android-6.0.0_r23 -> android-6.0.0_r23
- * [new tag]           android-6.0.0_r24 -> android-6.0.0_r24
- * [new tag]           android-6.0.0_r25 -> android-6.0.0_r25
- * [new tag]           android-6.0.0_r26 -> android-6.0.0_r26
- * [new tag]           android-6.0.0_r3 -> android-6.0.0_r3
- * [new tag]           android-6.0.0_r4 -> android-6.0.0_r4
- * [new tag]           android-6.0.0_r41 -> android-6.0.0_r41
- * [new tag]           android-6.0.0_r5 -> android-6.0.0_r5
- * [new tag]           android-6.0.0_r6 -> android-6.0.0_r6
- * [new tag]           android-6.0.0_r7 -> android-6.0.0_r7
- * [new tag]           android-6.0.1_r1 -> android-6.0.1_r1
- * [new tag]           android-6.0.1_r10 -> android-6.0.1_r10
- * [new tag]           android-6.0.1_r11 -> android-6.0.1_r11
- * [new tag]           android-6.0.1_r12 -> android-6.0.1_r12
- * [new tag]           android-6.0.1_r13 -> android-6.0.1_r13
- * [new tag]           android-6.0.1_r16 -> android-6.0.1_r16
- * [new tag]           android-6.0.1_r17 -> android-6.0.1_r17
- * [new tag]           android-6.0.1_r18 -> android-6.0.1_r18
- * [new tag]           android-6.0.1_r20 -> android-6.0.1_r20
- * [new tag]           android-6.0.1_r21 -> android-6.0.1_r21
- * [new tag]           android-6.0.1_r22 -> android-6.0.1_r22
- * [new tag]           android-6.0.1_r24 -> android-6.0.1_r24
- * [new tag]           android-6.0.1_r25 -> android-6.0.1_r25
- * [new tag]           android-6.0.1_r26 -> android-6.0.1_r26
- * [new tag]           android-6.0.1_r27 -> android-6.0.1_r27
- * [new tag]           android-6.0.1_r28 -> android-6.0.1_r28
- * [new tag]           android-6.0.1_r3 -> android-6.0.1_r3
- * [new tag]           android-6.0.1_r30 -> android-6.0.1_r30
- * [new tag]           android-6.0.1_r31 -> android-6.0.1_r31
- * [new tag]           android-6.0.1_r32 -> android-6.0.1_r32
- * [new tag]           android-6.0.1_r33 -> android-6.0.1_r33
- * [new tag]           android-6.0.1_r4 -> android-6.0.1_r4
- * [new tag]           android-6.0.1_r40 -> android-6.0.1_r40
- * [new tag]           android-6.0.1_r41 -> android-6.0.1_r41
- * [new tag]           android-6.0.1_r42 -> android-6.0.1_r42
- * [new tag]           android-6.0.1_r43 -> android-6.0.1_r43
- * [new tag]           android-6.0.1_r45 -> android-6.0.1_r45
- * [new tag]           android-6.0.1_r46 -> android-6.0.1_r46
- * [new tag]           android-6.0.1_r47 -> android-6.0.1_r47
- * [new tag]           android-6.0.1_r48 -> android-6.0.1_r48
- * [new tag]           android-6.0.1_r49 -> android-6.0.1_r49
- * [new tag]           android-6.0.1_r5 -> android-6.0.1_r5
- * [new tag]           android-6.0.1_r50 -> android-6.0.1_r50
- * [new tag]           android-6.0.1_r51 -> android-6.0.1_r51
- * [new tag]           android-6.0.1_r52 -> android-6.0.1_r52
- * [new tag]           android-6.0.1_r53 -> android-6.0.1_r53
- * [new tag]           android-6.0.1_r54 -> android-6.0.1_r54
- * [new tag]           android-6.0.1_r55 -> android-6.0.1_r55
- * [new tag]           android-6.0.1_r56 -> android-6.0.1_r56
- * [new tag]           android-6.0.1_r57 -> android-6.0.1_r57
- * [new tag]           android-6.0.1_r58 -> android-6.0.1_r58
- * [new tag]           android-6.0.1_r59 -> android-6.0.1_r59
- * [new tag]           android-6.0.1_r60 -> android-6.0.1_r60
- * [new tag]           android-6.0.1_r61 -> android-6.0.1_r61
- * [new tag]           android-6.0.1_r62 -> android-6.0.1_r62
- * [new tag]           android-6.0.1_r63 -> android-6.0.1_r63
- * [new tag]           android-6.0.1_r65 -> android-6.0.1_r65
- * [new tag]           android-6.0.1_r66 -> android-6.0.1_r66
- * [new tag]           android-6.0.1_r67 -> android-6.0.1_r67
- * [new tag]           android-6.0.1_r68 -> android-6.0.1_r68
- * [new tag]           android-6.0.1_r69 -> android-6.0.1_r69
- * [new tag]           android-6.0.1_r7 -> android-6.0.1_r7
- * [new tag]           android-6.0.1_r70 -> android-6.0.1_r70
- * [new tag]           android-6.0.1_r72 -> android-6.0.1_r72
- * [new tag]           android-6.0.1_r73 -> android-6.0.1_r73
- * [new tag]           android-6.0.1_r74 -> android-6.0.1_r74
- * [new tag]           android-6.0.1_r77 -> android-6.0.1_r77
- * [new tag]           android-6.0.1_r78 -> android-6.0.1_r78
- * [new tag]           android-6.0.1_r79 -> android-6.0.1_r79
- * [new tag]           android-6.0.1_r8 -> android-6.0.1_r8
- * [new tag]           android-6.0.1_r80 -> android-6.0.1_r80
- * [new tag]           android-6.0.1_r81 -> android-6.0.1_r81
- * [new tag]           android-6.0.1_r9 -> android-6.0.1_r9
- * [new tag]           android-7.0.0_r1 -> android-7.0.0_r1
- * [new tag]           android-7.0.0_r12 -> android-7.0.0_r12
- * [new tag]           android-7.0.0_r13 -> android-7.0.0_r13
- * [new tag]           android-7.0.0_r14 -> android-7.0.0_r14
- * [new tag]           android-7.0.0_r15 -> android-7.0.0_r15
- * [new tag]           android-7.0.0_r17 -> android-7.0.0_r17
- * [new tag]           android-7.0.0_r19 -> android-7.0.0_r19
- * [new tag]           android-7.0.0_r21 -> android-7.0.0_r21
- * [new tag]           android-7.0.0_r24 -> android-7.0.0_r24
- * [new tag]           android-7.0.0_r27 -> android-7.0.0_r27
- * [new tag]           android-7.0.0_r28 -> android-7.0.0_r28
- * [new tag]           android-7.0.0_r29 -> android-7.0.0_r29
- * [new tag]           android-7.0.0_r3 -> android-7.0.0_r3
- * [new tag]           android-7.0.0_r30 -> android-7.0.0_r30
- * [new tag]           android-7.0.0_r31 -> android-7.0.0_r31
- * [new tag]           android-7.0.0_r32 -> android-7.0.0_r32
- * [new tag]           android-7.0.0_r33 -> android-7.0.0_r33
- * [new tag]           android-7.0.0_r34 -> android-7.0.0_r34
- * [new tag]           android-7.0.0_r35 -> android-7.0.0_r35
- * [new tag]           android-7.0.0_r36 -> android-7.0.0_r36
- * [new tag]           android-7.0.0_r4 -> android-7.0.0_r4
- * [new tag]           android-7.0.0_r5 -> android-7.0.0_r5
- * [new tag]           android-7.0.0_r6 -> android-7.0.0_r6
- * [new tag]           android-7.0.0_r7 -> android-7.0.0_r7
- * [new tag]           android-7.1.0_r1 -> android-7.1.0_r1
- * [new tag]           android-7.1.0_r2 -> android-7.1.0_r2
- * [new tag]           android-7.1.0_r3 -> android-7.1.0_r3
- * [new tag]           android-7.1.0_r4 -> android-7.1.0_r4
- * [new tag]           android-7.1.0_r5 -> android-7.1.0_r5
- * [new tag]           android-7.1.0_r6 -> android-7.1.0_r6
- * [new tag]           android-7.1.0_r7 -> android-7.1.0_r7
- * [new tag]           android-7.1.1_r1 -> android-7.1.1_r1
- * [new tag]           android-7.1.1_r10 -> android-7.1.1_r10
- * [new tag]           android-7.1.1_r11 -> android-7.1.1_r11
- * [new tag]           android-7.1.1_r12 -> android-7.1.1_r12
- * [new tag]           android-7.1.1_r13 -> android-7.1.1_r13
- * [new tag]           android-7.1.1_r14 -> android-7.1.1_r14
- * [new tag]           android-7.1.1_r15 -> android-7.1.1_r15
- * [new tag]           android-7.1.1_r16 -> android-7.1.1_r16
- * [new tag]           android-7.1.1_r17 -> android-7.1.1_r17
- * [new tag]           android-7.1.1_r2 -> android-7.1.1_r2
- * [new tag]           android-7.1.1_r20 -> android-7.1.1_r20
- * [new tag]           android-7.1.1_r21 -> android-7.1.1_r21
- * [new tag]           android-7.1.1_r22 -> android-7.1.1_r22
- * [new tag]           android-7.1.1_r23 -> android-7.1.1_r23
- * [new tag]           android-7.1.1_r24 -> android-7.1.1_r24
- * [new tag]           android-7.1.1_r25 -> android-7.1.1_r25
- * [new tag]           android-7.1.1_r26 -> android-7.1.1_r26
- * [new tag]           android-7.1.1_r27 -> android-7.1.1_r27
- * [new tag]           android-7.1.1_r28 -> android-7.1.1_r28
- * [new tag]           android-7.1.1_r3 -> android-7.1.1_r3
- * [new tag]           android-7.1.1_r31 -> android-7.1.1_r31
- * [new tag]           android-7.1.1_r32 -> android-7.1.1_r32
- * [new tag]           android-7.1.1_r33 -> android-7.1.1_r33
- * [new tag]           android-7.1.1_r35 -> android-7.1.1_r35
- * [new tag]           android-7.1.1_r38 -> android-7.1.1_r38
- * [new tag]           android-7.1.1_r39 -> android-7.1.1_r39
- * [new tag]           android-7.1.1_r4 -> android-7.1.1_r4
- * [new tag]           android-7.1.1_r40 -> android-7.1.1_r40
- * [new tag]           android-7.1.1_r41 -> android-7.1.1_r41
- * [new tag]           android-7.1.1_r42 -> android-7.1.1_r42
- * [new tag]           android-7.1.1_r43 -> android-7.1.1_r43
- * [new tag]           android-7.1.1_r44 -> android-7.1.1_r44
- * [new tag]           android-7.1.1_r45 -> android-7.1.1_r45
- * [new tag]           android-7.1.1_r46 -> android-7.1.1_r46
- * [new tag]           android-7.1.1_r47 -> android-7.1.1_r47
- * [new tag]           android-7.1.1_r48 -> android-7.1.1_r48
- * [new tag]           android-7.1.1_r49 -> android-7.1.1_r49
- * [new tag]           android-7.1.1_r50 -> android-7.1.1_r50
- * [new tag]           android-7.1.1_r51 -> android-7.1.1_r51
- * [new tag]           android-7.1.1_r52 -> android-7.1.1_r52
- * [new tag]           android-7.1.1_r53 -> android-7.1.1_r53
- * [new tag]           android-7.1.1_r54 -> android-7.1.1_r54
- * [new tag]           android-7.1.1_r55 -> android-7.1.1_r55
- * [new tag]           android-7.1.1_r56 -> android-7.1.1_r56
- * [new tag]           android-7.1.1_r57 -> android-7.1.1_r57
- * [new tag]           android-7.1.1_r58 -> android-7.1.1_r58
- * [new tag]           android-7.1.1_r59 -> android-7.1.1_r59
- * [new tag]           android-7.1.1_r6 -> android-7.1.1_r6
- * [new tag]           android-7.1.1_r60 -> android-7.1.1_r60
- * [new tag]           android-7.1.1_r61 -> android-7.1.1_r61
- * [new tag]           android-7.1.1_r7 -> android-7.1.1_r7
- * [new tag]           android-7.1.1_r8 -> android-7.1.1_r8
- * [new tag]           android-7.1.1_r9 -> android-7.1.1_r9
- * [new tag]           android-7.1.2_r1 -> android-7.1.2_r1
- * [new tag]           android-7.1.2_r10 -> android-7.1.2_r10
- * [new tag]           android-7.1.2_r11 -> android-7.1.2_r11
- * [new tag]           android-7.1.2_r12 -> android-7.1.2_r12
- * [new tag]           android-7.1.2_r13 -> android-7.1.2_r13
- * [new tag]           android-7.1.2_r14 -> android-7.1.2_r14
- * [new tag]           android-7.1.2_r15 -> android-7.1.2_r15
- * [new tag]           android-7.1.2_r16 -> android-7.1.2_r16
- * [new tag]           android-7.1.2_r17 -> android-7.1.2_r17
- * [new tag]           android-7.1.2_r18 -> android-7.1.2_r18
- * [new tag]           android-7.1.2_r19 -> android-7.1.2_r19
- * [new tag]           android-7.1.2_r2 -> android-7.1.2_r2
- * [new tag]           android-7.1.2_r23 -> android-7.1.2_r23
- * [new tag]           android-7.1.2_r24 -> android-7.1.2_r24
- * [new tag]           android-7.1.2_r25 -> android-7.1.2_r25
- * [new tag]           android-7.1.2_r27 -> android-7.1.2_r27
- * [new tag]           android-7.1.2_r28 -> android-7.1.2_r28
- * [new tag]           android-7.1.2_r29 -> android-7.1.2_r29
- * [new tag]           android-7.1.2_r3 -> android-7.1.2_r3
- * [new tag]           android-7.1.2_r30 -> android-7.1.2_r30
- * [new tag]           android-7.1.2_r32 -> android-7.1.2_r32
- * [new tag]           android-7.1.2_r33 -> android-7.1.2_r33
- * [new tag]           android-7.1.2_r36 -> android-7.1.2_r36
- * [new tag]           android-7.1.2_r37 -> android-7.1.2_r37
- * [new tag]           android-7.1.2_r38 -> android-7.1.2_r38
- * [new tag]           android-7.1.2_r39 -> android-7.1.2_r39
- * [new tag]           android-7.1.2_r4 -> android-7.1.2_r4
- * [new tag]           android-7.1.2_r5 -> android-7.1.2_r5
- * [new tag]           android-7.1.2_r6 -> android-7.1.2_r6
- * [new tag]           android-7.1.2_r8 -> android-7.1.2_r8
- * [new tag]           android-7.1.2_r9 -> android-7.1.2_r9
- * [new tag]           android-8.0.0_r1 -> android-8.0.0_r1
- * [new tag]           android-8.0.0_r10 -> android-8.0.0_r10
- * [new tag]           android-8.0.0_r11 -> android-8.0.0_r11
- * [new tag]           android-8.0.0_r12 -> android-8.0.0_r12
- * [new tag]           android-8.0.0_r13 -> android-8.0.0_r13
- * [new tag]           android-8.0.0_r15 -> android-8.0.0_r15
- * [new tag]           android-8.0.0_r16 -> android-8.0.0_r16
- * [new tag]           android-8.0.0_r17 -> android-8.0.0_r17
- * [new tag]           android-8.0.0_r2 -> android-8.0.0_r2
- * [new tag]           android-8.0.0_r28 -> android-8.0.0_r28
- * [new tag]           android-8.0.0_r29 -> android-8.0.0_r29
- * [new tag]           android-8.0.0_r3 -> android-8.0.0_r3
- * [new tag]           android-8.0.0_r30 -> android-8.0.0_r30
- * [new tag]           android-8.0.0_r31 -> android-8.0.0_r31
- * [new tag]           android-8.0.0_r32 -> android-8.0.0_r32
- * [new tag]           android-8.0.0_r35 -> android-8.0.0_r35
- * [new tag]           android-8.0.0_r36 -> android-8.0.0_r36
- * [new tag]           android-8.0.0_r37 -> android-8.0.0_r37
- * [new tag]           android-8.0.0_r38 -> android-8.0.0_r38
- * [new tag]           android-8.0.0_r39 -> android-8.0.0_r39
- * [new tag]           android-8.0.0_r4 -> android-8.0.0_r4
- * [new tag]           android-8.0.0_r40 -> android-8.0.0_r40
- * [new tag]           android-8.0.0_r41 -> android-8.0.0_r41
- * [new tag]           android-8.0.0_r42 -> android-8.0.0_r42
- * [new tag]           android-8.0.0_r43 -> android-8.0.0_r43
- * [new tag]           android-8.0.0_r44 -> android-8.0.0_r44
- * [new tag]           android-8.0.0_r45 -> android-8.0.0_r45
- * [new tag]           android-8.0.0_r46 -> android-8.0.0_r46
- * [new tag]           android-8.0.0_r47 -> android-8.0.0_r47
- * [new tag]           android-8.0.0_r48 -> android-8.0.0_r48
- * [new tag]           android-8.0.0_r49 -> android-8.0.0_r49
- * [new tag]           android-8.0.0_r50 -> android-8.0.0_r50
- * [new tag]           android-8.0.0_r51 -> android-8.0.0_r51
- * [new tag]           android-8.0.0_r7 -> android-8.0.0_r7
- * [new tag]           android-8.0.0_r9 -> android-8.0.0_r9
- * [new tag]           android-9.0.0_r1 -> android-9.0.0_r1
- * [new tag]           android-9.0.0_r10 -> android-9.0.0_r10
- * [new tag]           android-9.0.0_r11 -> android-9.0.0_r11
- * [new tag]           android-9.0.0_r12 -> android-9.0.0_r12
- * [new tag]           android-9.0.0_r16 -> android-9.0.0_r16
- * [new tag]           android-9.0.0_r17 -> android-9.0.0_r17
- * [new tag]           android-9.0.0_r18 -> android-9.0.0_r18
- * [new tag]           android-9.0.0_r19 -> android-9.0.0_r19
- * [new tag]           android-9.0.0_r2 -> android-9.0.0_r2
- * [new tag]           android-9.0.0_r20 -> android-9.0.0_r20
- * [new tag]           android-9.0.0_r21 -> android-9.0.0_r21
- * [new tag]           android-9.0.0_r22 -> android-9.0.0_r22
- * [new tag]           android-9.0.0_r3 -> android-9.0.0_r3
- * [new tag]           android-9.0.0_r30 -> android-9.0.0_r30
- * [new tag]           android-9.0.0_r31 -> android-9.0.0_r31
- * [new tag]           android-9.0.0_r32 -> android-9.0.0_r32
- * [new tag]           android-9.0.0_r33 -> android-9.0.0_r33
- * [new tag]           android-9.0.0_r34 -> android-9.0.0_r34
- * [new tag]           android-9.0.0_r35 -> android-9.0.0_r35
- * [new tag]           android-9.0.0_r36 -> android-9.0.0_r36
- * [new tag]           android-9.0.0_r37 -> android-9.0.0_r37
- * [new tag]           android-9.0.0_r38 -> android-9.0.0_r38
- * [new tag]           android-9.0.0_r39 -> android-9.0.0_r39
- * [new tag]           android-9.0.0_r40 -> android-9.0.0_r40
- * [new tag]           android-9.0.0_r41 -> android-9.0.0_r41
- * [new tag]           android-9.0.0_r42 -> android-9.0.0_r42
- * [new tag]           android-9.0.0_r43 -> android-9.0.0_r43
- * [new tag]           android-9.0.0_r44 -> android-9.0.0_r44
- * [new tag]           android-9.0.0_r45 -> android-9.0.0_r45
- * [new tag]           android-9.0.0_r46 -> android-9.0.0_r46
- * [new tag]           android-9.0.0_r47 -> android-9.0.0_r47
- * [new tag]           android-9.0.0_r48 -> android-9.0.0_r48
- * [new tag]           android-9.0.0_r49 -> android-9.0.0_r49
- * [new tag]           android-9.0.0_r5 -> android-9.0.0_r5
- * [new tag]           android-9.0.0_r50 -> android-9.0.0_r50
- * [new tag]           android-9.0.0_r51 -> android-9.0.0_r51
- * [new tag]           android-9.0.0_r52 -> android-9.0.0_r52
- * [new tag]           android-9.0.0_r53 -> android-9.0.0_r53
- * [new tag]           android-9.0.0_r54 -> android-9.0.0_r54
- * [new tag]           android-9.0.0_r55 -> android-9.0.0_r55
- * [new tag]           android-9.0.0_r56 -> android-9.0.0_r56
- * [new tag]           android-9.0.0_r57 -> android-9.0.0_r57
- * [new tag]           android-9.0.0_r58 -> android-9.0.0_r58
- * [new tag]           android-9.0.0_r59 -> android-9.0.0_r59
- * [new tag]           android-9.0.0_r6 -> android-9.0.0_r6
- * [new tag]           android-9.0.0_r60 -> android-9.0.0_r60
- * [new tag]           android-9.0.0_r61 -> android-9.0.0_r61
- * [new tag]           android-9.0.0_r7 -> android-9.0.0_r7
- * [new tag]           android-9.0.0_r8 -> android-9.0.0_r8
- * [new tag]           android-9.0.0_r9 -> android-9.0.0_r9
- * [new tag]           android-automotiveos-14.0.0_lts2 -> android-automotiveos-14.0.0_lts2
- * [new tag]           android-automotiveos-14.0.0_lts3 -> android-automotiveos-14.0.0_lts3
- * [new tag]           android-automotiveos-14.0.0_lts4 -> android-automotiveos-14.0.0_lts4
- * [new tag]           android-automotiveos-14.0.0_lts5 -> android-automotiveos-14.0.0_lts5
- * [new tag]           android-automotiveos-14.0.0_lts6 -> android-automotiveos-14.0.0_lts6
- * [new tag]           android-automotiveos-14.0.0_lts7 -> android-automotiveos-14.0.0_lts7
- * [new tag]           android-cts-15.0_r1 -> android-cts-15.0_r1
- * [new tag]           android-cts-4.1_r1 -> android-cts-4.1_r1
- * [new tag]           android-cts-4.1_r2 -> android-cts-4.1_r2
- * [new tag]           android-cts-4.1_r4 -> android-cts-4.1_r4
- * [new tag]           android-cts-4.2_r1 -> android-cts-4.2_r1
- * [new tag]           android-cts-4.2_r2 -> android-cts-4.2_r2
- * [new tag]           android-cts-4.4_r1 -> android-cts-4.4_r1
- * [new tag]           android-cts-4.4_r4 -> android-cts-4.4_r4
- * [new tag]           android-cts-6.0_r1 -> android-cts-6.0_r1
- * [new tag]           android-cts-6.0_r12 -> android-cts-6.0_r12
- * [new tag]           android-cts-6.0_r13 -> android-cts-6.0_r13
- * [new tag]           android-cts-6.0_r14 -> android-cts-6.0_r14
- * [new tag]           android-cts-6.0_r15 -> android-cts-6.0_r15
- * [new tag]           android-cts-6.0_r16 -> android-cts-6.0_r16
- * [new tag]           android-cts-6.0_r17 -> android-cts-6.0_r17
- * [new tag]           android-cts-6.0_r18 -> android-cts-6.0_r18
- * [new tag]           android-cts-6.0_r19 -> android-cts-6.0_r19
- * [new tag]           android-cts-6.0_r2 -> android-cts-6.0_r2
- * [new tag]           android-cts-6.0_r20 -> android-cts-6.0_r20
- * [new tag]           android-cts-6.0_r21 -> android-cts-6.0_r21
- * [new tag]           android-cts-6.0_r22 -> android-cts-6.0_r22
- * [new tag]           android-cts-6.0_r23 -> android-cts-6.0_r23
- * [new tag]           android-cts-6.0_r24 -> android-cts-6.0_r24
- * [new tag]           android-cts-6.0_r25 -> android-cts-6.0_r25
- * [new tag]           android-cts-6.0_r26 -> android-cts-6.0_r26
- * [new tag]           android-cts-6.0_r27 -> android-cts-6.0_r27
- * [new tag]           android-cts-6.0_r28 -> android-cts-6.0_r28
- * [new tag]           android-cts-6.0_r29 -> android-cts-6.0_r29
- * [new tag]           android-cts-6.0_r3 -> android-cts-6.0_r3
- * [new tag]           android-cts-6.0_r30 -> android-cts-6.0_r30
- * [new tag]           android-cts-6.0_r31 -> android-cts-6.0_r31
- * [new tag]           android-cts-6.0_r32 -> android-cts-6.0_r32
- * [new tag]           android-cts-6.0_r4 -> android-cts-6.0_r4
- * [new tag]           android-cts-6.0_r5 -> android-cts-6.0_r5
- * [new tag]           android-cts-6.0_r6 -> android-cts-6.0_r6
- * [new tag]           android-cts-6.0_r7 -> android-cts-6.0_r7
- * [new tag]           android-cts-6.0_r8 -> android-cts-6.0_r8
- * [new tag]           android-cts-6.0_r9 -> android-cts-6.0_r9
- * [new tag]           android-cts-7.0_r1 -> android-cts-7.0_r1
- * [new tag]           android-cts-7.0_r10 -> android-cts-7.0_r10
- * [new tag]           android-cts-7.0_r11 -> android-cts-7.0_r11
- * [new tag]           android-cts-7.0_r12 -> android-cts-7.0_r12
- * [new tag]           android-cts-7.0_r13 -> android-cts-7.0_r13
- * [new tag]           android-cts-7.0_r14 -> android-cts-7.0_r14
- * [new tag]           android-cts-7.0_r15 -> android-cts-7.0_r15
- * [new tag]           android-cts-7.0_r16 -> android-cts-7.0_r16
- * [new tag]           android-cts-7.0_r17 -> android-cts-7.0_r17
- * [new tag]           android-cts-7.0_r18 -> android-cts-7.0_r18
- * [new tag]           android-cts-7.0_r19 -> android-cts-7.0_r19
- * [new tag]           android-cts-7.0_r2 -> android-cts-7.0_r2
- * [new tag]           android-cts-7.0_r20 -> android-cts-7.0_r20
- * [new tag]           android-cts-7.0_r21 -> android-cts-7.0_r21
- * [new tag]           android-cts-7.0_r22 -> android-cts-7.0_r22
- * [new tag]           android-cts-7.0_r23 -> android-cts-7.0_r23
- * [new tag]           android-cts-7.0_r24 -> android-cts-7.0_r24
- * [new tag]           android-cts-7.0_r25 -> android-cts-7.0_r25
- * [new tag]           android-cts-7.0_r26 -> android-cts-7.0_r26
- * [new tag]           android-cts-7.0_r27 -> android-cts-7.0_r27
- * [new tag]           android-cts-7.0_r28 -> android-cts-7.0_r28
- * [new tag]           android-cts-7.0_r29 -> android-cts-7.0_r29
- * [new tag]           android-cts-7.0_r3 -> android-cts-7.0_r3
- * [new tag]           android-cts-7.0_r30 -> android-cts-7.0_r30
- * [new tag]           android-cts-7.0_r31 -> android-cts-7.0_r31
- * [new tag]           android-cts-7.0_r32 -> android-cts-7.0_r32
- * [new tag]           android-cts-7.0_r33 -> android-cts-7.0_r33
- * [new tag]           android-cts-7.0_r4 -> android-cts-7.0_r4
- * [new tag]           android-cts-7.0_r5 -> android-cts-7.0_r5
- * [new tag]           android-cts-7.0_r6 -> android-cts-7.0_r6
- * [new tag]           android-cts-7.0_r7 -> android-cts-7.0_r7
- * [new tag]           android-cts-7.0_r8 -> android-cts-7.0_r8
- * [new tag]           android-cts-7.0_r9 -> android-cts-7.0_r9
- * [new tag]           android-cts-7.1_r1 -> android-cts-7.1_r1
- * [new tag]           android-cts-7.1_r10 -> android-cts-7.1_r10
- * [new tag]           android-cts-7.1_r11 -> android-cts-7.1_r11
- * [new tag]           android-cts-7.1_r12 -> android-cts-7.1_r12
- * [new tag]           android-cts-7.1_r13 -> android-cts-7.1_r13
- * [new tag]           android-cts-7.1_r14 -> android-cts-7.1_r14
- * [new tag]           android-cts-7.1_r15 -> android-cts-7.1_r15
- * [new tag]           android-cts-7.1_r16 -> android-cts-7.1_r16
- * [new tag]           android-cts-7.1_r17 -> android-cts-7.1_r17
- * [new tag]           android-cts-7.1_r18 -> android-cts-7.1_r18
- * [new tag]           android-cts-7.1_r19 -> android-cts-7.1_r19
- * [new tag]           android-cts-7.1_r2 -> android-cts-7.1_r2
- * [new tag]           android-cts-7.1_r20 -> android-cts-7.1_r20
- * [new tag]           android-cts-7.1_r21 -> android-cts-7.1_r21
- * [new tag]           android-cts-7.1_r22 -> android-cts-7.1_r22
- * [new tag]           android-cts-7.1_r23 -> android-cts-7.1_r23
- * [new tag]           android-cts-7.1_r24 -> android-cts-7.1_r24
- * [new tag]           android-cts-7.1_r25 -> android-cts-7.1_r25
- * [new tag]           android-cts-7.1_r26 -> android-cts-7.1_r26
- * [new tag]           android-cts-7.1_r27 -> android-cts-7.1_r27
- * [new tag]           android-cts-7.1_r28 -> android-cts-7.1_r28
- * [new tag]           android-cts-7.1_r29 -> android-cts-7.1_r29
- * [new tag]           android-cts-7.1_r3 -> android-cts-7.1_r3
- * [new tag]           android-cts-7.1_r4 -> android-cts-7.1_r4
- * [new tag]           android-cts-7.1_r5 -> android-cts-7.1_r5
- * [new tag]           android-cts-7.1_r6 -> android-cts-7.1_r6
- * [new tag]           android-cts-7.1_r7 -> android-cts-7.1_r7
- * [new tag]           android-cts-7.1_r8 -> android-cts-7.1_r8
- * [new tag]           android-cts-7.1_r9 -> android-cts-7.1_r9
- * [new tag]           android-cts-8.0_r1 -> android-cts-8.0_r1
- * [new tag]           android-cts-8.0_r10 -> android-cts-8.0_r10
- * [new tag]           android-cts-8.0_r11 -> android-cts-8.0_r11
- * [new tag]           android-cts-8.0_r12 -> android-cts-8.0_r12
- * [new tag]           android-cts-8.0_r13 -> android-cts-8.0_r13
- * [new tag]           android-cts-8.0_r14 -> android-cts-8.0_r14
- * [new tag]           android-cts-8.0_r15 -> android-cts-8.0_r15
- * [new tag]           android-cts-8.0_r16 -> android-cts-8.0_r16
- * [new tag]           android-cts-8.0_r17 -> android-cts-8.0_r17
- * [new tag]           android-cts-8.0_r18 -> android-cts-8.0_r18
- * [new tag]           android-cts-8.0_r19 -> android-cts-8.0_r19
- * [new tag]           android-cts-8.0_r2 -> android-cts-8.0_r2
- * [new tag]           android-cts-8.0_r20 -> android-cts-8.0_r20
- * [new tag]           android-cts-8.0_r21 -> android-cts-8.0_r21
- * [new tag]           android-cts-8.0_r22 -> android-cts-8.0_r22
- * [new tag]           android-cts-8.0_r23 -> android-cts-8.0_r23
- * [new tag]           android-cts-8.0_r24 -> android-cts-8.0_r24
- * [new tag]           android-cts-8.0_r25 -> android-cts-8.0_r25
- * [new tag]           android-cts-8.0_r26 -> android-cts-8.0_r26
- * [new tag]           android-cts-8.0_r3 -> android-cts-8.0_r3
- * [new tag]           android-cts-8.0_r4 -> android-cts-8.0_r4
- * [new tag]           android-cts-8.0_r5 -> android-cts-8.0_r5
- * [new tag]           android-cts-8.0_r6 -> android-cts-8.0_r6
- * [new tag]           android-cts-8.0_r7 -> android-cts-8.0_r7
- * [new tag]           android-cts-8.0_r8 -> android-cts-8.0_r8
- * [new tag]           android-cts-8.0_r9 -> android-cts-8.0_r9
- * [new tag]           android-cts-9.0_r1 -> android-cts-9.0_r1
- * [new tag]           android-cts-9.0_r10 -> android-cts-9.0_r10
- * [new tag]           android-cts-9.0_r11 -> android-cts-9.0_r11
- * [new tag]           android-cts-9.0_r12 -> android-cts-9.0_r12
- * [new tag]           android-cts-9.0_r13 -> android-cts-9.0_r13
- * [new tag]           android-cts-9.0_r14 -> android-cts-9.0_r14
- * [new tag]           android-cts-9.0_r15 -> android-cts-9.0_r15
- * [new tag]           android-cts-9.0_r16 -> android-cts-9.0_r16
- * [new tag]           android-cts-9.0_r17 -> android-cts-9.0_r17
- * [new tag]           android-cts-9.0_r18 -> android-cts-9.0_r18
- * [new tag]           android-cts-9.0_r19 -> android-cts-9.0_r19
- * [new tag]           android-cts-9.0_r2 -> android-cts-9.0_r2
- * [new tag]           android-cts-9.0_r20 -> android-cts-9.0_r20
- * [new tag]           android-cts-9.0_r3 -> android-cts-9.0_r3
- * [new tag]           android-cts-9.0_r4 -> android-cts-9.0_r4
- * [new tag]           android-cts-9.0_r5 -> android-cts-9.0_r5
- * [new tag]           android-cts-9.0_r6 -> android-cts-9.0_r6
- * [new tag]           android-cts-9.0_r7 -> android-cts-9.0_r7
- * [new tag]           android-cts-9.0_r8 -> android-cts-9.0_r8
- * [new tag]           android-cts-9.0_r9 -> android-cts-9.0_r9
- * [new tag]           android-l-preview_r2 -> android-l-preview_r2
- * [new tag]           android-m-preview -> android-m-preview
- * [new tag]           android-m-preview-1 -> android-m-preview-1
- * [new tag]           android-m-preview-2 -> android-m-preview-2
- * [new tag]           android-mainline-10.0.0_r10 -> android-mainline-10.0.0_r10
- * [new tag]           android-mainline-10.0.0_r4 -> android-mainline-10.0.0_r4
- * [new tag]           android-mainline-10.0.0_r5 -> android-mainline-10.0.0_r5
- * [new tag]           android-mainline-10.0.0_r6 -> android-mainline-10.0.0_r6
- * [new tag]           android-mainline-10.0.0_r7 -> android-mainline-10.0.0_r7
- * [new tag]           android-mainline-10.0.0_r8 -> android-mainline-10.0.0_r8
- * [new tag]           android-mainline-10.0.0_r9 -> android-mainline-10.0.0_r9
- * [new tag]           android-mainline-11.0.0_r12 -> android-mainline-11.0.0_r12
- * [new tag]           android-mainline-11.0.0_r13 -> android-mainline-11.0.0_r13
- * [new tag]           android-mainline-11.0.0_r14 -> android-mainline-11.0.0_r14
- * [new tag]           android-mainline-11.0.0_r15 -> android-mainline-11.0.0_r15
- * [new tag]           android-mainline-11.0.0_r16 -> android-mainline-11.0.0_r16
- * [new tag]           android-mainline-11.0.0_r17 -> android-mainline-11.0.0_r17
- * [new tag]           android-mainline-11.0.0_r18 -> android-mainline-11.0.0_r18
- * [new tag]           android-mainline-11.0.0_r20 -> android-mainline-11.0.0_r20
- * [new tag]           android-mainline-11.0.0_r21 -> android-mainline-11.0.0_r21
- * [new tag]           android-mainline-11.0.0_r22 -> android-mainline-11.0.0_r22
- * [new tag]           android-mainline-11.0.0_r23 -> android-mainline-11.0.0_r23
- * [new tag]           android-mainline-11.0.0_r24 -> android-mainline-11.0.0_r24
- * [new tag]           android-mainline-11.0.0_r25 -> android-mainline-11.0.0_r25
- * [new tag]           android-mainline-11.0.0_r26 -> android-mainline-11.0.0_r26
- * [new tag]           android-mainline-11.0.0_r27 -> android-mainline-11.0.0_r27
- * [new tag]           android-mainline-11.0.0_r28 -> android-mainline-11.0.0_r28
- * [new tag]           android-mainline-11.0.0_r30 -> android-mainline-11.0.0_r30
- * [new tag]           android-mainline-11.0.0_r31 -> android-mainline-11.0.0_r31
- * [new tag]           android-mainline-11.0.0_r32 -> android-mainline-11.0.0_r32
- * [new tag]           android-mainline-11.0.0_r34 -> android-mainline-11.0.0_r34
- * [new tag]           android-mainline-11.0.0_r35 -> android-mainline-11.0.0_r35
- * [new tag]           android-mainline-11.0.0_r36 -> android-mainline-11.0.0_r36
- * [new tag]           android-mainline-11.0.0_r37 -> android-mainline-11.0.0_r37
- * [new tag]           android-mainline-11.0.0_r38 -> android-mainline-11.0.0_r38
- * [new tag]           android-mainline-11.0.0_r39 -> android-mainline-11.0.0_r39
- * [new tag]           android-mainline-11.0.0_r40 -> android-mainline-11.0.0_r40
- * [new tag]           android-mainline-11.0.0_r41 -> android-mainline-11.0.0_r41
- * [new tag]           android-mainline-11.0.0_r42 -> android-mainline-11.0.0_r42
- * [new tag]           android-mainline-11.0.0_r43 -> android-mainline-11.0.0_r43
- * [new tag]           android-mainline-11.0.0_r44 -> android-mainline-11.0.0_r44
- * [new tag]           android-mainline-12.0.0_r100 -> android-mainline-12.0.0_r100
- * [new tag]           android-mainline-12.0.0_r113 -> android-mainline-12.0.0_r113
- * [new tag]           android-mainline-12.0.0_r115 -> android-mainline-12.0.0_r115
- * [new tag]           android-mainline-12.0.0_r122 -> android-mainline-12.0.0_r122
- * [new tag]           android-mainline-12.0.0_r19 -> android-mainline-12.0.0_r19
- * [new tag]           android-mainline-12.0.0_r22 -> android-mainline-12.0.0_r22
- * [new tag]           android-mainline-12.0.0_r39 -> android-mainline-12.0.0_r39
- * [new tag]           android-mainline-12.0.0_r42 -> android-mainline-12.0.0_r42
- * [new tag]           android-mainline-12.0.0_r49 -> android-mainline-12.0.0_r49
- * [new tag]           android-mainline-12.0.0_r5 -> android-mainline-12.0.0_r5
- * [new tag]           android-mainline-12.0.0_r56 -> android-mainline-12.0.0_r56
- * [new tag]           android-mainline-12.0.0_r59 -> android-mainline-12.0.0_r59
- * [new tag]           android-mainline-12.0.0_r63 -> android-mainline-12.0.0_r63
- * [new tag]           android-mainline-12.0.0_r69 -> android-mainline-12.0.0_r69
- * [new tag]           android-mainline-12.0.0_r70 -> android-mainline-12.0.0_r70
- * [new tag]           android-mainline-12.0.0_r77 -> android-mainline-12.0.0_r77
- * [new tag]           android-mainline-12.0.0_r98 -> android-mainline-12.0.0_r98
- * [new tag]           android-mainline-12.0.0_r99 -> android-mainline-12.0.0_r99
- * [new tag]           android-n-iot-preview-2 -> android-n-iot-preview-2
- * [new tag]           android-n-iot-preview-4 -> android-n-iot-preview-4
- * [new tag]           android-n-iot-release-ihome-igv1 -> android-n-iot-release-ihome-igv1
- * [new tag]           android-n-iot-release-lg-thinq-wk7 -> android-n-iot-release-lg-thinq-wk7
- * [new tag]           android-n-iot-release-polk-at1 -> android-n-iot-release-polk-at1
- * [new tag]           android-n-iot-release-smart-display -> android-n-iot-release-smart-display
- * [new tag]           android-n-iot-release-smart-display-r2 -> android-n-iot-release-smart-display-r2
- * [new tag]           android-n-mr1-preview-1 -> android-n-mr1-preview-1
- * [new tag]           android-n-mr1-preview-2 -> android-n-mr1-preview-2
- * [new tag]           android-n-mr2-preview-1 -> android-n-mr2-preview-1
- * [new tag]           android-n-mr2-preview-2 -> android-n-mr2-preview-2
- * [new tag]           android-n-preview-1 -> android-n-preview-1
- * [new tag]           android-n-preview-2 -> android-n-preview-2
- * [new tag]           android-n-preview-3 -> android-n-preview-3
- * [new tag]           android-n-preview-4 -> android-n-preview-4
- * [new tag]           android-n-preview-5 -> android-n-preview-5
- * [new tag]           android-o-iot-preview-5 -> android-o-iot-preview-5
- * [new tag]           android-o-mr1-iot-preview-6 -> android-o-mr1-iot-preview-6
- * [new tag]           android-o-mr1-iot-preview-7 -> android-o-mr1-iot-preview-7
- * [new tag]           android-o-mr1-iot-preview-8 -> android-o-mr1-iot-preview-8
- * [new tag]           android-o-mr1-iot-release-1.0.0 -> android-o-mr1-iot-release-1.0.0
- * [new tag]           android-o-mr1-iot-release-1.0.1 -> android-o-mr1-iot-release-1.0.1
- * [new tag]           android-o-mr1-iot-release-1.0.10 -> android-o-mr1-iot-release-1.0.10
- * [new tag]           android-o-mr1-iot-release-1.0.12 -> android-o-mr1-iot-release-1.0.12
- * [new tag]           android-o-mr1-iot-release-1.0.13 -> android-o-mr1-iot-release-1.0.13
- * [new tag]           android-o-mr1-iot-release-1.0.14 -> android-o-mr1-iot-release-1.0.14
- * [new tag]           android-o-mr1-iot-release-1.0.2 -> android-o-mr1-iot-release-1.0.2
- * [new tag]           android-o-mr1-iot-release-1.0.3 -> android-o-mr1-iot-release-1.0.3
- * [new tag]           android-o-mr1-iot-release-1.0.4 -> android-o-mr1-iot-release-1.0.4
- * [new tag]           android-o-mr1-iot-release-1.0.5 -> android-o-mr1-iot-release-1.0.5
- * [new tag]           android-o-mr1-iot-release-1.0.7 -> android-o-mr1-iot-release-1.0.7
- * [new tag]           android-o-mr1-iot-release-1.0.8 -> android-o-mr1-iot-release-1.0.8
- * [new tag]           android-o-mr1-iot-release-cube-fcs -> android-o-mr1-iot-release-cube-fcs
- * [new tag]           android-o-mr1-iot-release-cube-fsi -> android-o-mr1-iot-release-cube-fsi
- * [new tag]           android-o-mr1-iot-release-cube_r2 -> android-o-mr1-iot-release-cube_r2
- * [new tag]           android-o-mr1-iot-release-smart-clock-fcs -> android-o-mr1-iot-release-smart-clock-fcs
- * [new tag]           android-o-mr1-iot-release-smart-clock-fsi -> android-o-mr1-iot-release-smart-clock-fsi
- * [new tag]           android-o-mr1-iot-release-smart-clock-r2 -> android-o-mr1-iot-release-smart-clock-r2
- * [new tag]           android-o-mr1-iot-release-smart-clock-r6 -> android-o-mr1-iot-release-smart-clock-r6
- * [new tag]           android-o-mr1-iot-release-smart-display-r14 -> android-o-mr1-iot-release-smart-display-r14
- * [new tag]           android-o-mr1-iot-release-smart-display-r22 -> android-o-mr1-iot-release-smart-display-r22
- * [new tag]           android-o-mr1-iot-release-smart-display-r3 -> android-o-mr1-iot-release-smart-display-r3
- * [new tag]           android-o-mr1-iot-release-smart-display-r30 -> android-o-mr1-iot-release-smart-display-r30
- * [new tag]           android-o-mr1-iot-release-smart-display-r39 -> android-o-mr1-iot-release-smart-display-r39
- * [new tag]           android-o-mr1-iot-release-smart-display-r4 -> android-o-mr1-iot-release-smart-display-r4
- * [new tag]           android-o-mr1-iot-release-smart-display-r40.1J -> android-o-mr1-iot-release-smart-display-r40.1J
- * [new tag]           android-o-mr1-iot-release-smart-display-r5 -> android-o-mr1-iot-release-smart-display-r5
- * [new tag]           android-o-mr1-iot-release-smart-display-r8 -> android-o-mr1-iot-release-smart-display-r8
- * [new tag]           android-o-mr1-iot-release-smart-display-r9 -> android-o-mr1-iot-release-smart-display-r9
- * [new tag]           android-o-mr1-preview-1 -> android-o-mr1-preview-1
- * [new tag]           android-o-mr1-preview-2 -> android-o-mr1-preview-2
- * [new tag]           android-o-preview-1 -> android-o-preview-1
- * [new tag]           android-o-preview-2 -> android-o-preview-2
- * [new tag]           android-o-preview-3 -> android-o-preview-3
- * [new tag]           android-o-preview-4 -> android-o-preview-4
- * [new tag]           android-p-preview-1 -> android-p-preview-1
- * [new tag]           android-p-preview-2 -> android-p-preview-2
- * [new tag]           android-p-preview-3 -> android-p-preview-3
- * [new tag]           android-p-preview-4 -> android-p-preview-4
- * [new tag]           android-p-preview-5 -> android-p-preview-5
- * [new tag]           android-platform-15.0.0_r1 -> android-platform-15.0.0_r1
- * [new tag]           android-platform-15.0.0_r10 -> android-platform-15.0.0_r10
- * [new tag]           android-platform-15.0.0_r11 -> android-platform-15.0.0_r11
- * [new tag]           android-platform-15.0.0_r12 -> android-platform-15.0.0_r12
- * [new tag]           android-platform-15.0.0_r13 -> android-platform-15.0.0_r13
- * [new tag]           android-platform-15.0.0_r14 -> android-platform-15.0.0_r14
- * [new tag]           android-platform-15.0.0_r15 -> android-platform-15.0.0_r15
- * [new tag]           android-platform-15.0.0_r16 -> android-platform-15.0.0_r16
- * [new tag]           android-platform-15.0.0_r17 -> android-platform-15.0.0_r17
- * [new tag]           android-platform-15.0.0_r18 -> android-platform-15.0.0_r18
- * [new tag]           android-platform-15.0.0_r19 -> android-platform-15.0.0_r19
- * [new tag]           android-platform-15.0.0_r2 -> android-platform-15.0.0_r2
- * [new tag]           android-platform-15.0.0_r20 -> android-platform-15.0.0_r20
- * [new tag]           android-platform-15.0.0_r3 -> android-platform-15.0.0_r3
- * [new tag]           android-platform-15.0.0_r4 -> android-platform-15.0.0_r4
- * [new tag]           android-platform-15.0.0_r5 -> android-platform-15.0.0_r5
- * [new tag]           android-platform-15.0.0_r6 -> android-platform-15.0.0_r6
- * [new tag]           android-platform-15.0.0_r7 -> android-platform-15.0.0_r7
- * [new tag]           android-platform-15.0.0_r8 -> android-platform-15.0.0_r8
- * [new tag]           android-platform-15.0.0_r9 -> android-platform-15.0.0_r9
- * [new tag]           android-q-preview-1 -> android-q-preview-1
- * [new tag]           android-q-preview-2.5 -> android-q-preview-2.5
- * [new tag]           android-q-preview-4 -> android-q-preview-4
- * [new tag]           android-q-preview-5 -> android-q-preview-5
- * [new tag]           android-q-preview-6 -> android-q-preview-6
- * [new tag]           android-r-beta-2 -> android-r-beta-2
- * [new tag]           android-r-beta-3 -> android-r-beta-3
- * [new tag]           android-r-preview-1 -> android-r-preview-1
- * [new tag]           android-r-preview-2 -> android-r-preview-2
- * [new tag]           android-r-preview-3 -> android-r-preview-3
- * [new tag]           android-r-preview-4 -> android-r-preview-4
- * [new tag]           android-s-beta-1 -> android-s-beta-1
- * [new tag]           android-s-beta-2 -> android-s-beta-2
- * [new tag]           android-s-beta-3 -> android-s-beta-3
- * [new tag]           android-s-beta-4 -> android-s-beta-4
- * [new tag]           android-s-beta-5 -> android-s-beta-5
- * [new tag]           android-s-preview-1 -> android-s-preview-1
- * [new tag]           android-s-qpr3-beta-1 -> android-s-qpr3-beta-1
- * [new tag]           android-s-v2-beta-2 -> android-s-v2-beta-2
- * [new tag]           android-s-v2-beta-3 -> android-s-v2-beta-3
- * [new tag]           android-s-v2-preview-1 -> android-s-v2-preview-1
- * [new tag]           android-s-v2-preview-2 -> android-s-v2-preview-2
- * [new tag]           android-sdk-4.4.2_r1 -> android-sdk-4.4.2_r1
- * [new tag]           android-sdk-4.4.2_r1.0.1 -> android-sdk-4.4.2_r1.0.1
- * [new tag]           android-sdk-support_r11 -> android-sdk-support_r11
- * [new tag]           android-security-15.0.0_r1 -> android-security-15.0.0_r1
- * [new tag]           android-security-15.0.0_r10 -> android-security-15.0.0_r10
- * [new tag]           android-security-15.0.0_r11 -> android-security-15.0.0_r11
- * [new tag]           android-security-15.0.0_r12 -> android-security-15.0.0_r12
- * [new tag]           android-security-15.0.0_r13 -> android-security-15.0.0_r13
- * [new tag]           android-security-15.0.0_r14 -> android-security-15.0.0_r14
- * [new tag]           android-security-15.0.0_r15 -> android-security-15.0.0_r15
- * [new tag]           android-security-15.0.0_r16 -> android-security-15.0.0_r16
- * [new tag]           android-security-15.0.0_r17 -> android-security-15.0.0_r17
- * [new tag]           android-security-15.0.0_r2 -> android-security-15.0.0_r2
- * [new tag]           android-security-15.0.0_r3 -> android-security-15.0.0_r3
- * [new tag]           android-security-15.0.0_r4 -> android-security-15.0.0_r4
- * [new tag]           android-security-15.0.0_r5 -> android-security-15.0.0_r5
- * [new tag]           android-security-15.0.0_r6 -> android-security-15.0.0_r6
- * [new tag]           android-security-15.0.0_r7 -> android-security-15.0.0_r7
- * [new tag]           android-security-15.0.0_r8 -> android-security-15.0.0_r8
- * [new tag]           android-security-15.0.0_r9 -> android-security-15.0.0_r9
- * [new tag]           android-security-8.0.0_r52 -> android-security-8.0.0_r52
- * [new tag]           android-security-8.0.0_r53 -> android-security-8.0.0_r53
- * [new tag]           android-security-8.0.0_r54 -> android-security-8.0.0_r54
- * [new tag]           android-security-9.0.0_r62 -> android-security-9.0.0_r62
- * [new tag]           android-security-9.0.0_r63 -> android-security-9.0.0_r63
- * [new tag]           android-security-9.0.0_r64 -> android-security-9.0.0_r64
- * [new tag]           android-security-9.0.0_r65 -> android-security-9.0.0_r65
- * [new tag]           android-security-9.0.0_r66 -> android-security-9.0.0_r66
- * [new tag]           android-security-9.0.0_r67 -> android-security-9.0.0_r67
- * [new tag]           android-security-9.0.0_r68 -> android-security-9.0.0_r68
- * [new tag]           android-security-9.0.0_r69 -> android-security-9.0.0_r69
- * [new tag]           android-security-9.0.0_r70 -> android-security-9.0.0_r70
- * [new tag]           android-security-9.0.0_r71 -> android-security-9.0.0_r71
- * [new tag]           android-security-9.0.0_r72 -> android-security-9.0.0_r72
- * [new tag]           android-security-9.0.0_r73 -> android-security-9.0.0_r73
- * [new tag]           android-security-9.0.0_r74 -> android-security-9.0.0_r74
- * [new tag]           android-security-9.0.0_r75 -> android-security-9.0.0_r75
- * [new tag]           android-security-9.0.0_r76 -> android-security-9.0.0_r76
- * [new tag]           android-t-beta-3 -> android-t-beta-3
- * [new tag]           android-t-preview-1 -> android-t-preview-1
- * [new tag]           android-t-preview-2 -> android-t-preview-2
- * [new tag]           android-u-beta-1-gpl -> android-u-beta-1-gpl
- * [new tag]           android-vts-15.0_r1 -> android-vts-15.0_r1
- * [new tag]           android-vts-8.0_r1 -> android-vts-8.0_r1
- * [new tag]           android-vts-8.0_r10 -> android-vts-8.0_r10
- * [new tag]           android-vts-8.0_r11 -> android-vts-8.0_r11
- * [new tag]           android-vts-8.0_r12 -> android-vts-8.0_r12
- * [new tag]           android-vts-8.0_r13 -> android-vts-8.0_r13
- * [new tag]           android-vts-8.0_r2 -> android-vts-8.0_r2
- * [new tag]           android-vts-8.0_r6 -> android-vts-8.0_r6
- * [new tag]           android-vts-8.0_r7 -> android-vts-8.0_r7
- * [new tag]           android-vts-8.0_r8 -> android-vts-8.0_r8
- * [new tag]           android-vts-8.0_r9 -> android-vts-8.0_r9
- * [new tag]           android-vts-9.0_r10 -> android-vts-9.0_r10
- * [new tag]           android-vts-9.0_r11 -> android-vts-9.0_r11
- * [new tag]           android-vts-9.0_r12 -> android-vts-9.0_r12
- * [new tag]           android-vts-9.0_r13 -> android-vts-9.0_r13
- * [new tag]           android-vts-9.0_r14 -> android-vts-9.0_r14
- * [new tag]           android-vts-9.0_r15 -> android-vts-9.0_r15
- * [new tag]           android-vts-9.0_r16 -> android-vts-9.0_r16
- * [new tag]           android-vts-9.0_r17 -> android-vts-9.0_r17
- * [new tag]           android-vts-9.0_r18 -> android-vts-9.0_r18
- * [new tag]           android-vts-9.0_r19 -> android-vts-9.0_r19
- * [new tag]           android-vts-9.0_r4 -> android-vts-9.0_r4
- * [new tag]           android-vts-9.0_r5 -> android-vts-9.0_r5
- * [new tag]           android-vts-9.0_r6 -> android-vts-9.0_r6
- * [new tag]           android-vts-9.0_r7 -> android-vts-9.0_r7
- * [new tag]           android-vts-9.0_r8 -> android-vts-9.0_r8
- * [new tag]           android-vts-9.0_r9 -> android-vts-9.0_r9
- * [new tag]           android-wear-5.0.0_r1 -> android-wear-5.0.0_r1
- * [new tag]           android-wear-5.1.0_r1 -> android-wear-5.1.0_r1
- * [new tag]           android-wear-5.1.1_r1 -> android-wear-5.1.1_r1
- * [new tag]           android-wear-7.1.1_r1 -> android-wear-7.1.1_r1
- * [new tag]           android-wear-8.0.0_r1 -> android-wear-8.0.0_r1
- * [new tag]           android-wear-8.0.0_r2 -> android-wear-8.0.0_r2
- * [new tag]           android-wear-9.0.0_r1 -> android-wear-9.0.0_r1
- * [new tag]           android-wear-9.0.0_r10 -> android-wear-9.0.0_r10
- * [new tag]           android-wear-9.0.0_r11 -> android-wear-9.0.0_r11
- * [new tag]           android-wear-9.0.0_r12 -> android-wear-9.0.0_r12
- * [new tag]           android-wear-9.0.0_r13 -> android-wear-9.0.0_r13
- * [new tag]           android-wear-9.0.0_r14 -> android-wear-9.0.0_r14
- * [new tag]           android-wear-9.0.0_r15 -> android-wear-9.0.0_r15
- * [new tag]           android-wear-9.0.0_r16 -> android-wear-9.0.0_r16
- * [new tag]           android-wear-9.0.0_r17 -> android-wear-9.0.0_r17
- * [new tag]           android-wear-9.0.0_r18 -> android-wear-9.0.0_r18
- * [new tag]           android-wear-9.0.0_r19 -> android-wear-9.0.0_r19
- * [new tag]           android-wear-9.0.0_r2 -> android-wear-9.0.0_r2
- * [new tag]           android-wear-9.0.0_r20 -> android-wear-9.0.0_r20
- * [new tag]           android-wear-9.0.0_r21 -> android-wear-9.0.0_r21
- * [new tag]           android-wear-9.0.0_r22 -> android-wear-9.0.0_r22
- * [new tag]           android-wear-9.0.0_r23 -> android-wear-9.0.0_r23
- * [new tag]           android-wear-9.0.0_r24 -> android-wear-9.0.0_r24
- * [new tag]           android-wear-9.0.0_r25 -> android-wear-9.0.0_r25
- * [new tag]           android-wear-9.0.0_r26 -> android-wear-9.0.0_r26
- * [new tag]           android-wear-9.0.0_r27 -> android-wear-9.0.0_r27
- * [new tag]           android-wear-9.0.0_r28 -> android-wear-9.0.0_r28
- * [new tag]           android-wear-9.0.0_r29 -> android-wear-9.0.0_r29
- * [new tag]           android-wear-9.0.0_r3 -> android-wear-9.0.0_r3
- * [new tag]           android-wear-9.0.0_r30 -> android-wear-9.0.0_r30
- * [new tag]           android-wear-9.0.0_r31 -> android-wear-9.0.0_r31
- * [new tag]           android-wear-9.0.0_r32 -> android-wear-9.0.0_r32
- * [new tag]           android-wear-9.0.0_r33 -> android-wear-9.0.0_r33
- * [new tag]           android-wear-9.0.0_r34 -> android-wear-9.0.0_r34
- * [new tag]           android-wear-9.0.0_r4 -> android-wear-9.0.0_r4
- * [new tag]           android-wear-9.0.0_r5 -> android-wear-9.0.0_r5
- * [new tag]           android-wear-9.0.0_r6 -> android-wear-9.0.0_r6
- * [new tag]           android-wear-9.0.0_r7 -> android-wear-9.0.0_r7
- * [new tag]           android-wear-9.0.0_r8 -> android-wear-9.0.0_r8
- * [new tag]           android-wear-9.0.0_r9 -> android-wear-9.0.0_r9
- * [new tag]           android-wear-n-preview-1 -> android-wear-n-preview-1
- * [new tag]           android-wear-n-preview-2 -> android-wear-n-preview-2
- * [new tag]           android-wear-o-preview-3 -> android-wear-o-preview-3
- * [new tag]           android-wear-o-preview-4 -> android-wear-o-preview-4
- * [new tag]           android-wear-p-preview-2 -> android-wear-p-preview-2
- * [new tag]           gradle_1.5.0 -> gradle_1.5.0
- * [new tag]           gradle_2.0.0 -> gradle_2.0.0
- * [new tag]           gradle_2.3.0 -> gradle_2.3.0
- * [new tag]           gradle_3.1.2 -> gradle_3.1.2
- * [new tag]           studio-1.4 -> studio-1.4
- * [new tag]           studio-1.5 -> studio-1.5
- * [new tag]           studio-2.0 -> studio-2.0
- * [new tag]           studio-2.0-rc1 -> studio-2.0-rc1
- * [new tag]           studio-2.3 -> studio-2.3
- * [new tag]           studio-3.1.2 -> studio-3.1.2
- * [new tag]           studio-master-dev_before_26911779 -> studio-master-dev_before_26911779
- * [new tag]           studio-master-dev_before_27917934 -> studio-master-dev_before_27917934
- * [new tag]           t_frc_ase_330444010 -> t_frc_ase_330444010
- * [new tag]           t_frc_odp_330442000 -> t_frc_odp_330442000
- * [new tag]           t_frc_odp_330442040 -> t_frc_odp_330442040
- * [new tag]           webview-m40_r1 -> webview-m40_r1
- * [new tag]           webview-m40_r2 -> webview-m40_r2
- * [new tag]           webview-m40_r3 -> webview-m40_r3
- * [new tag]           webview-m40_r4 -> webview-m40_r4
-mostafa@MMostafa aosp-prebuilt-ndk % git ls-tree -r HEAD | grep "android-10/arch-arm"
-mostafa@MMostafa aosp-prebuilt-ndk % git ls-tree -r HEAD | grep "android-10/arch-arm"
-mostafa@MMostafa aosp-prebuilt-ndk % 
+mostafa@MMostafa libc % cd $ROOT/07_BUILD/toolchains/runtime-build/libc
+mostafa@MMostafa libc % $TOOLCHAIN/bin/arm-linux-androideabi-ar \
+rcs libtotoro_bionic.a \
+*.o
+mostafa@MMostafa libc % $TOOLCHAIN/bin/arm-linux-androideabi-ar t libtotoro_bionic.a | head
+__brk.o
+__ioctl.o
+__mmap2.o
+__open.o
+atexit.o
+close.o
+dlmalloc.o
+errno.o
+fflush.o
+findfp.o
+mostafa@MMostafa libc % $TOOLCHAIN/bin/arm-linux-androideabi-nm \
+libtotoro_bionic.a \
+| grep " T " \
+| head -50
+00000000 T __brk
+00000000 T __ioctl
+00000000 T __mmap2
+00000000 T __open
+00000588 T __atexit_register_cleanup
+00000034 T __cxa_atexit
+000002f8 T __cxa_finalize
+000002c8 T atexit
+00000000 T close
+0000720c T calloc
+00005d1c T free
+00007380 T independent_calloc
+000073dc T independent_comalloc
+00007564 T mallinfo
+000053a4 T malloc
+00007514 T malloc_footprint
+0000753c T malloc_max_footprint
+0000759c T malloc_stats
+000074d0 T malloc_trim
+000075bc T malloc_usable_size
+00007684 T malloc_walk_free_pages
+00007864 T malloc_walk_heap
+00007654 T mallopt
+00007340 T memalign
+00007470 T pvalloc
+000072e0 T realloc
+0000742c T valloc
+00000000 T __errno
+0000008c T __sflush
+00000000 T fflush
+0000014c T __sfp
+0000030c T __sinit
+000002e0 T _cleanup
+00000000 T fprintf
+00000000 T fstat
+00000000 T __sfvwrite
+00000000 T _fwalk
+00000000 T fwrite
+00000000 T __ioctl
+00000000 T ioctl
+00000038 T isatty
+00000000 T lseek
+00000000 T __smakebuf
+00000194 T __swhatbuf
+00000000 T memchr
+00000000 T memcpy
+00000000 T memcpy
+00000000 T memmove
+00000000 T memset
+00000000 T mmap
+mostafa@MMostafa libc % grep -R "__set_syscall_errno" \
+$ROOT/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc \
+-n
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/bionic/__set_errno.c:43:int __set_syscall_errno(int n)
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/tools/gensyscalls.py:97:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/tools/gensyscalls.py:110:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/tools/gensyscalls.py:122:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/tools/gensyscalls.py:136:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/tools/gensyscalls.py:226:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/bionic/pipe.S:63:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/sigaltstack.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/epoll_wait.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/sendfile.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__set_thread_area.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/mlock.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/umask.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/fchdir.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/_exit.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/chdir.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/setitimer.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/umount2.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/lseek.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/getuid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/getegid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/getppid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/mkdir.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/getpgid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__pwrite64.S:35:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/madvise.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__timer_create.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/gettid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/truncate.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/unlink.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/chroot.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/uname.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/sigprocmask.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/getpid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/getgid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/geteuid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/fchown.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/readlink.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/chown.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/setgid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__fcntl64.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/ioprio_get.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/symlink.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/setpgid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/renameat.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/fchmod.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/setsid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/fchownat.S:35:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/kill.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/sync.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/dup2.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/epoll_ctl.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/ioprio_set.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/chmod.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__ptrace.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/mknod.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/mprotect.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/getitimer.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__getcwd.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/lstat.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/inotify_add_watch.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/eventfd.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/sysinfo.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/times.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__open.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/futex.S:36:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/setpriority.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__rt_sigprocmask.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/clock_settime.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/stat.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__waitid.S:35:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__mmap2.S:36:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/nanosleep.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/sched_get_priority_min.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__openat.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__wait4.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/klogctl.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__timer_settime.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/sched_yield.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/tkill.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/readv.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/close.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__timer_gettime.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__brk.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/setregid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/rmdir.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__setreuid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/pause.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/write.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/dup.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__reboot.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/msync.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/clock_gettime.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/lchown.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/sigpending.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__statfs64.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/munlock.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/getresuid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__fork.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/fstatat.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/clock_nanosleep.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__setuid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/flock.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/ftruncate.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__rt_sigaction.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/getrusage.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/delete_module.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/utimes.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__ioctl.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/sigaction.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/inotify_init.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/sched_setscheduler.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/epoll_create.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__timer_getoverrun.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/getgroups.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/clock_getres.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/fstat.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/prctl.S:35:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/execve.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__setresuid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/writev.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__fstatfs64.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/rename.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/access.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__timer_delete.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/mincore.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/getresgid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/gettimeofday.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/getrlimit.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/mount.S:35:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/init_module.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__pread64.S:35:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/_waitpid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/sched_getparam.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/capget.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/poll.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__llseek.S:35:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/unlinkat.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__sigsuspend.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/sched_rr_get_interval.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/link.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/mkdirat.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__fcntl.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/inotify_rm_watch.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/fchmodat.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/setgroups.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/sched_getscheduler.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/capset.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__socketcall.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__getpriority.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/munmap.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/acct.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/sched_setparam.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/_exit_thread.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/read.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/vfork.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/mremap.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__syslog.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/setrlimit.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__sys_clone.S:35:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/fdatasync.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/__rt_sigtimedwait.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/fsync.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/select.S:35:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/getdents.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/sched_get_priority_max.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/pipe2.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/setresgid.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-sh/syscalls/settimeofday.S:32:1:  .long   __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/bionic/kill.S:53:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/bionic/clone.S:121:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/bionic/tkill.S:53:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/bionic/syscall.S:53:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/bionic/syscall.S:69:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/sigaltstack.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/epoll_wait.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/sendfile.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/mlock.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/umask.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/fchdir.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/_exit.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/chdir.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/setitimer.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/sendmsg.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/umount2.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/lseek.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/cacheflush.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/getuid.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/getegid.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/getppid.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/mkdir.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/getpgid.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/accept.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__pwrite64.S:20:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/getsockname.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/madvise.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__timer_create.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/gettid.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/truncate.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/unlink.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/chroot.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__set_tls.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/uname.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/sigprocmask.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/getpid.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/getgid.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/geteuid.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/setsockopt.S:20:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/fchown.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/readlink.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/chown.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/setgid.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__fcntl64.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/ioprio_get.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/symlink.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/socketpair.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/setpgid.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/renameat.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/fchmod.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/shutdown.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/setsid.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/fchownat.S:20:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/sendto.S:20:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/sync.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/dup2.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/epoll_ctl.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/ioprio_set.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/chmod.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__ptrace.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/mknod.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/mprotect.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/getitimer.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__getcwd.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/getsockopt.S:20:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/lstat.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/inotify_add_watch.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/eventfd.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/sysinfo.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/times.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__open.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/futex.S:20:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/setpriority.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__rt_sigprocmask.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/clock_settime.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/stat.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__waitid.S:20:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__mmap2.S:20:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/connect.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/nanosleep.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/sched_get_priority_min.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__openat.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__wait4.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/klogctl.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__timer_settime.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/sched_yield.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/readv.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/close.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__timer_gettime.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__brk.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/setregid.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/rmdir.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__setreuid.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/pause.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/write.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/dup.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__reboot.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/msync.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/clock_gettime.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/lchown.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/sigpending.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__statfs64.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/munlock.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/getresuid.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__fork.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/fstatat.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/clock_nanosleep.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__setuid.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/flock.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/ftruncate.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__rt_sigaction.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/getrusage.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/delete_module.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/utimes.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__ioctl.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/sigaction.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/inotify_init.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/recvfrom.S:20:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/sched_setscheduler.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/epoll_create.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__timer_getoverrun.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/getgroups.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/clock_getres.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/fstat.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/prctl.S:20:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/execve.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__setresuid.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/writev.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__fstatfs64.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/rename.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/access.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/getpeername.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__timer_delete.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/mincore.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/getresgid.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/pipe.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/gettimeofday.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/getrlimit.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/mount.S:20:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/init_module.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__pread64.S:20:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/listen.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/sched_getparam.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/capget.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/poll.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__llseek.S:20:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/unlinkat.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__sigsuspend.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/bind.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/sched_rr_get_interval.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/link.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/mkdirat.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__fcntl.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/inotify_rm_watch.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/fchmodat.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/setgroups.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/sched_getscheduler.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/capset.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__getpriority.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/socket.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/munmap.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/acct.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/sched_setparam.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/_exit_thread.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/read.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/vfork.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/mremap.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__syslog.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/setrlimit.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__sys_clone.S:20:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/fdatasync.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/__rt_sigtimedwait.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/fsync.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/recvmsg.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/select.S:20:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/getdents.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/sched_get_priority_max.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/pipe2.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/setresgid.S:18:    b       __set_syscall_errno
+/Users/mostafa/Workspace/03_Projects/Engineering/galaxy-y-totoro-lab/07_BUILD/toolchains/_recovery/aosp-gingerbread/bionic/libc/arch-arm/syscalls/settimeofday.S:18:    b       __set_syscall_errno
+mostafa@MMostafa libc % 
