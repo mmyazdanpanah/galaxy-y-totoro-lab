@@ -1,0 +1,19 @@
+#!/system/bin/sh
+
+echo "=== TOTORO SYSTEM INFO ==="
+
+echo
+echo "[Kernel]"
+uname -a
+
+echo
+echo "[CPU]"
+cat /proc/cpuinfo
+
+echo
+echo "[Memory]"
+cat /proc/meminfo
+
+echo
+echo "[Storage]"
+df -h
