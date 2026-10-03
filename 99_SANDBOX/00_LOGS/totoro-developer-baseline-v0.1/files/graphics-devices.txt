@@ -1,0 +1,3 @@
+drwxr-xr-x    2 root     root            60 Oct  3 22:55 .
+drwxr-xr-x   10 root     root          6080 Oct  3 22:55 ..
+crw-rw----    1 root     graphics   29,   0 Oct  3 22:55 fb0

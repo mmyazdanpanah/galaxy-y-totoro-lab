@@ -1,0 +1,122 @@
+  PID USER       VSZ STAT COMMAND
+    1 root       368 S    /init
+    2 root         0 SW   [kthreadd]
+    3 root         0 SW   [ksoftirqd/0]
+    4 root         0 SW   [watchdog/0]
+    5 root         0 SW   [events/0]
+    6 root         0 SW   [khelper]
+    9 root         0 SW   [async/mgr]
+   12 root         0 SW   [suspend]
+  226 root         0 SW   [sync_supers]
+  228 root         0 SW   [bdi-default]
+  230 root         0 SW   [kblockd/0]
+  237 root         0 SW   [pmu_events/0]
+  257 root         0 SW   [kseriod]
+  271 root         0 SW   [kmmcd]
+  378 root         0 SW   [khungtaskd]
+  379 root         0 SW   [kswapd0]
+  381 root         0 SW   [aio/0]
+  382 root         0 SW   [crypto/0]
+  401 root         0 SW   [lcd_wq/0]
+  402 root         0 SW   [CSL_LCDC/0]
+  406 root         0 SW   [lcd_periodic_re]
+  606 root         0 SW   [bma222_wq]
+  611 root         0 SW   [gp2a_prox_wq]
+  634 root         0 SW   [charing_current]
+  639 root         0 SW   [rx_ether_queue]
+  646 root         0 SW   [usb_mass_storag]
+  662 root         0 SW   [check_ic_wq]
+  667 root         0 SW   [irq/126-silabs-]
+  691 root         0 SW   [kstriped]
+  706 root         0 SW   [binder]
+  717 root         0 SW<  [ipc-wq/0]
+  722 root         0 SW   [cmd_wq/0]
+  723 root         0 SW   [rsp_wq/0]
+  724 root         0 SW   [notify_wq/0]
+  739 root         0 SW   [cmd_wq/0]
+  740 root         0 SW   [rsp_wq/0]
+  741 root         0 SW   [notify_wq/0]
+  747 root         0 SW   [v3d_thread]
+  754 root         0 SW<  [AudioCtrlWq/0]
+  782 root       304 S    /sbin/ueventd
+  956 root         0 SW   [mmcqd]
+ 1294 root       396 S    /init
+ 1296 system     840 S    /system/bin/servicemanager
+ 1297 media     8000 S    /system/bin/playsound
+ 1298 root      3908 S    /system/bin/vold
+ 1299 root      4232 S    /system/bin/netd
+ 1300 root       704 S    /system/bin/debuggerd
+ 1301 radio     8440 S    /system/bin/rild
+ 1302 system    1048 S    /system/bin/npsmobex
+ 1303 root      120m S    zygote /bin/app_process -Xzygote /system/bin --zygote --start-system-server
+ 1304 media    42912 S    /system/bin/mediaserver
+ 1305 bluetoot  1292 S    /system/bin/dbus-daemon --system --nofork
+ 1306 root       840 S    /system/bin/installd
+ 1307 keystore  1780 S    /system/bin/keystore /data/misc/keystore
+ 1310 gps       4268 S    /system/bin/glgps -c /system/etc/gps/glconfig4751.xml
+ 1311 system     904 S    /system/bin/usb_portd
+ 1314 system     840 S    /system/bin/memsicd
+ 1475 root         0 SW   [flush-138:11]
+ 1476 system    209m S    system_server
+ 1528 system    139m S    {ndroid.systemui} com.android.systemui
+ 1536 app_10    155m S    {nputmethod.axt9} com.sec.android.inputmethod.axt9
+ 1540 radio     147m S    {m.android.phone} com.android.phone
+ 1541 app_24    128m S    {.sec.pcw.device} com.sec.pcw.device
+ 1546 bluetoot  128m S    {m.bt.app.system} com.broadcom.bt.app.system
+ 1548 app_7     144m S    {.app.twlauncher} com.sec.android.app.twlauncher
+ 1584 app_2     162m S    {e.process.gapps} com.google.process.gapps
+ 1625 app_7     158m S    {d.process.acore} android.process.acore
+ 1748 app_53    129m S    {her.clockwidget} com.sec.android.widgetapp.clockweather.clockwidget
+ 2730 system     768 S    sh -c am broadcast -a com.intent.action.KIES_WSSERVICE_STOP
+ 2731 system    112m S    app_process /system/bin com.android.commands.am.Am broadcast -a com.intent.action.KIES_WSSERVICE_STOP
+ 2868 system     768 S    sh -c am broadcast -a com.intent.action.KIES_WSSERVICE_STOP
+ 2869 system    112m S    app_process /system/bin com.android.commands.am.Am broadcast -a com.intent.action.KIES_WSSERVICE_STOP
+ 2920 system     768 S    sh -c am broadcast -a com.intent.action.KIES_WSSERVICE_STOP
+ 2921 system    112m S    app_process /system/bin com.android.commands.am.Am broadcast -a com.intent.action.KIES_WSSERVICE_STOP
+ 2950 system     768 S    sh -c am broadcast -a com.intent.action.KIES_WSSERVICE_STOP
+ 2951 system    112m S    app_process /system/bin com.android.commands.am.Am broadcast -a com.intent.action.KIES_WSSERVICE_STOP
+ 2971 shell     3420 S    /sbin/adbd
+ 3106 root         0 SW<  [loop0]
+ 3109 root         0 SW   [kdmflush]
+ 3110 root         0 SW   [kcryptd_io]
+ 3111 root         0 SW   [kcryptd]
+ 3124 system    129m S    {pp.controlpanel} com.sec.android.app.controlpanel
+ 3159 app_7     128m S    {ammonitorwidget} com.samsung.sec.android.appwidget.programmonitorwidget
+ 3166 app_41    129m S    {etapp.dualclock} com.sec.android.widgetapp.dualclock
+ 3175 app_65    181m S    {d.apps.sshdroid} berserker.android.apps.sshdroid
+ 3304 root         0 SW   [iscan_sysioc]
+ 3305 root         0 SW   [dhd_watchdog]
+ 3306 root         0 SW   [dhd_dpc]
+ 3307 root         0 SW   [dhd_sysioc]
+ 3344 wifi      2228 S    /system/bin/wpa_supplicant -Dwext -ieth0 -c /data/misc/wifi/wpa_supplicant.conf
+ 3348 dhcp       884 S    /system/bin/dhcpcd -BKL eth0 -ABK eth0
+ 3482 app_45    147m S    {android.vending} com.android.vending
+ 3619 root         0 SW<  [loop1]
+ 3622 root         0 SW   [kdmflush]
+ 3623 root         0 SW   [kcryptd_io]
+ 3624 root         0 SW   [kcryptd]
+ 3635 app_39    219m S    {droid.apps.maps} com.google.android.apps.maps
+ 3678 app_66    138m S    {pal.androidterm} jackpal.androidterm
+ 3762 system    130m S    {ndroid.settings} com.android.settings
+ 3871 system     700 S    /system/bin/dun_mgr /dev/ttyGS0 nodetach auth login local asyncmap 0 crtscts 172.18.0.1:172.18.0.2
+ 3872 system    2748 S    atx -dl
+ 3906 app_8     135m S    {m.android.email} com.android.email
+ 3915 app_43    129m S    {.provider.badge} com.sec.android.provider.badge
+ 3930 app_39    147m S    {LocationService} com.google.android.apps.maps:NetworkLocationService
+ 3938 app_39    137m S    {s:FriendService} com.google.android.apps.maps:FriendService
+ 3954 app_39    135m S    {onFriendService} com.google.android.apps.maps:LocationFriendService
+ 3969 app_42    132m S    com.smlds
+ 3992 system    129m S    {d.providers.drm} com.sec.android.providers.drm
+ 4216 app_64    132m S    {ufou.android.su} com.noshufou.android.su
+ 4229 app_15    130m S    {.cooliris.media} com.cooliris.media
+ 4243 app_21    130m S    {d.apps.uploader} com.google.android.apps.uploader
+ 4252 app_50    131m S    {d.process.media} android.process.media
+ 4286 radio     132m S    com.wssyncmldm
+ 4309 app_44    129m S    {amsungapps.una2} com.sec.android.app.samsungapps.una2
+ 4451 root       776 S    sh -
+ 4456 root       768 S    {dropbear} /system/bin/sh /data/data/berserker.android.apps.sshdroid/dropbear/dropbear -H /data/data/berserker.android.apps
+ 4458 root       940 S    /data/data/berserker.android.apps.sshdroid/dropbear/dropbeard -H /data/data/berserker.android.apps.sshdroid/home -Y fffffff
+ 4538 root      1004 S    /data/data/berserker.android.apps.sshdroid/dropbear/dropbeard -H /data/data/berserker.android.apps.sshdroid/home -Y fffffff
+ 4540 root       776 S    -sh
+ 4545 root         0 SW   [flush-179:0]
+ 4560 root      1020 R    ps

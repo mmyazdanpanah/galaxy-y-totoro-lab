@@ -1,0 +1,12 @@
+Processor	: ARMv6-compatible processor rev 5 (v6l)
+BogoMIPS	: 832.90
+Features	: swp half thumb fastmult vfp edsp java 
+CPU implementer	: 0x41
+CPU architecture: 6TEJ
+CPU variant	: 0x1
+CPU part	: 0xb36
+CPU revision	: 5
+
+Hardware	: BCM21553 ThunderbirdEDN31 platform
+Revision	: 0000
+Serial		: 0000000000000000

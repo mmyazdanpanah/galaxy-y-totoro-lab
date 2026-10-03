@@ -1,0 +1,1 @@
+ls: /dev/fb*: No such file or directory
