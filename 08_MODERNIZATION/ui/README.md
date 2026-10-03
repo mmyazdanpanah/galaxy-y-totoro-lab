@@ -154,3 +154,159 @@ These diagnostics established the physical framebuffer/page behavior before the 
 U1 does not modify bootloader state, PIT, BML/STL partitioning, EFS, modem state, recovery, kernel images, or Android system files. The native UI operates through the existing framebuffer and touchscreen device interfaces and exits back to Android without persistent system modification.
 
 U1 is now closed. Further work should move to U2 rather than expanding the framebuffer proof-of-concept.
+
+
+## U2.0 display/session ownership investigation
+
+U2.0 physical diagnostics established that framebuffer access, rendering throughput, page switching, and touchscreen ownership are functional, but the stock Android display stack can still modify the framebuffer while the native test is idle.
+
+### Combined diagnostic measurements
+
+Representative physical measurements on the GT-S5360:
+
+    FB 240x320 virtual=240x640
+    FB bpp=32 stride=960
+    BENCH fill32: ~195 MiB/s, ~1.50 ms/frame
+    BENCH RGB565 -> 2x32: ~2.34–2.45 ms/frame
+    BENCH page-switch: ~11.4–12.0 ms/pan
+    Touch device: /dev/input/event4 (sec_touchscreen)
+    EVIOCGRAB: PASS
+
+These measurements are performance evidence for the current device/toolchain, not fixed architectural limits. The 120x160 logical / 2x scale path remains a candidate and must be benchmarked in the eventual UI implementation.
+
+### Passive ownership test — decisive evidence
+
+The passive test was designed to remove our own framebuffer activity from the observation window:
+
+- unique patterns were written to both virtual framebuffer pages during setup;
+- page 0 was selected once;
+- during the 60-second observation interval the test performed no framebuffer writes;
+- during the observation interval the test performed no FBIOPAN_DISPLAY calls;
+- touchscreen interaction was not required.
+
+Observed physical run:
+
+    PASSIVE initial yoffset=0
+    PASSIVE page0 checksum: 0x3c5dd9c5
+    PASSIVE page1 checksum: 0xdf5bbfc5
+
+At approximately 46.619 seconds:
+
+    PAGE0 CONTENT CHANGE: 0x3c5dd9c5 -> 0x2597e67a
+    PAGE1 CONTENT CHANGE: 0xdf5bb647
+
+At approximately 46.806 seconds:
+
+    YOFFSET CHANGE: 0 -> 320
+
+The phone display visibly changed at the same time as the framebuffer checksum transition; the user observed an Android/display-generated abstract image replacing the native test pattern. Both virtual pages changed before the visible-page offset changed.
+
+Final passive result:
+
+    checks: 339
+    yoffset changes: 1
+    page0 content changes: 1
+    page1 content changes: 1
+    metadata changes: 0
+    final yoffset: 320
+
+This is the cleanest U2 evidence so far: an external display/framebuffer owner is modifying framebuffer memory and subsequently changing the visible virtual page even while the native test is not writing or panning the framebuffer.
+
+The exact writer is not yet attributed. The evidence does not by itself prove that a particular Android process, gralloc, SurfaceFlinger component, V3D path, or kernel thread performed the memory writes.
+
+### Android display-stack attribution evidence
+
+Read-only inspection of stock Android shows that system_server (PID 1477) holds four persistent descriptors for:
+
+    /dev/graphics/fb0
+
+It also holds descriptors for:
+
+    /dev/v3d
+    /dev/gememalloc
+    /dev/input/event4
+
+The four fb0 descriptors were present both before and during the passive test. This shows that Android already had persistent framebuffer access; it was not caused by the native test opening fb0.
+
+The pulled gralloc.default.so contains explicit framebuffer mapping code:
+
+    fb_device_open
+    mapFrameBufferLocked
+    /dev/graphics/fb%u
+    /dev/fb%u
+    mmap
+    ioctl
+    FBIOPUT_VSCREENINFO
+    page flipping not supported (yres_virtual=%d, requested=%d)
+
+Its exported symbols include:
+
+    fb_device_open
+    mapFrameBufferLocked
+    mapBuffer
+    gralloc_lock
+    gralloc_unlock
+
+This establishes that the stock gralloc implementation can map and manage the framebuffer, but it does not by itself identify the writer responsible for the passive-test transition.
+
+The pulled libsurfaceflinger.so exposes the Android compositor/display path, including:
+
+    SurfaceFlinger::postFramebuffer()
+    SurfaceFlinger::handlePageFlip()
+    SurfaceFlinger::lockPageFlip()
+    SurfaceFlinger::unlockPageFlip()
+    DisplayHardware::flip()
+    DisplayHardware::getCurrentBufferIndex()
+    DisplayHardware::getDisplayBufferAddress()
+    DisplayHardware::compositionRequest()
+    DisplayHardware::compositionComplete()
+    V3D_Compose::Create()
+
+It also references:
+
+    FramebufferNativeWindow::setUpdateRectangle()
+    FramebufferNativeWindow::compositionComplete()
+    FramebufferNativeWindow::getCurrentBufferIndex()
+
+libsurfaceflinger.so depends on the expected legacy Android graphics stack:
+
+    libhardware.so
+    libEGL.so
+    libGLESv1_CM.so
+    libui.so
+    libpixelflinger.so
+    libsurfaceflinger_client.so
+
+The earlier source/binary evidence also shows the Samsung/Broadcom LCD path exposes the private dirty-row ioctl 0x46ff. The current binary inspection did not find a literal 0x46ff string in libsurfaceflinger.so; absence of a string is not evidence that the ioctl is unused.
+
+### Current U2.0 status
+
+    Framebuffer mmap/access                 PASS
+    32-bit framebuffer throughput           PASS
+    RGB565 -> 2x32 rendering benchmark     PASS
+    Page switching                          PASS
+    Touch discovery                         PASS
+    EVIOCGRAB                               PASS
+    Passive framebuffer stability           FAIL
+    Spontaneous framebuffer content change CONFIRMED
+    Spontaneous yoffset change              CONFIRMED
+    External display ownership interference CONFIRMED
+    Exact writer identity                  NOT YET ATTRIBUTED
+
+### Engineering consequence
+
+U2 should not proceed by blindly adding more UI toolkit code while Android still owns a competing display path.
+
+The next step is a reversible, read-only attribution phase followed by a minimal display/session ownership mechanism. The preferred sequence is:
+
+1. identify the minimum Android display component(s) that must stop drawing;
+2. establish a deterministic Totoro display session;
+3. verify framebuffer stability again with the passive test;
+4. re-run touch ownership and Android restoration tests;
+5. only then integrate the reusable Totoro HAL and LVGL 8.3 backend.
+
+Do not kill system_server, zygote, or other Android process groups blindly. Do not change boot/recovery/PIT/EFS/modem/kernel state. Preserve ADB/SSH recovery throughout.
+
+### U2 safety boundary
+
+The U2 diagnostics remain non-persistent bring-up tools. They use the existing framebuffer and touchscreen interfaces and do not modify bootloader state, PIT, BML/STL partitioning, EFS, modem state, recovery, kernel images, or Android system files.
