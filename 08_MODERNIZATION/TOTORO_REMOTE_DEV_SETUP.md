@@ -46,6 +46,53 @@ Totoro shell/root
 - Wi-Fi SSH root login verified
 - USB ADB recovery access verified
 
+## Totoro Developer Baseline v0.1
+
+A reproducible system capture has been created:
+
+```
+99_SANDBOX/00_LOGS/totoro-developer-baseline-v0.1/
+```
+
+Captured information includes:
+
+- kernel information
+- CPU information
+- memory state
+- Android properties
+- filesystem mounts
+- storage state
+- framebuffer information
+- graphics devices
+- input devices
+- running processes
+
+Hardware discovery highlights:
+
+```
+Kernel:
+Linux 2.6.35.7 armv6l
+
+Framebuffer:
+0 LCDfb
+```
+
+The device exposes a framebuffer driver for future native UI investigation.
+
+Input devices discovered:
+
+```
+event0 accelerometer_sensor
+event1 proximity_sensor
+event2 magnetic_sensor
+event3 sec_keypad
+event4 sec_touchscreen
+event5 max8986_ponkey
+event6 bcm_headset
+```
+
+The touchscreen input path is available through the Linux input subsystem.
+
 ## SSH Connection
 
 Modern macOS OpenSSH requires enabling legacy algorithms because SSHDroid uses older SSH implementations.
@@ -67,16 +114,6 @@ Connect:
 ssh totoro
 ```
 
-Expected shell:
-
-```
-# whoami
-root
-
-# id
-uid=0(root) gid=0(root)
-```
-
 ## USB ADB Recovery
 
 USB ADB remains the safest recovery mechanism.
@@ -87,29 +124,10 @@ Check connection:
 adb devices -l
 ```
 
-Expected:
-
-```
-0123456789ABCDEF device usb:...
-```
-
 Open shell:
 
 ```
 adb shell
-```
-
-Root test:
-
-```
-su
-id
-```
-
-Expected:
-
-```
-uid=0(root) gid=0(root)
 ```
 
 ## Operational Rule
@@ -125,6 +143,7 @@ Daily workflow:
 ## Next Steps
 
 - Configure SSHDroid startup persistence.
-- Create Totoro management scripts on Mac.
-- Stabilize Wi-Fi addressing.
-- Return to native UI/framebuffer development.
+- Create Totoro management scripts.
+- Build totoro-tools diagnostic toolkit.
+- Probe framebuffer metadata through /dev/fb0.
+- Continue native UI/framebuffer development.
