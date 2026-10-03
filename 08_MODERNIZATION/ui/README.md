@@ -310,3 +310,101 @@ Do not kill system_server, zygote, or other Android process groups blindly. Do n
 ### U2 safety boundary
 
 The U2 diagnostics remain non-persistent bring-up tools. They use the existing framebuffer and touchscreen interfaces and do not modify bootloader state, PIT, BML/STL partitioning, EFS, modem state, recovery, kernel images, or Android system files.
+
+
+## U2 display ownership attribution — ptrace V3/V4
+
+The U2 passive tests established that the native framebuffer is externally modified while the native program is idle. The next attribution phase traced the stock Android compositor thread directly, without modifying framebuffer state.
+
+### Runtime target
+
+On the tested stock Android build, SurfaceFlinger is a thread inside `system_server`, not a separate active process for purposes of this investigation:
+
+    TID 1484: SurfaceFlinger
+    TGID 1477: system_server
+    PPID 1307: zygote
+
+The target's framebuffer descriptor was independently verified as:
+
+    fd 23 -> /dev/graphics/fb0
+
+### Ptrace V3 result
+
+A static ARMv6/EABI5 tracer attached to TID 1484 and traced ARM EABI syscall entry/exit. V3 directly observed repeated framebuffer ioctls:
+
+    syscall = 54 (ioctl)
+    fd      = 23
+    request = 0x4601 (FBIOPUT_VSCREENINFO)
+
+The traced argument contained:
+
+    xres=240
+    yres=320
+    xres_virtual=240
+    yres_virtual=640
+    yoffset=0 or 320
+
+The ioctl returned zero. No `FBIOPAN_DISPLAY` (0x4606) or Samsung private LCD ioctl (0x46ff) was observed in the relevant V3 trace.
+
+### Ptrace V4 decisive result
+
+V4 retained the entry fd/request/argument and read the same `fb_var_screeninfo` structure again after the ioctl returned, using observational `PTRACE_PEEKDATA` reads.
+
+Representative physical output:
+
+    ENTRY fd=23 req=0x4601 FBIOPUT_VSCREENINFO
+        BEFORE: xres=240 yres=320 virtual=240x640 offset=0,320
+    EXIT  fd=23 req=0x4601 FBIOPUT_VSCREENINFO result=0
+        AFTER:  xres=240 yres=320 virtual=240x640 offset=0,320
+
+    ENTRY fd=23 req=0x4601 FBIOPUT_VSCREENINFO
+        BEFORE: xres=240 yres=320 virtual=240x640 offset=0,0
+    EXIT  fd=23 req=0x4601 FBIOPUT_VSCREENINFO result=0
+        AFTER:  xres=240 yres=320 virtual=240x640 offset=0,0
+
+    ENTRY fd=23 req=0x4601 FBIOPUT_VSCREENINFO
+        BEFORE: xres=240 yres=320 virtual=240x640 offset=0,320
+    EXIT  fd=23 req=0x4601 FBIOPUT_VSCREENINFO result=0
+        AFTER:  xres=240 yres=320 virtual=240x640 offset=0,320
+
+This establishes runtime evidence that the stock SurfaceFlinger thread actively submits framebuffer page configuration through `FBIOPUT_VSCREENINFO`, and the requested `yoffset` remains present in the structure after a successful ioctl. This is the strongest display-ownership attribution evidence obtained so far.
+
+It does not by itself prove that every physical LCD transition is caused by this exact call, nor does it identify the code path that performs the underlying framebuffer memory writes. Those distinctions remain important.
+
+### V4/V5 safety note
+
+V4 was observational but its ptrace stop/termination behavior was not yet ideal; a subsequent V4 invocation produced repeated ptrace SIGSTOP messages before the first traced ioctl. V5 is therefore being prepared as a narrower, bounded tracer that watches only 0x4601 and uses a deterministic observation window.
+
+No V5 physical run has been accepted yet. Resume from V5 after the next clean ADB recovery.
+
+### Temporary ADB transport interruption
+
+After the V4 work, the phone remained reachable at 172.20.10.2 and answered ICMP with 0% packet loss, while TCP/5555 returned `Connection refused`. This indicates a transport/listener problem rather than loss of network reachability. No persistent device modification was made as part of the investigation.
+
+USB ADB is currently unavailable on the Mac, and there is no terminal/root shell available directly on the phone. The next recovery action is a normal Android reboot only; do not use recovery, download mode, flashing, factory reset, or partition changes for this issue.
+
+### Current U2.0 status after attribution
+
+    Framebuffer mmap/access                         PASS
+    32-bit framebuffer throughput                   PASS
+    RGB565 -> 2x32 rendering benchmark             PASS
+    Page switching                                  PASS
+    Touch discovery                                 PASS
+    EVIOCGRAB                                       PASS
+    Passive framebuffer stability                   FAIL
+    Spontaneous framebuffer content change          CONFIRMED
+    Spontaneous yoffset change                     CONFIRMED
+    Android framebuffer ownership interference      CONFIRMED
+    SurfaceFlinger TID identified                   CONFIRMED
+    SurfaceFlinger -> fb0 fd 23                     CONFIRMED
+    SurfaceFlinger -> FBIOPUT_VSCREENINFO 0x4601    CONFIRMED
+    Post-ioctl yoffset observation                  CONFIRMED
+    Exact framebuffer memory-write path              NOT YET ATTRIBUTED
+    Safe display-session ownership mechanism         NOT YET IMPLEMENTED
+    LVGL integration                                 DEFERRED
+
+### Next session
+
+Resume at V5. First restore and verify ADB transport and Android health after the normal reboot. Then run the bounded V5 tracer against the current SurfaceFlinger TID, re-identifying the TID after reboot rather than assuming 1484 remains unchanged.
+
+Only after that should the project move to the reversible display/session ownership experiment. Do not blindly kill `system_server`, `zygote`, or Android process groups. Preserve ADB/SSH recovery and the existing stock Android boot path.
