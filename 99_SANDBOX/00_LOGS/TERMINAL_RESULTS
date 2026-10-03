@@ -1,403 +1,294 @@
-mostafa@MMostafa galaxy-y-totoro-lab % adb -s 172.20.10.2:5555 shell 'su -c '"'"'
-echo "=== ALL PROCESSES ==="
-ps
-'"'"''
-=== ALL PROCESSES ===
-USER     PID   PPID  VSIZE  RSS     WCHAN    PC         NAME
-root      1     0     368    220   c0077dc0 000090cc S /init
-root      2     0     0      0     c009015c 00000000 S kthreadd
-root      3     2     0      0     c007aeec 00000000 S ksoftirqd/0
-root      4     2     0      0     c00aeac4 00000000 S watchdog/0
-root      5     2     0      0     c008c214 00000000 S events/0
-root      6     2     0      0     c008c214 00000000 S khelper
-root      9     2     0      0     c0097fa8 00000000 S async/mgr
-root      12    2     0      0     c008c214 00000000 S suspend
-root      226   2     0      0     c00dfda8 00000000 S sync_supers
-root      228   2     0      0     c00e08c8 00000000 S bdi-default
-root      230   2     0      0     c008c214 00000000 S kblockd/0
-root      237   2     0      0     c008c214 00000000 S pmu_events/0
-root      257   2     0      0     c02a4f04 00000000 S kseriod
-root      271   2     0      0     c008c214 00000000 S kmmcd
-root      378   2     0      0     c00aed3c 00000000 S khungtaskd
-root      379   2     0      0     c00d93f4 00000000 S kswapd0
-root      381   2     0      0     c008c214 00000000 S aio/0
-root      382   2     0      0     c008c214 00000000 S crypto/0
-root      401   2     0      0     c008c214 00000000 S lcd_wq/0
-root      402   2     0      0     c0058eb0 00000000 S CSL_LCDC/0
-root      406   2     0      0     c0204190 00000000 S lcd_periodic_re
-root      606   2     0      0     c008c214 00000000 S bma222_wq
-root      611   2     0      0     c008c214 00000000 S gp2a_prox_wq
-root      634   2     0      0     c008c214 00000000 S charing_current
-root      639   2     0      0     c008c214 00000000 S rx_ether_queue
-root      646   2     0      0     c0297b84 00000000 S usb_mass_storag
-root      662   2     0      0     c008c214 00000000 S check_ic_wq
-root      667   2     0      0     c00afcc4 00000000 S irq/126-silabs-
-root      691   2     0      0     c008c214 00000000 S kstriped
-root      706   2     0      0     c008c214 00000000 S binder
-root      717   2     0      0     c008c214 00000000 S ipc-wq/0
-root      722   2     0      0     c008c214 00000000 S cmd_wq/0
-root      723   2     0      0     c008c214 00000000 S rsp_wq/0
-root      724   2     0      0     c008c214 00000000 S notify_wq/0
-root      739   2     0      0     c008c214 00000000 S cmd_wq/0
-root      740   2     0      0     c008c214 00000000 S rsp_wq/0
-root      741   2     0      0     c008c214 00000000 S notify_wq/0
-root      747   2     0      0     c038b700 00000000 S v3d_thread
-root      754   2     0      0     c008c214 00000000 S AudioCtrlWq/0
-root      773   2     0      0     c02d9604 00000000 S mmcqd
-root      787   1     308    152   c0107df0 000086ec S /sbin/ueventd
-root      1298  1     396    248   c0107df0 000086ec S /init
-system    1300  1298  840    272   c02e0740 afd0b71c S /system/bin/servicemanager
-media     1301  1298  6972   2212  ffffffff afd0b71c S /system/bin/playsound
-root      1302  1298  3908   596   ffffffff afd0bdcc S /system/bin/vold
-root      1303  1298  4232   796   ffffffff afd0bdcc S /system/bin/netd
-radio     1305  1298  8440   1064  ffffffff ffff0520 S /system/bin/rild
-system    1306  1298  1048   304   c00a04ec afd0c758 S /system/bin/npsmobex
-root      1307  1298  123660 25420 c0107df0 afd0b864 S zygote
-media     1308  1298  39748  5144  ffffffff afd0b71c S /system/bin/mediaserver
-bluetooth 1309  1298  1292   416   c0107df0 ffff0520 S /system/bin/dbus-daemon
-root      1310  1298  840    296   c0447a14 afd0b47c S /system/bin/installd
-keystore  1311  1298  1780   428   c03ac6dc afd0c0ec S /system/bin/keystore
-gps       1314  1298  4264   2932  c0107df0 afd0b864 S /system/bin/glgps
-system    1315  1298  904    316   c03ac6dc afd0c24c S /system/bin/usb_portd
-system    1317  1     864    360   c0095268 afd0bdcc S /system/bin/memsicd
-system    1477  1307  219572 38904 ffffffff afd0b71c S system_server
-root      1532  2     0      0     c0095dc8 00000000 S iscan_sysioc
-root      1533  2     0      0     c0095dc8 00000000 S dhd_watchdog
-root      1534  2     0      0     c0095dc8 00000000 S dhd_dpc
-root      1535  2     0      0     c0095dc8 00000000 S dhd_sysioc
-system    1538  1307  140900 21764 ffffffff afd0c5bc S com.android.systemui
-app_10    1547  1307  145984 21740 ffffffff afd0c5bc S com.sec.android.inputmethod.axt9
-radio     1556  1307  149820 24880 ffffffff afd0c5bc S com.android.phone
-app_24    1557  1307  131532 14920 ffffffff afd0c5bc S com.sec.pcw.device
-bluetooth 1560  1307  131488 15680 ffffffff afd0c5bc S com.broadcom.bt.app.system
-app_7     1562  1307  142664 25920 ffffffff afd0c5bc S com.sec.android.app.twlauncher
-app_2     1591  1307  176528 30248 ffffffff afd0c5bc S com.google.process.gapps
-wifi      1613  1298  2232   1036  c0107df0 afd0b864 S /system/bin/wpa_supplicant
-app_7     1634  1307  149388 25756 ffffffff afd0c5bc S android.process.acore
-app_53    1775  1307  132712 16360 ffffffff afd0c5bc S com.sec.android.widgetapp.clockweather.clockwidget
-shell     2538  1298  3424   188   ffffffff 00008294 S /sbin/adbd
-app_7     4158  1307  131492 16200 ffffffff afd0c5bc S com.samsung.sec.android.appwidget.programmonitorwidget
-system    4466  1     768    324   c0077dc0 afd0c3cc S sh
-system    4467  4466  115272 13360 ffffffff afd0c758 S app_process
-system    4656  1     768    324   c0077dc0 afd0c3cc S sh
-system    4657  4656  115256 13348 ffffffff afd0c758 S app_process
-app_50    4929  1307  134228 17588 ffffffff afd0c5bc S android.process.media
-system    5440  1307  132388 16960 ffffffff afd0c5bc S com.sec.android.app.controlpanel
-app_41    5451  1307  132444 16224 ffffffff afd0c5bc S com.sec.android.widgetapp.dualclock
-system    5736  1     768    324   c0077dc0 afd0c3cc S sh
-system    5737  5736  115268 13352 ffffffff afd0c758 S app_process
-system    5770  1     768    324   c0077dc0 afd0c3cc S sh
-system    5771  5770  115256 13348 ffffffff afd0c758 S app_process
-system    5823  1315  904    232   c0077dc0 afd0c3cc S /system/bin/usb_portd
-system    5827  5823  768    324   c0077dc0 afd0c3cc S sh
-system    5832  5827  6860   1040  ffffffff afd0c3cc S atx
-system    5837  5832  768    324   c0077dc0 afd0c3cc S sh
-system    5838  5837  115256 13348 ffffffff afd0c758 S app_process
-app_44    5980  1307  132612 20848 ffffffff afd0c5bc S com.sec.android.app.samsungapps.una2
-app_21    6207  1307  133864 16100 ffffffff afd0c5bc S com.google.android.apps.uploader
-radio     6216  1307  132372 15428 ffffffff afd0c5bc S com.osp.app.signin
-root      6748  1298  704    284   c03ac6dc afd0c0ec S /system/bin/debuggerd
-app_43    8143  1307  132608 16148 ffffffff afd0c5bc S com.sec.android.provider.badge
-app_6     8608  1307  134868 18044 ffffffff afd0c5bc S com.google.android.gm
-app_18    8617  1307  131752 16960 ffffffff afd0c5bc S com.sec.android.providers.downloads
-root      8771  2     0      0     c0118e84 00000000 S flush-138:11
-app_39    9119  1307  151416 25108 ffffffff afd0c5bc S com.google.android.apps.maps:NetworkLocationService
-app_39    9127  1307  138252 18224 ffffffff afd0c5bc S com.google.android.apps.maps:LocationFriendService
-radio     9143  1307  135396 20180 ffffffff afd0c5bc S com.wssyncmldm
-system    9153  1307  132528 14524 ffffffff afd0c5bc S com.sec.android.providers.drm
-app_42    9161  1307  136016 18508 ffffffff afd0c5bc S com.smlds
-app_45    9187  1307  150788 23216 ffffffff afd0c5bc S com.android.vending
-app_8     9209  1307  138276 20528 ffffffff afd0c5bc S com.android.email
-system    9226  1307  131488 14628 ffffffff afd0c5bc S com.android.server.vpn:remote
-app_39    9268  1307  150824 22688 ffffffff afd0c5bc S com.google.android.apps.maps
-system    9295  1307  136416 22196 ffffffff 80318040 R com.android.settings
-dhcp      9304  1298  884    400   c0107df0 afd0c5bc S /system/bin/dhcpcd
-app_64    9485  1307  139056 20596 ffffffff afd0c5bc S com.noshufou.android.su
-shell     13896 2538  768    324   c0077dc0 afd0c3cc S /system/bin/sh
-root      13897 13896 768    324   c0077dc0 afd0c3cc S sh
-root      13899 13897 924    328   00000000 afd0b47c R ps
-mostafa@MMostafa galaxy-y-totoro-lab % adb -s 172.20.10.2:5555 shell 'su -c '"'"'
-PID=1477
-echo "=== SYSTEM_SERVER ==="
-cat /proc/$PID/comm
-echo
-echo "=== CMDLINE ==="
-cat /proc/$PID/cmdline
-echo
-echo "=== FD ==="
-ls -l /proc/$PID/fd
-'"'"''
-=== SYSTEM_SERVER ===
-system_server
+mostafa@MMostafa galaxy-y-totoro-lab % >....                                                        
+adb -s 172.20.10.2:5555 shell '
+echo "--- processes ---"
+su -c "ps" | grep -Ei "surface|system_server|zygote|bootanimation|systemui"
 
-=== CMDLINE ===
-system_server
-=== FD ===
-lrwx------ root     root              2026-10-03 00:29 0 -> /dev/null
-lrwx------ root     root              2026-10-03 00:29 1 -> /dev/null
-lrwx------ root     root              2026-10-03 00:29 2 -> /dev/null
-l-wx------ root     root              2026-10-03 00:29 3 -> /dev/log/main
-l-wx------ root     root              2026-10-03 00:29 4 -> /dev/log/radio
-l-wx------ root     root              2026-10-03 00:29 5 -> /dev/log/events
-l-wx------ root     root              2026-10-03 00:29 6 -> /dev/log/system
-lr-x------ root     root              2026-10-03 00:29 7 -> /system/framework/core.jar
-lr-x------ root     root              2026-10-03 00:29 8 -> /dev/__properties__ (deleted)
-lrwx------ root     root              2026-10-03 00:29 9 -> /dev/binder
-lr-x------ root     root              2026-10-03 00:29 10 -> /system/framework/bouncycastle.jar
-lr-x------ root     root              2026-10-03 00:29 11 -> /system/framework/ext.jar
-lr-x------ root     root              2026-10-03 00:29 12 -> /system/framework/framework.jar
-lr-x------ root     root              2026-10-03 00:29 13 -> /system/framework/android.policy.jar
-lr-x------ root     root              2026-10-03 00:29 14 -> /system/framework/services.jar
-lr-x------ root     root              2026-10-03 00:29 15 -> /system/framework/core-junit.jar
-lr-x------ root     root              2026-10-03 00:29 16 -> /system/framework/framework.jar
-lr-x------ root     root              2026-10-03 00:29 17 -> /system/fonts/DroidSans.ttf
-lr-x------ root     root              2026-10-03 00:29 18 -> /system/framework/core.jar
-lr-x------ root     root              2026-10-03 00:29 19 -> /dev/urandom
-lr-x------ root     root              2026-10-03 00:29 20 -> /system/framework/twframework-res.apk
-lr-x------ root     root              2026-10-03 00:29 21 -> /system/framework/framework-res.apk
-lrwx------ root     root              2026-10-03 00:29 22 -> /dev/graphics/fb0
-lrwx------ root     root              2026-10-03 00:29 23 -> /dev/graphics/fb0
-lrwx------ root     root              2026-10-03 00:29 24 -> /dev/graphics/fb0
-lrwx------ root     root              2026-10-03 00:29 25 -> /dev/graphics/fb0
-lrwx------ root     root              2026-10-03 00:29 26 -> /dev/v3d
-lrwx------ root     root              2026-10-03 00:29 27 -> /dev/gememalloc
-lrwx------ root     root              2026-10-03 00:29 28 -> /dev/ashmem
-lr-x------ root     root              2026-10-03 00:29 29 -> /sys/power/wait_for_fb_sleep
-lr-x------ root     root              2026-10-03 00:29 30 -> pipe:[1877]
-lr-x------ root     root              2026-10-03 00:29 31 -> /dev/input/event2
-lr-x------ root     root              2026-10-03 00:29 32 -> /dev/input/event0
-l-wx------ root     root              2026-10-03 00:29 33 -> pipe:[1877]
-lr-x------ root     root              2026-10-03 00:29 34 -> pipe:[1879]
-l-wx------ root     root              2026-10-03 00:29 35 -> pipe:[1879]
-lr-x------ root     root              2026-10-03 00:29 36 -> /dev/alarm
-lr-x------ root     root              2026-10-03 00:29 37 -> pipe:[2391]
-lr-x------ root     root              2026-10-03 00:29 38 -> /system/app/GoogleServicesFramework.apk
-lrwx------ root     root              2026-10-03 00:29 39 -> /dev/gememalloc
-lrwx------ root     root              2026-10-03 00:29 40 -> /dev/gememalloc
-lrwx------ root     root              2026-10-03 00:29 41 -> socket:[1970]
-lr-x------ root     root              2026-10-03 00:29 42 -> pipe:[1971]
-l-wx------ root     root              2026-10-03 00:29 43 -> pipe:[1971]
-lrwx------ root     root              2026-10-03 00:29 44 -> /dev/ashmem
-lr-x------ root     root              2026-10-03 00:29 45 -> anon_inode:inotify
-l-wx------ root     root              2026-10-03 00:29 46 -> pipe:[2391]
-lr-x------ root     root              2026-10-03 00:29 47 -> /system/app/Settings.apk
-lr-x------ root     root              2026-10-03 00:29 48 -> pipe:[2464]
-l-wx------ root     root              2026-10-03 00:29 49 -> pipe:[2464]
-lr-x------ root     root              2026-10-03 00:29 50 -> pipe:[2461]
-lrwx------ root     root              2026-10-03 00:29 51 -> /data/system/accounts.db
-lr-x------ root     root              2026-10-03 00:29 52 -> pipe:[2404]
-l-wx------ root     root              2026-10-03 00:29 53 -> pipe:[2404]
-lrwx------ root     root              2026-10-03 00:29 54 -> /dev/ashmem
-l-wx------ root     root              2026-10-03 00:29 55 -> pipe:[2461]
-lrwx------ root     root              2026-10-03 00:29 56 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 57 -> socket:[2486]
-lr-x------ root     root              2026-10-03 00:29 58 -> /system/app/SettingsProvider.apk
-lr-x------ root     root              2026-10-03 00:29 59 -> /system/app/SettingsProvider.apk
-lr-x------ root     root              2026-10-03 00:29 60 -> /system/app/SettingsProvider.apk
-lrwx------ root     root              2026-10-03 00:29 61 -> /data/data/com.android.providers.settings/databases/settings.db
-lr-x------ root     root              2026-10-03 00:29 62 -> /system/app/SecurityProvider.apk
-lr-x------ root     root              2026-10-03 00:29 63 -> /system/app/SecurityProvider.apk
-lr-x------ root     root              2026-10-03 00:29 64 -> /system/app/SecurityProvider.apk
-lrwx------ root     root              2026-10-03 00:29 65 -> /sys/devices/platform/aat1401-backlight.0/backlight/aat1401-backlight/brightness
-lrwx------ root     root              2026-10-03 00:29 66 -> socket:[2409]
-lr-x------ root     root              2026-10-03 00:29 67 -> pipe:[2412]
-l-wx------ root     root              2026-10-03 00:29 68 -> pipe:[2412]
-lr-x------ root     root              2026-10-03 00:29 69 -> pipe:[2413]
-l-wx------ root     root              2026-10-03 00:29 70 -> pipe:[2413]
-lrwx------ root     root              2026-10-03 00:29 71 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 72 -> /dev/alarm
-lr-x------ root     root              2026-10-03 00:29 73 -> pipe:[2415]
-l-wx------ root     root              2026-10-03 00:29 74 -> pipe:[2415]
-lrwx------ root     root              2026-10-03 00:29 75 -> /sys/power/wake_lock
-lrwx------ root     root              2026-10-03 00:29 76 -> /sys/power/wake_unlock
-lrwx------ root     root              2026-10-03 00:29 77 -> /sys/power/state
-lr-x------ root     root              2026-10-03 00:29 78 -> pipe:[2416]
-l-wx------ root     root              2026-10-03 00:29 79 -> pipe:[2416]
-lr-x------ root     root              2026-10-03 00:29 80 -> pipe:[2417]
-l-wx------ root     root              2026-10-03 00:29 81 -> pipe:[2417]
-lrwx------ root     root              2026-10-03 00:29 82 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 83 -> socket:[2421]
-lr-x------ root     root              2026-10-03 00:29 84 -> pipe:[2423]
-l-wx------ root     root              2026-10-03 00:29 85 -> pipe:[2423]
-lr-x------ root     root              2026-10-03 00:29 86 -> anon_inode:inotify
-lr-x------ root     root              2026-10-03 00:29 87 -> pipe:[2439]
-lrwx------ root     root              2026-10-03 00:29 88 -> /dev/input/event6
-lrwx------ root     root              2026-10-03 00:29 89 -> /dev/input/event5
-lrwx------ root     root              2026-10-03 00:29 90 -> /dev/input/event4
-lrwx------ root     root              2026-10-03 00:29 91 -> /dev/input/event3
-l-wx------ root     root              2026-10-03 00:29 92 -> pipe:[2439]
-lr-x------ root     root              2026-10-03 00:29 93 -> pipe:[2436]
-l-wx------ root     root              2026-10-03 00:29 94 -> pipe:[2436]
-lrwx------ root     root              2026-10-03 00:29 95 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 96 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 97 -> socket:[2440]
-lr-x------ root     root              2026-10-03 00:29 98 -> pipe:[2442]
-l-wx------ root     root              2026-10-03 00:29 99 -> pipe:[2442]
-lr-x------ root     root              2026-10-03 00:29 100 -> pipe:[2445]
-l-wx------ root     root              2026-10-03 00:29 101 -> pipe:[2445]
-lr-x------ root     root              2026-10-03 00:29 102 -> pipe:[2483]
-lr-x------ root     root              2026-10-03 00:29 103 -> pipe:[2449]
-l-wx------ root     root              2026-10-03 00:29 104 -> pipe:[2449]
-lr-x------ root     root              2026-10-03 00:29 105 -> pipe:[2450]
-l-wx------ root     root              2026-10-03 00:29 106 -> pipe:[2450]
-lrwx------ root     root              2026-10-03 00:29 107 -> socket:[2453]
-l-wx------ root     root              2026-10-03 00:29 108 -> pipe:[2483]
-lr-x------ root     root              2026-10-03 00:29 109 -> pipe:[2484]
-l-wx------ root     root              2026-10-03 00:29 110 -> pipe:[2484]
-lr-x------ root     root              2026-10-03 00:29 111 -> /system/app/GoogleBackupTransport.apk
-lr-x------ root     root              2026-10-03 00:29 112 -> /system/app/GoogleBackupTransport.apk
-lr-x------ root     root              2026-10-03 00:29 113 -> /system/app/GoogleBackupTransport.apk
-lr-x------ root     root              2026-10-03 00:29 114 -> pipe:[2586]
-l-wx------ root     root              2026-10-03 00:29 115 -> pipe:[2586]
-lrwx------ root     root              2026-10-03 00:29 116 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 117 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 118 -> /dev/ashmem
-l-wx------ root     root              2026-10-03 00:29 119 -> pipe:[2609]
-lr-x------ root     root              2026-10-03 00:29 120 -> pipe:[2610]
-lrwx------ root     root              2026-10-03 00:29 121 -> socket:[2628]
-lrwx------ root     root              2026-10-03 00:29 122 -> socket:[2630]
-lrwx------ root     root              2026-10-03 00:29 123 -> socket:[2631]
-lr-x------ root     root              2026-10-03 00:29 124 -> pipe:[2503]
-l-wx------ root     root              2026-10-03 00:29 125 -> pipe:[2503]
-lrwx------ root     root              2026-10-03 00:29 126 -> /dev/ashmem
-lr-x------ root     root              2026-10-03 00:29 127 -> pipe:[2505]
-l-wx------ root     root              2026-10-03 00:29 128 -> pipe:[2505]
-lrwx------ root     root              2026-10-03 00:29 129 -> anon_inode:[eventpoll]
-lrwx------ root     root              2026-10-03 00:29 130 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 131 -> /dev/ashmem
-lr-x------ root     root              2026-10-03 00:29 132 -> pipe:[2674]
-l-wx------ root     root              2026-10-03 00:29 133 -> pipe:[2639]
-lr-x------ root     root              2026-10-03 00:29 134 -> pipe:[2640]
-l-wx------ root     root              2026-10-03 00:29 135 -> pipe:[2674]
-lr-x------ root     root              2026-10-03 00:29 136 -> pipe:[2652]
-l-wx------ root     root              2026-10-03 00:29 137 -> pipe:[2652]
-lr-x------ root     root              2026-10-03 00:29 138 -> pipe:[2653]
-l-wx------ root     root              2026-10-03 00:29 139 -> pipe:[2653]
-lrwx------ root     root              2026-10-03 00:29 140 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 141 -> /dev/gememalloc
-lrwx------ root     root              2026-10-03 00:29 142 -> /dev/ashmem
-l-wx------ root     root              2026-10-03 00:29 143 -> pipe:[2684]
-lr-x------ root     root              2026-10-03 00:29 144 -> pipe:[2685]
-lrwx------ root     root              2026-10-03 00:29 145 -> /dev/ashmem
-lr-x------ root     root              2026-10-03 00:29 146 -> pipe:[2704]
-l-wx------ root     root              2026-10-03 00:29 147 -> pipe:[2704]
-lr-x------ root     root              2026-10-03 00:29 148 -> pipe:[2705]
-l-wx------ root     root              2026-10-03 00:29 149 -> pipe:[2705]
-lrwx------ root     root              2026-10-03 00:29 150 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 151 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 152 -> /dev/gememalloc
-lrwx------ root     root              2026-10-03 00:29 153 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 154 -> /dev/gememalloc
-lrwx------ root     root              2026-10-03 00:29 155 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 156 -> socket:[2826]
-lrwx------ root     root              2026-10-03 00:29 157 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 158 -> socket:[2828]
-lr-x------ root     root              2026-10-03 00:29 159 -> pipe:[2832]
-l-wx------ root     root              2026-10-03 00:29 160 -> pipe:[2832]
-lrwx------ root     root              2026-10-03 00:29 161 -> /dev/gememalloc
-lrwx------ root     root              2026-10-03 00:29 162 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 163 -> /system/app/Contacts.apk
-lr-x------ root     root              2026-10-03 00:29 164 -> /system/app/MyFiles.apk
-lrwx------ root     root              2026-10-03 00:29 165 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:33 166 -> /dev/gememalloc
-lrwx------ root     root              2026-10-03 00:29 167 -> /dev/ashmem
-lr-x------ root     root              2026-10-03 00:29 168 -> /system/app/Superuser.apk
-lr-x------ root     root              2026-10-03 00:29 169 -> /system/app/Maps.apk
-lr-x------ root     root              2026-10-03 00:29 170 -> /system/app/GoogleQuickSearchBox.apk
-lr-x------ root     root              2026-10-03 00:29 171 -> /system/fonts/DroidSans-Bold.ttf
-lrwx------ root     root              2026-10-03 00:29 172 -> /dev/ashmem
-lr-x------ root     root              2026-10-03 00:29 173 -> /system/app/Talk.apk
-lrwx------ root     root              2026-10-03 00:29 174 -> /dev/ashmem
-l-wx------ root     root              2026-10-03 00:29 175 -> pipe:[9238]
-lr-x------ root     root              2026-10-03 00:29 176 -> pipe:[9239]
-lr-x------ root     root              2026-10-03 00:29 177 -> /system/app/Phonesky.apk
-lr-x------ root     root              2026-10-03 00:29 178 -> /system/app/Phone.apk
-lrwx------ root     root              2026-10-03 00:29 179 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 180 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 181 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 183 -> /dev/ashmem
-l-wx------ root     root              2026-10-03 00:29 184 -> /dev/ashmem
-l-wx------ root     root              2026-10-03 00:29 185 -> /dev/ashmem
-l-wx------ root     root              2026-10-03 00:29 186 -> pipe:[3308]
-lr-x------ root     root              2026-10-03 00:29 187 -> pipe:[3309]
-lr-x------ root     root              2026-10-03 00:29 188 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 189 -> /dev/ashmem
-lr-x------ root     root              2026-10-03 00:29 190 -> /system/app/Gmail.apk
-l-wx------ root     root              2026-10-03 00:33 192 -> pipe:[26835]
-lrwx------ root     root              2026-10-03 00:29 193 -> /dev/ashmem
-lrwx------ root     root              2026-10-03 00:29 194 -> pipe:[26836]
-lrwx------ root     root              2026-10-03 00:29 195 -> /dev/gememalloc
-lrwx------ root     root              2026-10-03 00:29 196 -> /dev/gememalloc
-lr-x------ root     root              2026-10-03 00:29 197 -> /dev/ashmem
-lr-x------ root     root              2026-10-03 00:29 198 -> pipe:[26830]
-l-wx------ root     root              2026-10-03 03:32 199 -> pipe:[20838]
-lr-x------ root     root              2026-10-03 00:29 200 -> pipe:[20839]
-lr-x------ root     root              2026-10-03 03:32 201 -> pipe:[26831]
-l-wx------ root     root              2026-10-03 03:32 202 -> pipe:[26838]
-lr-x------ root     root              2026-10-03 03:32 203 -> pipe:[26839]
-lrwx------ root     root              2026-10-03 03:32 204 -> /dev/ashmem
-l-wx------ root     root              2026-10-03 03:34 206 -> pipe:[32528]
-lr-x------ root     root              2026-10-03 03:34 209 -> pipe:[32529]
-mostafa@MMostafa galaxy-y-totoro-lab % adb -s 172.20.10.2:5555 shell 'su -c '"'"'
-PID=1307
-echo "=== ZYGOTE ==="
-cat /proc/$PID/comm
 echo
-echo "=== CMDLINE ==="
-cat /proc/$PID/cmdline
-echo
-echo "=== FD ==="
-ls -l /proc/$PID/fd
-'"'"''
-=== ZYGOTE ===
-zygote
+echo "--- system_server framebuffer FDs ---"
+su -c "ls -l /proc/1477/fd" 2>/dev/null | grep "/dev/graphics/fb0"
 
-=== CMDLINE ===
-zygote/bin/app_process-Xzygote/system/bin--zygote--start-system-server
-=== FD ===
-lrwx------ root     root              2026-10-03 00:29 0 -> /dev/null
-lrwx------ root     root              2026-10-03 00:29 1 -> /dev/null
-lrwx------ root     root              2026-10-03 00:29 2 -> /dev/null
-l-wx------ root     root              2026-10-03 00:29 3 -> /dev/log/main
-l-wx------ root     root              2026-10-03 00:29 4 -> /dev/log/radio
-l-wx------ root     root              2026-10-03 00:29 5 -> /dev/log/events
-l-wx------ root     root              2026-10-03 00:29 6 -> /dev/log/system
-lr-x------ root     root              2026-10-03 00:29 7 -> /system/framework/core.jar
-lr-x------ root     root              2026-10-03 00:29 8 -> /dev/__properties__ (deleted)
-lrwx------ root     root              2026-10-03 00:29 9 -> socket:[1325]
-lr-x------ root     root              2026-10-03 00:29 10 -> /system/framework/bouncycastle.jar
-lr-x------ root     root              2026-10-03 00:29 11 -> /system/framework/ext.jar
-lr-x------ root     root              2026-10-03 00:29 12 -> /system/framework/framework.jar
-lr-x------ root     root              2026-10-03 00:29 13 -> /system/framework/android.policy.jar
-lr-x------ root     root              2026-10-03 00:29 14 -> /system/framework/services.jar
-lr-x------ root     root              2026-10-03 00:29 15 -> /system/framework/core-junit.jar
-lr-x------ root     root              2026-10-03 00:29 16 -> /system/framework/framework.jar
-lr-x------ root     root              2026-10-03 00:29 17 -> /system/fonts/DroidSans.ttf
-lr-x------ root     root              2026-10-03 00:29 18 -> /system/framework/core.jar
-lr-x------ root     root              2026-10-03 00:29 19 -> /dev/urandom
-lr-x------ root     root              2026-10-03 00:29 20 -> /system/framework/twframework-res.apk
-lr-x------ root     root              2026-10-03 00:29 21 -> /system/framework/framework-res.apk
-lrwx------ root     root              2026-10-03 00:29 22 -> socket:[2487]
-mostafa@MMostafa galaxy-y-totoro-lab % adb -s 172.20.10.2:5555 shell 'su -c '"'"'
-ls -l /system/bin/strings /system/xbin/strings 2>&1
-'"'"''
-/system/bin/strings: No such file or directory
-/system/xbin/strings: No such file or directory
-mostafa@MMostafa galaxy-y-totoro-lab % adb -s 172.20.10.2:5555 pull /system/lib/hw/gralloc.default.so /tmp/gralloc.default.so
-/system/lib/hw/gralloc.default.so: 1 file pulled, 0 skipped. 0.3 MB/s (10084 bytes in 0.038s)
-mostafa@MMostafa galaxy-y-totoro-lab % strings /tmp/gralloc.default.so | grep -Ei 'fb0|framebuffer|LCD|graphics|pan|ioctl|mmap'
-ioctl
-mmap
-_Z20mapFrameBufferLockedP16private_module_t
-Graphics Memory Allocator Module
-Error mapping the framebuffer (%s)
-/dev/graphics/fb%u
-Could not mmap %s
-mostafa@MMostafa galaxy-y-totoro-lab % adb -s 172.20.10.2:5555 shell 'su -c '"'"'
-for p in /proc/[0-9]*; do
-    pid=${p##*/}
-    ls -l "$p/fd" 2>/dev/null
-done
-'"'"' | grep '/dev/graphics/fb0'
-quote> 
+echo
+echo "--- display services ---"
+dumpsys SurfaceFlinger 2>/dev/null | grep -Ei \
+"DisplayHardware|Framebuffer|EGL|V3D|canDraw|frozen|eglSwap|page"
+
+echo
+echo "--- framebuffer ---"
+su -c "cat /sys/class/graphics/fb0/name"
+su -c "cat /sys/class/graphics/fb0/virtual_size"
+'
+
+echo
+echo "=== LOCAL U2 BINARY ==="
+ls -lh /tmp/totoro-u2-passive
+shasum -a 256 /tmp/totoro-u2-passive
+=== DISPLAY OWNER BASELINE ===
+--- processes ---
+grep: permission denied
+
+--- system_server framebuffer FDs ---
+grep: permission denied
+
+--- display services ---
+grep: permission denied
+
+--- framebuffer ---
+LCDfb
+240,640
+
+=== LOCAL U2 BINARY ===
+-rwxr-xr-x  1 mostafa  wheel    76K Oct  3 03:19 /tmp/totoro-u2-passive
+6d40689105aa62d6b99f449edc2fa5d999fc7dd8a558d7721f8907d44f2349b0  /tmp/totoro-u2-passive
+mostafa@MMostafa galaxy-y-totoro-lab % >....                                                        
+adb -s 172.20.10.2:5555 shell '
+echo "--- processes ---"
+su -c "ps" | grep -Ei "surface|system_server|zygote|bootanimation|systemui"
+
+echo
+echo "--- system_server framebuffer FDs ---"
+su -c "ls -l /proc/1477/fd" 2>/dev/null | grep "/dev/graphics/fb0"
+
+echo
+echo "--- display services ---"
+dumpsys SurfaceFlinger 2>/dev/null | grep -Ei \
+"DisplayHardware|Framebuffer|EGL|V3D|canDraw|frozen|eglSwap|page"
+
+echo
+echo "--- framebuffer ---"
+su -c "cat /sys/class/graphics/fb0/name"
+su -c "cat /sys/class/graphics/fb0/virtual_size"
+'
+
+echo
+echo "=== LOCAL U2 BINARY ==="
+ls -lh /tmp/totoro-u2-passive
+shasum -a 256 /tmp/totoro-u2-passive
+=== DISPLAY OWNER BASELINE ===
+--- processes ---
+grep: permission denied
+
+--- system_server framebuffer FDs ---
+grep: permission denied
+
+--- display services ---
+grep: permission denied
+
+--- framebuffer ---
+LCDfb
+240,640
+
+=== LOCAL U2 BINARY ===
+-rwxr-xr-x  1 mostafa  wheel    76K Oct  3 03:19 /tmp/totoro-u2-passive
+6d40689105aa62d6b99f449edc2fa5d999fc7dd8a558d7721f8907d44f2349b0  /tmp/totoro-u2-passive
+mostafa@MMostafa galaxy-y-totoro-lab % adb -s 172.20.10.2:5555 push \
+  /tmp/totoro-u2-passive \
+  /data/local/tmp/totoro-u2-passive
+
+adb -s 172.20.10.2:5555 shell chmod 755 \
+  /data/local/tmp/totoro-u2-passive
+
+adb -s 172.20.10.2:5555 shell \
+  'su -c /data/local/tmp/totoro-u2-passive'
+/tmp/totoro-u2-passive: 1 file pushed, 0 skipped. 304.8 MB/s (78068 bytes in 0.000s)
+========================================
+ TOTORO U2 DIAGNOSTIC HARNESS
+ U2.0 combined physical integration test
+========================================
+
+OPEN framebuffer: /dev/graphics/fb0
+FB id: LCDfb
+FB geometry: 240x320 virtual=240x640
+FB bpp: 32
+FB stride: 960
+FB smem_len: 614400
+FB yoffset: 0
+FB mmap: PASS
+FB mmap address: 0x40000000
+
+--- PERFORMANCE ---
+BENCH fill32: 36.40 MiB/s, 8.049 ms/frame
+BENCH rgb565->2x32: 7.315 ms/frame
+BENCH page-switch: 11.862 ms/pan
+
+--- PAGE SWITCH VALIDATION ---
+PAGE0 red: PASS
+PAGE1 blue: PASS
+PAGE restore page0: PASS
+
+--- TOUCH + SESSION ---
+TOUCH device: /dev/input/event4
+TOUCH name: sec_touchscreen 
+TOUCH EV_ABS=yes EV_SYN=yes
+TOUCH grab: PASS
+
+--- PASSIVE FRAMEBUFFER OWNERSHIP TEST ---
+NO TOUCH INTERACTION REQUIRED.
+After setup: NO framebuffer writes by this test.
+After setup: NO FBIOPAN_DISPLAY by this test.
+Observe LCD + terminal for 60 seconds.
+PASSIVE initial yoffset=0
+PASSIVE page0 checksum: 0x3c5dd9c5
+PASSIVE page1 checksum: 0xdf5bbfc5
+PASSIVE observation starts: yoffset=320
+PASSIVE observation begins NOW
+[T+00000 ms] !!! PAGE0 CONTENT CHANGE !!! 0x3c5dd9c5 -> 0xe8009df0
+[T+00000 ms] !!! PAGE1 CONTENT CHANGE !!! 0xdf5bbfc5 -> 0xf1260b2f
+[T+00224 ms] !!! YOFFSET CHANGE: 320 -> 0 !!!
+[T+00224 ms] PAGE0 checksum=0x6a22343c PAGE1 checksum=0xb6005dc5
+[T+00224 ms] !!! PAGE0 CONTENT CHANGE !!! 0xe8009df0 -> 0x6a22343c
+[T+00224 ms] !!! PAGE1 CONTENT CHANGE !!! 0xf1260b2f -> 0xb6005dc5
+[T+01126 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=7
+[T+02185 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=13
+[T+03241 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=19
+[T+04300 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=25
+[T+05356 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=31
+[T+06455 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=37
+[T+07512 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=43
+[T+08568 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=49
+[T+09627 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=55
+[T+10706 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=61
+[T+11772 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=67
+[T+12827 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=73
+[T+13890 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=79
+[T+14947 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=85
+[T+16008 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=91
+[T+17069 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=97
+[T+18126 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=103
+[T+19186 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=109
+[T+20248 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=115
+[T+21304 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=121
+[T+22418 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=127
+[T+23477 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=133
+[T+24535 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=139
+[T+25595 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=145
+[T+26675 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=151
+[T+27731 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=157
+[T+28787 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=163
+[T+29846 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=169
+[T+30902 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=175
+[T+31961 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=181
+[T+33027 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=187
+[T+34084 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=193
+[T+35141 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=199
+[T+36200 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=205
+[T+37259 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=211
+[T+38318 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=217
+[T+39395 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=223
+[T+40454 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=229
+[T+41509 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=235
+[T+42568 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=241
+[T+43627 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=247
+[T+44684 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=253
+[T+45746 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=259
+[T+46800 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=265
+[T+47862 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=271
+[T+48923 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=277
+[T+49988 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=283
+[T+51044 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=289
+[T+52103 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=295
+[T+53158 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=301
+[T+54218 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=307
+[T+55274 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=313
+[T+56329 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=319
+[T+57389 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=325
+[T+58444 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=331
+[T+59358 ms] !!! YOFFSET CHANGE: 0 -> 320 !!!
+[T+59358 ms] PAGE0 checksum=0x6a22343c PAGE1 checksum=0x5beaefbe
+[T+59358 ms] !!! PAGE1 CONTENT CHANGE !!! 0xb6005dc5 -> 0x5beaefbe
+[T+59549 ms] !!! YOFFSET CHANGE: 320 -> 0 !!!
+[T+59549 ms] PAGE0 checksum=0x00372b04 PAGE1 checksum=0x5beaefbe
+[T+59549 ms] !!! PAGE0 CONTENT CHANGE !!! 0x6a22343c -> 0x00372b04
+[T+59549 ms] PASSIVE yoffset=0 page0=0x00372b04 page1=0x5beaefbe checks=337
+
+--- PASSIVE RESULT ---
+checks: 339
+yoffset changes: 3
+page0 content changes: 3
+page1 content changes: 3
+metadata changes: 0
+final yoffset: 0
+expected page0 checksum: 0x3c5dd9c5
+expected page1 checksum: 0xdf5bbfc5
+final page0 checksum: 0x00372b04
+final page1 checksum: 0x5beaefbe
+PASSIVE framebuffer restored to page 0.
+
+--- RESTORE ---
+Framebuffer restored to page 0.
+Touchscreen grab released.
+
+========================================
+ TOTORO U2 DIAGNOSTIC COMPLETE
+========================================
+mostafa@MMostafa galaxy-y-totoro-lab % adb -s 172.20.10.2:5555 shell '
+echo "=== INIT DISPLAY SERVICE STATE ==="
+getprop | grep -Ei "init.svc|surface|display|zygote"
+
+echo
+echo "=== SERVICE LIST ==="
+service list
+'
+=== INIT DISPLAY SERVICE STATE ===
+grep: permission denied
+
+=== SERVICE LIST ===
+Found 58 services:
+0	phoneext: [com.android.internal.telephony.ITelephonyExt]
+1	phone: [com.android.internal.telephony.ITelephony]
+2	iphonesubinfo: [com.android.internal.telephony.IPhoneSubInfo]
+3	simphonebook: [com.android.internal.telephony.IIccPhoneBook]
+4	isms: [com.android.internal.telephony.ISms]
+5	bt_fm_radio: [com.broadcom.bt.service.framework.IPowerManager]
+6	diskstats: []
+7	appwidget: [com.android.internal.appwidget.IAppWidgetService]
+8	backup: [android.app.backup.IBackupManager]
+9	uimode: [android.app.IUiModeManager]
+10	usb: [android.hardware.usb.IUsbManager]
+11	audio: [android.media.IAudioService]
+12	wallpaper: [android.app.IWallpaperManager]
+13	dropbox: [com.android.internal.os.IDropBoxManagerService]
+14	search: [android.app.ISearchManager]
+15	location: [android.location.ILocationManager]
+16	devicestoragemonitor: []
+17	datarouter: []
+18	hdmi: [android.os.IHDMIService]
+19	notification: [android.app.INotificationManager]
+20	mount: [IMountService]
+21	accessibility: [android.view.accessibility.IAccessibilityManager]
+22	throttle: [android.net.IThrottleManager]
+23	connectivity: [android.net.IConnectivityManager]
+24	wifi: [android.net.wifi.IWifiManager]
+25	network_management: [android.os.INetworkManagementService]
+26	netstat: [android.os.INetStatService]
+27	input_method: [com.android.internal.view.IInputMethodManager]
+28	clipboardEx: [android.sec.clipboard.IClipboardService]
+29	clipboard: [android.text.IClipboard]
+30	statusbar: [com.android.internal.statusbar.IStatusBarService]
+31	device_policy: [android.app.admin.IDevicePolicyManager]
+32	bluetooth_hid: [com.broadcom.bt.service.hid.IBluetoothHID]
+33	bluetooth_a2dp: [android.bluetooth.IBluetoothA2dp]
+34	bluetooth: [android.bluetooth.IBluetooth]
+35	window: [android.view.IWindowManager]
+36	alarm: [android.app.IAlarmManager]
+37	vibrator: [android.os.IVibratorService]
+38	hardware: [android.os.IHardwareService]
+39	battery: []
+40	content: [android.content.IContentService]
+41	account: [android.accounts.IAccountManager]
+42	permission: [android.os.IPermissionController]
+43	cpuinfo: []
+44	meminfo: []
+45	activity: [android.app.IActivityManager]
+46	package: [android.content.pm.IPackageManager]
+47	telephony.registry: [com.android.internal.telephony.ITelephonyRegistry]
+48	usagestats: [com.android.internal.app.IUsageStats]
+49	batteryinfo: [com.android.internal.app.IBatteryStats]
+50	power: [android.os.IPowerManager]
+51	entropy: []
+52	sensorservice: [android.gui.SensorServer]
+53	SurfaceFlinger: [android.ui.ISurfaceComposer]
+54	media.audio_policy: [android.media.IAudioPolicyService]
+55	media.camera: [android.hardware.ICameraService]
+56	media.player: [android.media.IMediaPlayerService]
+57	media.audio_flinger: [android.media.IAudioFlinger]
 mostafa@MMostafa galaxy-y-totoro-lab % 
