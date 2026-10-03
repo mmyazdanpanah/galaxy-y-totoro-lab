@@ -1,294 +1,755 @@
-mostafa@MMostafa galaxy-y-totoro-lab % >....                                                        
-adb -s 172.20.10.2:5555 shell '
-echo "--- processes ---"
-su -c "ps" | grep -Ei "surface|system_server|zygote|bootanimation|systemui"
-
-echo
-echo "--- system_server framebuffer FDs ---"
-su -c "ls -l /proc/1477/fd" 2>/dev/null | grep "/dev/graphics/fb0"
-
-echo
-echo "--- display services ---"
-dumpsys SurfaceFlinger 2>/dev/null | grep -Ei \
-"DisplayHardware|Framebuffer|EGL|V3D|canDraw|frozen|eglSwap|page"
-
-echo
-echo "--- framebuffer ---"
-su -c "cat /sys/class/graphics/fb0/name"
-su -c "cat /sys/class/graphics/fb0/virtual_size"
-'
-
-echo
-echo "=== LOCAL U2 BINARY ==="
-ls -lh /tmp/totoro-u2-passive
-shasum -a 256 /tmp/totoro-u2-passive
-=== DISPLAY OWNER BASELINE ===
---- processes ---
-grep: permission denied
-
---- system_server framebuffer FDs ---
-grep: permission denied
-
---- display services ---
-grep: permission denied
-
---- framebuffer ---
-LCDfb
-240,640
-
-=== LOCAL U2 BINARY ===
--rwxr-xr-x  1 mostafa  wheel    76K Oct  3 03:19 /tmp/totoro-u2-passive
-6d40689105aa62d6b99f449edc2fa5d999fc7dd8a558d7721f8907d44f2349b0  /tmp/totoro-u2-passive
-mostafa@MMostafa galaxy-y-totoro-lab % >....                                                        
-adb -s 172.20.10.2:5555 shell '
-echo "--- processes ---"
-su -c "ps" | grep -Ei "surface|system_server|zygote|bootanimation|systemui"
-
-echo
-echo "--- system_server framebuffer FDs ---"
-su -c "ls -l /proc/1477/fd" 2>/dev/null | grep "/dev/graphics/fb0"
-
-echo
-echo "--- display services ---"
-dumpsys SurfaceFlinger 2>/dev/null | grep -Ei \
-"DisplayHardware|Framebuffer|EGL|V3D|canDraw|frozen|eglSwap|page"
-
-echo
-echo "--- framebuffer ---"
-su -c "cat /sys/class/graphics/fb0/name"
-su -c "cat /sys/class/graphics/fb0/virtual_size"
-'
-
-echo
-echo "=== LOCAL U2 BINARY ==="
-ls -lh /tmp/totoro-u2-passive
-shasum -a 256 /tmp/totoro-u2-passive
-=== DISPLAY OWNER BASELINE ===
---- processes ---
-grep: permission denied
-
---- system_server framebuffer FDs ---
-grep: permission denied
-
---- display services ---
-grep: permission denied
-
---- framebuffer ---
-LCDfb
-240,640
-
-=== LOCAL U2 BINARY ===
--rwxr-xr-x  1 mostafa  wheel    76K Oct  3 03:19 /tmp/totoro-u2-passive
-6d40689105aa62d6b99f449edc2fa5d999fc7dd8a558d7721f8907d44f2349b0  /tmp/totoro-u2-passive
-mostafa@MMostafa galaxy-y-totoro-lab % adb -s 172.20.10.2:5555 push \
-  /tmp/totoro-u2-passive \
-  /data/local/tmp/totoro-u2-passive
-
-adb -s 172.20.10.2:5555 shell chmod 755 \
-  /data/local/tmp/totoro-u2-passive
+mostafa@MMostafa galaxy-y-totoro-lab % adb -s 172.20.10.2:5555 shell \
+  'su -c "ls -l /proc/1477/fd/22 /proc/1477/fd/23 /proc/1477/fd/24 /proc/1477/fd/25"'
+lrwx------ root     root              2026-10-03 00:29 22 -> /dev/graphics/fb0
+lrwx------ root     root              2026-10-03 00:29 23 -> /dev/graphics/fb0
+lrwx------ root     root              2026-10-03 00:29 24 -> /dev/graphics/fb0
+lrwx------ root     root              2026-10-03 00:29 25 -> /dev/graphics/fb0
+mostafa@MMostafa galaxy-y-totoro-lab % adb -s 172.20.10.2:5555 shell \
+  'su -c "cat /proc/1477/fdinfo/22"'
+pos:	0
+flags:	0400002
+mostafa@MMostafa galaxy-y-totoro-lab % adb -s 172.20.10.2:5555 shell \
+  'su -c "cat /proc/1477/fdinfo/23"'
 
 adb -s 172.20.10.2:5555 shell \
-  'su -c /data/local/tmp/totoro-u2-passive'
-/tmp/totoro-u2-passive: 1 file pushed, 0 skipped. 304.8 MB/s (78068 bytes in 0.000s)
-========================================
- TOTORO U2 DIAGNOSTIC HARNESS
- U2.0 combined physical integration test
-========================================
+  'su -c "cat /proc/1477/fdinfo/24"'
 
-OPEN framebuffer: /dev/graphics/fb0
-FB id: LCDfb
-FB geometry: 240x320 virtual=240x640
-FB bpp: 32
-FB stride: 960
-FB smem_len: 614400
-FB yoffset: 0
-FB mmap: PASS
-FB mmap address: 0x40000000
+adb -s 172.20.10.2:5555 shell \
+  'su -c "cat /proc/1477/fdinfo/25"'
+pos:	0
+flags:	0400002
+pos:	0
+flags:	0400002
+pos:	0
+flags:	0400002
+mostafa@MMostafa galaxy-y-totoro-lab % adb -s 172.20.10.2:5555 shell \
+  'su -c "dumpsys SurfaceFlinger"'
++ Layer 0x1b7fb8
+      z=    21000, pos=(   0,   0), size=( 240, 320), needsBlending=0, needsDithering=0, invalidate=0, alpha=0xff, flags=0x00000001, tr=[1.00, 0.00][0.00, 1.00]
+      name=com.android.internal.service.wallpaper.ImageWallpaper
+      client=0xdbc88, identity=5
+      [ head= 0, available= 2, queued= 0 ] reallocMask=00000000, inUse= 0, identity=5, status=0
+      format= 4, [240x320:256] [240x320:256], freezeLock=0x0, dq-q-time=1770 us
+  Region transparentRegion (this=0x1b8198, count=1)
+    [  0,   0,   0,   0]
+  Region transparentRegionScreen (this=0x1b7fec, count=1)
+    [  0,   0,   0,   0]
+  Region visibleRegionScreen (this=0x1b7fc8, count=1)
+    [  0,   0,   0,   0]
++ Layer 0x3d2e38
+      z=    21010, pos=(   0,   0), size=( 240, 320), needsBlending=0, needsDithering=0, invalidate=0, alpha=0xff, flags=0x00000000, tr=[1.00, 0.00][0.00, 1.00]
+      name=com.sec.android.app.twlauncher/com.sec.android.app.twlauncher.Launcher
+      client=0x23afe0, identity=380
+      [ head= 0, available= 2, queued= 0 ] reallocMask=00000000, inUse= 0, identity=380, status=0
+      format= 4, [240x320:256] [240x320:256], freezeLock=0x0, dq-q-time=12237 us
+  Region transparentRegion (this=0x3d3018, count=1)
+    [  0,   0,   0,   0]
+  Region transparentRegionScreen (this=0x3d2e6c, count=1)
+    [  0,   0,   0,   0]
+  Region visibleRegionScreen (this=0x3d2e48, count=1)
+    [  0,   0, 240, 320]
++ Layer 0x235050
+      z=    21015, pos=(   0,   0), size=( 240, 320), needsBlending=1, needsDithering=0, invalidate=0, alpha=0xff, flags=0x00000001, tr=[1.00, 0.00][0.00, 1.00]
+      name=com.noshufou.android.su/com.noshufou.android.su.SuRequestActivity
+      client=0x1a9698, identity=414
+      [ head= 1, available= 2, queued= 0 ] reallocMask=00000000, inUse= 1, identity=414, status=0
+      format= 1, [240x320:256] [240x320:256], freezeLock=0x0, dq-q-time=4577 us
+  Region transparentRegion (this=0x235230, count=1)
+    [  0,   0,   0,   0]
+  Region transparentRegionScreen (this=0x235084, count=1)
+    [  0,   0,   0,   0]
+  Region visibleRegionScreen (this=0x235060, count=1)
+    [  0,   0,   0,   0]
++ LayerDim 0x399490
+      z=    21029, pos=(   0,   0), size=( 240, 320), needsBlending=1, needsDithering=0, invalidate=0, alpha=0x00, flags=0x00000000, tr=[1.00, 0.00][0.00, 1.00]
+      name=DimSurface
+      client=0x1a7048, identity=15
+  Region transparentRegion (this=0x399670, count=1)
+    [  0,   0,   0,   0]
+  Region transparentRegionScreen (this=0x3994c4, count=1)
+    [  0,   0,   0,   0]
+  Region visibleRegionScreen (this=0x3994a0, count=1)
+    [  0,   0,   0,   0]
++ Layer 0x1aa6c8
+      z=    51005, pos=(   0,-320), size=( 240, 275), needsBlending=1, needsDithering=0, invalidate=0, alpha=0xff, flags=0x00000004, tr=[1.00, 0.00][0.00, 1.00]
+      name=StatusBarExpanded
+      client=0x2b6d68, identity=4
+      [ head= 1, available= 2, queued= 0 ] reallocMask=80000000, inUse= 1, identity=4, status=0
+      format= 1, [240x195:256] [240x275:256], freezeLock=0x0, dq-q-time=1434 us
+  Region transparentRegion (this=0x1aa8a8, count=1)
+    [  0,   0,   0,   0]
+  Region transparentRegionScreen (this=0x1aa6fc, count=1)
+    [  0,   0,   0,   0]
+  Region visibleRegionScreen (this=0x1aa6d8, count=1)
+    [  0,   0,   0,   0]
++ Layer 0x1cf6e0
+      z=    81000, pos=(   0,   0), size=( 240,  19), needsBlending=1, needsDithering=0, invalidate=0, alpha=0xff, flags=0x00000000, tr=[1.00, 0.00][0.00, 1.00]
+      name=StatusBar
+      client=0x2b6d68, identity=3
+      [ head= 1, available= 2, queued= 0 ] reallocMask=00000000, inUse= 1, identity=3, status=0
+      format= 1, [240x 19:256] [240x 19:256], freezeLock=0x0, dq-q-time=1190 us
+  Region transparentRegion (this=0x1cf8c0, count=1)
+    [  0,   0,   0,   0]
+  Region transparentRegionScreen (this=0x1cf714, count=1)
+    [  0,   0,   0,   0]
+  Region visibleRegionScreen (this=0x1cf6f0, count=1)
+    [  0,   0, 240,  19]
+  Region WormholeRegion (this=0x16327c, count=1)
+    [  0,   0,   0,   0]
+  display frozen: no, freezeCount=0, orientation=0, canDraw=1
+  last eglSwapBuffers() time: 396.728000 us
+  last transaction time     : 30.517000 us
+Allocated buffers:
+   0xdbc08:  160.00 KiB |  240 ( 256) x  320 |  4 | 0x00000133
+  0x1dda58:  160.00 KiB |  240 ( 256) x  320 |  4 | 0x00000133
+  0x1dfdf0:  160.00 KiB |  240 ( 256) x  320 |  4 | 0x00000133
+  0x23eda0:  195.00 KiB |  240 ( 256) x  195 |  1 | 0x00000133
+  0x2c0258:  160.00 KiB |  240 ( 256) x  320 |  4 | 0x00000133
+  0x302fb8:   19.00 KiB |  240 ( 256) x   19 |  1 | 0x00000133
+  0x3848c8:   19.00 KiB |  240 ( 256) x   19 |  1 | 0x00000133
+  0x40ccb0:  320.00 KiB |  240 ( 256) x  320 |  1 | 0x00000133
+  0x40ced8:  275.00 KiB |  240 ( 256) x  275 |  1 | 0x00000133
+  0x416c38:  320.00 KiB |  240 ( 256) x  320 |  1 | 0x00000133
+Total allocated: 1788.00 KB
+mostafa@MMostafa galaxy-y-totoro-lab % adb -s 172.20.10.2:5555 shell \
+  'su -c "dumpsys window"'
+Event Hub State:
+  HaveFirstKeyboard: true
+  FirstKeyboardId: 0x10003
+  Devices:
+    0x10000: bcm_headset
+      Classes: 0x00000001
+      Path: /dev/input/event6
+      KeyLayoutFile: 
+    0x10001: max8986_ponkey
+      Classes: 0x00000001
+      Path: /dev/input/event5
+      KeyLayoutFile: 
+    0x10002: sec_touchscreen 
+      Classes: 0x00000015
+      Path: /dev/input/event4
+      KeyLayoutFile: 
+    0x10003: sec_keypad (aka device 0 - first keyboard)
+      Classes: 0x00000001
+      Path: /dev/input/event3
+      KeyLayoutFile: 
 
---- PERFORMANCE ---
-BENCH fill32: 36.40 MiB/s, 8.049 ms/frame
-BENCH rgb565->2x32: 7.315 ms/frame
-BENCH page-switch: 11.862 ms/pan
+Input Reader State:
+  Device 0x0: sec_keypad
+    Sources: 0x00000101
+    KeyboardType: 1
+    Keyboard Input Mapper:
+      AssociatedDisplayId: 0
+      KeyboardType: 1
+      KeyDowns: 0 keys currently down
+      MetaState: 0x0
+      DownTime: 10325892598821
+  Device 0x10000: bcm_headset
+    Sources: 0x00000101
+    KeyboardType: 1
+    Keyboard Input Mapper:
+      AssociatedDisplayId: 0
+      KeyboardType: 1
+      KeyDowns: 0 keys currently down
+      MetaState: 0x0
+      DownTime: 0
+  Device 0x10001: max8986_ponkey
+    Sources: 0x00000101
+    KeyboardType: 1
+    Keyboard Input Mapper:
+      AssociatedDisplayId: 0
+      KeyboardType: 1
+      KeyDowns: 0 keys currently down
+      MetaState: 0x0
+      DownTime: 13904136168262
+  Device 0x10002: sec_touchscreen 
+    Sources: 0x00001103
+    KeyboardType: 1
+    Motion Ranges:
+      X: min=0.000, max=240.000, flat=0.000, fuzz=1.000
+      Y: min=0.000, max=320.000, flat=0.000, fuzz=1.000
+      Pressure: min=0.000, max=1.000, flat=0.000, fuzz=0.000
+      Size: min=0.000, max=1.000, flat=0.000, fuzz=0.000
+      TouchMajor: min=0.000, max=400.000, flat=0.000, fuzz=0.000
+      TouchMinor: min=0.000, max=400.000, flat=0.000, fuzz=0.000
+      ToolMajor: min=0.000, max=400.000, flat=0.000, fuzz=0.000
+      ToolMinor: min=0.000, max=400.000, flat=0.000, fuzz=0.000
+    Keyboard Input Mapper:
+      AssociatedDisplayId: 0
+      KeyboardType: 1
+      KeyDowns: 0 keys currently down
+      MetaState: 0x0
+      DownTime: 17367554137840
+    Touch Input Mapper:
+      AssociatedDisplayId: 0
+      UseBadTouchFilter: false
+      UseAveragingTouchFilter: false
+      UseJumpyTouchFilter: false
+      Raw Axes:
+        X: min=0, max=240, flat=0, fuzz=0
+        Y: min=0, max=320, flat=0, fuzz=0
+        Pressure: unknown range
+        TouchMajor: min=0, max=255, flat=0, fuzz=0
+        TouchMinor: unknown range
+        ToolMajor: min=0, max=255, flat=0, fuzz=0
+        ToolMinor: unknown range
+        Orientation: unknown range
+      Calibration:
+        touch.touchSize.calibration: pressure
+        touch.toolSize.calibration: linear
+        touch.pressure.calibration: amplitude
+        touch.pressure.source: touch
+        touch.size.calibration: normalized
+        touch.orientation.calibration: none
+      SurfaceWidth: 240px
+      SurfaceHeight: 320px
+      SurfaceOrientation: 0
+      Translation and Scaling Factors:        XOrigin: 0
+        YOrigin: 0
+        XScale: 1.000
+        YScale: 1.000
+        XPrecision: 1.000
+        YPrecision: 1.000
+        GeometricScale: 1.000
+        ToolSizeLinearScale: 0.941
+        ToolSizeLinearBias: 0.000
+        ToolSizeAreaScale: 0.000
+        ToolSizeAreaBias: 0.000
+        PressureScale: 0.004
+        SizeScale: 0.004
+        OrientationSCale: 0.000
 
---- PAGE SWITCH VALIDATION ---
-PAGE0 red: PASS
-PAGE1 blue: PASS
-PAGE restore page0: PASS
+Input Dispatcher State:
+  DispatchEnabled: 1
+  DispatchFrozen: 0
+  FocusedApplication: name='AppWindowToken{407adca0 token=HistoryRecord{40529148 com.sec.android.app.twlauncher/.Launcher}}', dispatchingTimeout=25000.000ms
+  FocusedWindow: name='Window{408ccec0 paused=false}'
+  TouchDown: false
+  TouchSplit: false
+  TouchedWindows: <none>
+  Windows:
+    0: name='Window{408bd820 paused=false}', paused=false, hasFocus=false, hasWallpaper=false, visible=false, canReceiveKeys=false, flags=0x10020800, type=0x000007d4, layer=141000, frame=[0,19][240,320], visibleFrame=[0,19][240,320], touchableArea=[0,19][240,320], ownerPid=1477, ownerUid=1000, dispatchingTimeout=5000.000ms
+    1: name='Window{4087ed58 paused=false}', paused=false, hasFocus=false, hasWallpaper=false, visible=true, canReceiveKeys=false, flags=0x00000048, type=0x000007d0, layer=81000, frame=[0,0][240,19], visibleFrame=[0,0][240,19], touchableArea=[0,0][240,19], ownerPid=1538, ownerUid=1000, dispatchingTimeout=5000.000ms
+    2: name='Window{4071d628 paused=false}', paused=false, hasFocus=false, hasWallpaper=false, visible=true, canReceiveKeys=false, flags=0x00011328, type=0x000007de, layer=51005, frame=[0,-320][240,-45], visibleFrame=[0,-320][240,-45], touchableArea=[0,-320][240,-45], ownerPid=1538, ownerUid=1000, dispatchingTimeout=5000.000ms
+    3: name='Window{407f8df0 paused=false}', paused=false, hasFocus=false, hasWallpaper=false, visible=false, canReceiveKeys=false, flags=0x00020300, type=0x000007de, layer=51000, frame=[0,-256][240,45], visibleFrame=[0,-256][240,45], touchableArea=[0,-256][240,45], ownerPid=1538, ownerUid=1000, dispatchingTimeout=5000.000ms
+    4: name='Window{40801818 paused=false}', paused=false, hasFocus=false, hasWallpaper=false, visible=false, canReceiveKeys=false, flags=0x00000108, type=0x000007db, layer=21020, frame=[0,137][240,320], visibleFrame=[0,137][240,320], touchableArea=[0,137][240,320], ownerPid=1547, ownerUid=10010, dispatchingTimeout=5000.000ms
+    5: name='Window{4079e2e8 paused=false}', paused=false, hasFocus=false, hasWallpaper=false, visible=false, canReceiveKeys=false, flags=0x00010100, type=0x00000001, layer=21015, frame=[0,0][240,320], visibleFrame=[0,19][240,320], touchableArea=[0,0][240,320], ownerPid=9485, ownerUid=10064, dispatchingTimeout=25000.000ms
+    6: name='Window{408ccec0 paused=false}', paused=false, hasFocus=true, hasWallpaper=false, visible=true, canReceiveKeys=true, flags=0x00010100, type=0x00000001, layer=21010, frame=[0,0][240,320], visibleFrame=[0,19][240,320], touchableArea=[0,0][240,320], ownerPid=1562, ownerUid=10007, dispatchingTimeout=25000.000ms
+    7: name='Window{40a0f460 paused=false}', paused=false, hasFocus=false, hasWallpaper=false, visible=false, canReceiveKeys=false, flags=0x00010100, type=0x00000001, layer=21005, frame=[0,0][240,320], visibleFrame=[0,19][240,320], touchableArea=[0,0][240,320], ownerPid=1634, ownerUid=10007, dispatchingTimeout=25000.000ms
+    8: name='Window{407a51d0 paused=false}', paused=false, hasFocus=false, hasWallpaper=false, visible=true, canReceiveKeys=false, flags=0x00000318, type=0x000007dd, layer=21000, frame=[0,0][240,320], visibleFrame=[0,0][240,320], touchableArea=[0,0][240,320], ownerPid=1477, ownerUid=1000, dispatchingTimeout=5000.000ms
+  MonitoringChannels: <none>
+  InboundQueue: length=0
+  ActiveConnections: <none>
+  AppSwitch: not pending
 
---- TOUCH + SESSION ---
-TOUCH device: /dev/input/event4
-TOUCH name: sec_touchscreen 
-TOUCH EV_ABS=yes EV_SYN=yes
-TOUCH grab: PASS
 
---- PASSIVE FRAMEBUFFER OWNERSHIP TEST ---
-NO TOUCH INTERACTION REQUIRED.
-After setup: NO framebuffer writes by this test.
-After setup: NO FBIOPAN_DISPLAY by this test.
-Observe LCD + terminal for 60 seconds.
-PASSIVE initial yoffset=0
-PASSIVE page0 checksum: 0x3c5dd9c5
-PASSIVE page1 checksum: 0xdf5bbfc5
-PASSIVE observation starts: yoffset=320
-PASSIVE observation begins NOW
-[T+00000 ms] !!! PAGE0 CONTENT CHANGE !!! 0x3c5dd9c5 -> 0xe8009df0
-[T+00000 ms] !!! PAGE1 CONTENT CHANGE !!! 0xdf5bbfc5 -> 0xf1260b2f
-[T+00224 ms] !!! YOFFSET CHANGE: 320 -> 0 !!!
-[T+00224 ms] PAGE0 checksum=0x6a22343c PAGE1 checksum=0xb6005dc5
-[T+00224 ms] !!! PAGE0 CONTENT CHANGE !!! 0xe8009df0 -> 0x6a22343c
-[T+00224 ms] !!! PAGE1 CONTENT CHANGE !!! 0xf1260b2f -> 0xb6005dc5
-[T+01126 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=7
-[T+02185 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=13
-[T+03241 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=19
-[T+04300 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=25
-[T+05356 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=31
-[T+06455 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=37
-[T+07512 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=43
-[T+08568 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=49
-[T+09627 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=55
-[T+10706 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=61
-[T+11772 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=67
-[T+12827 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=73
-[T+13890 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=79
-[T+14947 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=85
-[T+16008 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=91
-[T+17069 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=97
-[T+18126 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=103
-[T+19186 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=109
-[T+20248 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=115
-[T+21304 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=121
-[T+22418 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=127
-[T+23477 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=133
-[T+24535 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=139
-[T+25595 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=145
-[T+26675 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=151
-[T+27731 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=157
-[T+28787 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=163
-[T+29846 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=169
-[T+30902 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=175
-[T+31961 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=181
-[T+33027 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=187
-[T+34084 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=193
-[T+35141 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=199
-[T+36200 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=205
-[T+37259 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=211
-[T+38318 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=217
-[T+39395 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=223
-[T+40454 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=229
-[T+41509 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=235
-[T+42568 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=241
-[T+43627 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=247
-[T+44684 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=253
-[T+45746 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=259
-[T+46800 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=265
-[T+47862 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=271
-[T+48923 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=277
-[T+49988 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=283
-[T+51044 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=289
-[T+52103 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=295
-[T+53158 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=301
-[T+54218 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=307
-[T+55274 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=313
-[T+56329 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=319
-[T+57389 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=325
-[T+58444 ms] PASSIVE yoffset=0 page0=0x6a22343c page1=0xb6005dc5 checks=331
-[T+59358 ms] !!! YOFFSET CHANGE: 0 -> 320 !!!
-[T+59358 ms] PAGE0 checksum=0x6a22343c PAGE1 checksum=0x5beaefbe
-[T+59358 ms] !!! PAGE1 CONTENT CHANGE !!! 0xb6005dc5 -> 0x5beaefbe
-[T+59549 ms] !!! YOFFSET CHANGE: 320 -> 0 !!!
-[T+59549 ms] PAGE0 checksum=0x00372b04 PAGE1 checksum=0x5beaefbe
-[T+59549 ms] !!! PAGE0 CONTENT CHANGE !!! 0x6a22343c -> 0x00372b04
-[T+59549 ms] PASSIVE yoffset=0 page0=0x00372b04 page1=0x5beaefbe checks=337
-
---- PASSIVE RESULT ---
-checks: 339
-yoffset changes: 3
-page0 content changes: 3
-page1 content changes: 3
-metadata changes: 0
-final yoffset: 0
-expected page0 checksum: 0x3c5dd9c5
-expected page1 checksum: 0xdf5bbfc5
-final page0 checksum: 0x00372b04
-final page1 checksum: 0x5beaefbe
-PASSIVE framebuffer restored to page 0.
-
---- RESTORE ---
-Framebuffer restored to page 0.
-Touchscreen grab released.
-
-========================================
- TOTORO U2 DIAGNOSTIC COMPLETE
-========================================
-mostafa@MMostafa galaxy-y-totoro-lab % adb -s 172.20.10.2:5555 shell '
-echo "=== INIT DISPLAY SERVICE STATE ==="
-getprop | grep -Ei "init.svc|surface|display|zygote"
-
-echo
-echo "=== SERVICE LIST ==="
-service list
-'
-=== INIT DISPLAY SERVICE STATE ===
-grep: permission denied
-
-=== SERVICE LIST ===
-Found 58 services:
-0	phoneext: [com.android.internal.telephony.ITelephonyExt]
-1	phone: [com.android.internal.telephony.ITelephony]
-2	iphonesubinfo: [com.android.internal.telephony.IPhoneSubInfo]
-3	simphonebook: [com.android.internal.telephony.IIccPhoneBook]
-4	isms: [com.android.internal.telephony.ISms]
-5	bt_fm_radio: [com.broadcom.bt.service.framework.IPowerManager]
-6	diskstats: []
-7	appwidget: [com.android.internal.appwidget.IAppWidgetService]
-8	backup: [android.app.backup.IBackupManager]
-9	uimode: [android.app.IUiModeManager]
-10	usb: [android.hardware.usb.IUsbManager]
-11	audio: [android.media.IAudioService]
-12	wallpaper: [android.app.IWallpaperManager]
-13	dropbox: [com.android.internal.os.IDropBoxManagerService]
-14	search: [android.app.ISearchManager]
-15	location: [android.location.ILocationManager]
-16	devicestoragemonitor: []
-17	datarouter: []
-18	hdmi: [android.os.IHDMIService]
-19	notification: [android.app.INotificationManager]
-20	mount: [IMountService]
-21	accessibility: [android.view.accessibility.IAccessibilityManager]
-22	throttle: [android.net.IThrottleManager]
-23	connectivity: [android.net.IConnectivityManager]
-24	wifi: [android.net.wifi.IWifiManager]
-25	network_management: [android.os.INetworkManagementService]
-26	netstat: [android.os.INetStatService]
-27	input_method: [com.android.internal.view.IInputMethodManager]
-28	clipboardEx: [android.sec.clipboard.IClipboardService]
-29	clipboard: [android.text.IClipboard]
-30	statusbar: [com.android.internal.statusbar.IStatusBarService]
-31	device_policy: [android.app.admin.IDevicePolicyManager]
-32	bluetooth_hid: [com.broadcom.bt.service.hid.IBluetoothHID]
-33	bluetooth_a2dp: [android.bluetooth.IBluetoothA2dp]
-34	bluetooth: [android.bluetooth.IBluetooth]
-35	window: [android.view.IWindowManager]
-36	alarm: [android.app.IAlarmManager]
-37	vibrator: [android.os.IVibratorService]
-38	hardware: [android.os.IHardwareService]
-39	battery: []
-40	content: [android.content.IContentService]
-41	account: [android.accounts.IAccountManager]
-42	permission: [android.os.IPermissionController]
-43	cpuinfo: []
-44	meminfo: []
-45	activity: [android.app.IActivityManager]
-46	package: [android.content.pm.IPackageManager]
-47	telephony.registry: [com.android.internal.telephony.ITelephonyRegistry]
-48	usagestats: [com.android.internal.app.IUsageStats]
-49	batteryinfo: [com.android.internal.app.IBatteryStats]
-50	power: [android.os.IPowerManager]
-51	entropy: []
-52	sensorservice: [android.gui.SensorServer]
-53	SurfaceFlinger: [android.ui.ISurfaceComposer]
-54	media.audio_policy: [android.media.IAudioPolicyService]
-55	media.camera: [android.hardware.ICameraService]
-56	media.player: [android.media.IMediaPlayerService]
-57	media.audio_flinger: [android.media.IAudioFlinger]
+ 
+Current Window Manager state:
+  Window #8 Window{408bd820 paused=false}:
+    mSession=Session{40897ed0 uid 1000} mClient=android.view.ViewRoot$W@4078fbf0
+    mAttrs=WM.LayoutParams{(0,0)(fillxfill) sim=#20 ty=2004 fl=#10020800 fmt=-3 wanim=0x103006e or=5}
+    mBaseLayer=141000 mSubLayer=0 mAnimLayer=141000+0=141000 mLastLayer=141000
+    mToken=WindowToken{408bd670 token=null}
+    mRootToken=WindowToken{408bd670 token=null}
+    mViewVisibility=0x8 mLastHidden=true mHaveFrame=true mObscured=false
+    Requested w=240 h=301 mLayoutSeq=1666
+    mGivenContentInsets=[0,0][0,0] mGivenVisibleInsets=[0,0][0,0]
+    mConfiguration={ scale=1.0 loc=en_GB touch=3 K-board=1/1/2 nav=1/1 orien=1 layout=17 uiMode=17 seq=6}
+    mShownFrame=[0,19][240,320] last=[0,19][240,320]
+    mFrame=[0,19][240,320] last=[0,19][240,320]
+    mContainingFrame=[0,19][240,320] mDisplayFrame=[0,19][240,320]
+    mContentFrame=[0,19][240,320] mVisibleFrame=[0,19][240,320]
+    mContentInsets=[0,0][0,0] last=[0,0][0,0] mVisibleInsets=[0,0][0,0] last=[0,0][0,0]
+    mShownAlpha=1.0 mAlpha=1.0 mLastAlpha=0.0
+    mDrawPending=false mCommitDrawPending=false mReadyToShow=false mHasDrawn=true
+  Window #7 Window{4087ed58 paused=false}:
+    mSession=Session{40885f68 uid 1000} mClient=android.os.BinderProxy@406d4740
+    mAttrs=WM.LayoutParams{(0,0)(fillx19) sim=#20 gr=#37 ty=2000 fl=#48 fmt=2 wanim=0x103006d}
+    mBaseLayer=81000 mSubLayer=0 mAnimLayer=81000+0=81000 mLastLayer=81000
+    mSurface=Surface(name=StatusBar, identity=3)
+    Surface: shown=true layer=81000 alpha=1.0 rect=(0,0) 240 x 19
+    mToken=WindowToken{408bd670 token=null}
+    mRootToken=WindowToken{408bd670 token=null}
+    mViewVisibility=0x0 mLastHidden=false mHaveFrame=true mObscured=false
+    Requested w=240 h=19 mLayoutSeq=2265
+    mGivenContentInsets=[0,0][0,0] mGivenVisibleInsets=[0,0][0,0]
+    mConfiguration={ scale=1.0 loc=en_GB touch=3 K-board=1/1/2 nav=1/1 orien=1 layout=17 uiMode=17 seq=10}
+    mShownFrame=[0,0][240,19] last=[0,0][240,19]
+    mFrame=[0,0][240,19] last=[0,0][240,19]
+    mContainingFrame=[0,0][240,320] mDisplayFrame=[0,0][240,320]
+    mContentFrame=[0,0][240,19] mVisibleFrame=[0,0][240,19]
+    mContentInsets=[0,0][0,0] last=[0,0][0,0] mVisibleInsets=[0,0][0,0] last=[0,0][0,0]
+    mAnimating=false mLocalAnimating=false mAnimationIsEntrance=true mAnimation=null
+    mDrawPending=false mCommitDrawPending=false mReadyToShow=false mHasDrawn=true
+  Window #6 Window{4071d628 paused=false}:
+    mSession=Session{40885f68 uid 1000} mClient=android.os.BinderProxy@40829480
+    mAttrs=WM.LayoutParams{(0,-320)(fillx275) sim=#20 gr=#37 ty=2014 fl=#11328 fmt=-3 wanim=0x1030001}
+    mBaseLayer=51000 mSubLayer=0 mAnimLayer=51005+0=51005 mLastLayer=51005
+    mSurface=Surface(name=StatusBarExpanded, identity=4)
+    Surface: shown=true layer=51005 alpha=1.0 rect=(0,-320) 240 x 275
+    mToken=WindowToken{408bd670 token=null}
+    mRootToken=WindowToken{408bd670 token=null}
+    mViewVisibility=0x0 mLastHidden=false mHaveFrame=true mObscured=false
+    Requested w=240 h=275 mLayoutSeq=2265
+    mGivenContentInsets=[0,0][0,0] mGivenVisibleInsets=[0,0][0,0]
+    mConfiguration={ scale=1.0 loc=en_GB touch=3 K-board=1/1/2 nav=1/1 orien=1 layout=17 uiMode=17 seq=10}
+    mShownFrame=[0,-320][240,-45] last=[0,-320][240,-45]
+    mFrame=[0,-320][240,-45] last=[0,-320][240,-45]
+    mContainingFrame=[0,0][240,320] mDisplayFrame=[-10000,-10000][10000,10000]
+    mContentFrame=[0,-320][240,-45] mVisibleFrame=[0,-320][240,-45]
+    mContentInsets=[0,0][0,0] last=[0,0][0,0] mVisibleInsets=[0,0][0,0] last=[0,0][0,0]
+    mDrawPending=false mCommitDrawPending=false mReadyToShow=false mHasDrawn=true
+  Window #5 Window{407f8df0 paused=false}:
+    mSession=Session{40885f68 uid 1000} mClient=android.os.BinderProxy@407ef210
+    mAttrs=WM.LayoutParams{(0,-320)(fillx301) sim=#20 gr=#37 ty=2014 fl=#20300 fmt=-3}
+    mBaseLayer=51000 mSubLayer=0 mAnimLayer=51000+0=51000 mLastLayer=51000
+    mToken=WindowToken{408bd670 token=null}
+    mRootToken=WindowToken{408bd670 token=null}
+    mViewVisibility=0x8 mLastHidden=false mHaveFrame=true mObscured=false
+    Requested w=240 h=301 mLayoutSeq=1675
+    mGivenContentInsets=[0,0][0,0] mGivenVisibleInsets=[0,0][0,0]
+    mConfiguration={ scale=1.0 loc=en_GB touch=3 K-board=1/1/2 nav=1/1 orien=1 layout=17 uiMode=17 seq=6}
+    mShownFrame=[0,-256][240,45] last=[0,-256][240,45]
+    mFrame=[0,-256][240,45] last=[0,-256][240,45]
+    mContainingFrame=[0,0][240,320] mDisplayFrame=[-10000,-10000][10000,10000]
+    mContentFrame=[0,-256][240,45] mVisibleFrame=[0,-256][240,45]
+    mContentInsets=[0,0][0,0] last=[0,0][0,0] mVisibleInsets=[0,0][0,0] last=[0,0][0,0]
+    mDrawPending=false mCommitDrawPending=false mReadyToShow=false mHasDrawn=true
+  Window #4 Window{40801818 paused=false}:
+    mSession=Session{4083dfa0 uid 10010} mClient=android.os.BinderProxy@409014b0
+    mAttrs=WM.LayoutParams{(0,0)(fillxwrap) sim=#20 gr=#50 ty=2011 fl=#108 fmt=-2 wanim=0x1030056}
+    mIsImWindow=true mIsWallpaper=false mIsFloatingLayer=true mWallpaperVisible=false
+    mBaseLayer=121000 mSubLayer=0 mAnimLayer=21020+0=21020 mLastLayer=21015
+    mToken=WindowToken{40770758 token=android.os.Binder@40770740}
+    mRootToken=WindowToken{40770758 token=android.os.Binder@40770740}
+    mTargetAppToken=AppWindowToken{40925e80 token=HistoryRecord{40530bd8 com.google.android.googlequicksearchbox/.SearchActivity}}
+    mViewVisibility=0x8 mLastHidden=true mHaveFrame=true mObscured=false
+    Requested w=240 h=0 mLayoutSeq=612
+    mGivenContentInsets=[0,0][0,0] mGivenVisibleInsets=[0,0][0,0]
+    mTouchableInsets=2 mGivenInsetsPending=false
+    mConfiguration={ scale=1.0 loc=en_GB touch=3 K-board=1/1/2 nav=1/1 orien=1 layout=17 uiMode=17 seq=4}
+    mShownFrame=[0,137][240,320] last=[0,137][240,320]
+    mFrame=[0,137][240,320] last=[0,137][240,320]
+    mContainingFrame=[0,19][240,320] mDisplayFrame=[0,19][240,320]
+    mContentFrame=[0,137][240,320] mVisibleFrame=[0,137][240,320]
+    mContentInsets=[0,0][0,0] last=[0,0][0,0] mVisibleInsets=[0,0][0,0] last=[0,0][0,0]
+    mShownAlpha=1.0 mAlpha=1.0 mLastAlpha=0.0
+    mDrawPending=false mCommitDrawPending=false mReadyToShow=false mHasDrawn=true
+  Window #3 Window{4079e2e8 paused=false}:
+    mSession=Session{408a1a60 uid 10064} mClient=android.os.BinderProxy@4079e0e8
+    mAttrs=WM.LayoutParams{(0,0)(fillxfill) sim=#123 ty=1 fl=#10100 fmt=-3 wanim=0x1030001}
+    mBaseLayer=21000 mSubLayer=0 mAnimLayer=21015+0=21015 mLastLayer=21015
+    mToken=AppWindowToken{40a090d8 token=HistoryRecord{40a08df8 com.noshufou.android.su/.SuRequestActivity}}
+    mRootToken=AppWindowToken{40a090d8 token=HistoryRecord{40a08df8 com.noshufou.android.su/.SuRequestActivity}}
+    mAppToken=AppWindowToken{40a090d8 token=HistoryRecord{40a08df8 com.noshufou.android.su/.SuRequestActivity}}
+    mViewVisibility=0x8 mLastHidden=true mHaveFrame=true mObscured=false
+    Requested w=240 h=320 mLayoutSeq=2262
+    mGivenContentInsets=[0,0][0,0] mGivenVisibleInsets=[0,0][0,0]
+    mConfiguration={ scale=1.0 loc=en_GB touch=3 K-board=1/1/2 nav=1/1 orien=1 layout=17 uiMode=17 seq=10}
+    mShownFrame=[0,0][240,320] last=[0,0][240,320]
+    mFrame=[0,0][240,320] last=[0,0][240,320]
+    mContainingFrame=[0,0][240,320] mDisplayFrame=[0,0][240,320]
+    mContentFrame=[0,19][240,320] mVisibleFrame=[0,19][240,320]
+    mContentInsets=[0,19][0,0] last=[0,19][0,0] mVisibleInsets=[0,19][0,0] last=[0,19][0,0]
+    mDrawPending=false mCommitDrawPending=false mReadyToShow=false mHasDrawn=true
+  Window #2 Window{408ccec0 paused=false}:
+    mSession=Session{40746ae0 uid 10007} mClient=android.os.BinderProxy@408ccca0
+    mAttrs=WM.LayoutParams{(0,0)(fillxfill) sim=#20 ty=1 fl=#10100 fmt=-1 wanim=0x1030001}
+    mBaseLayer=21000 mSubLayer=0 mAnimLayer=21010+0=21010 mLastLayer=21010
+    mSurface=Surface(name=com.sec.android.app.twlauncher/com.sec.android.app.twlauncher.Launcher, identity=380)
+    Surface: shown=true layer=21010 alpha=1.0 rect=(0,0) 240 x 320
+    mToken=AppWindowToken{407adca0 token=HistoryRecord{40529148 com.sec.android.app.twlauncher/.Launcher}}
+    mRootToken=AppWindowToken{407adca0 token=HistoryRecord{40529148 com.sec.android.app.twlauncher/.Launcher}}
+    mAppToken=AppWindowToken{407adca0 token=HistoryRecord{40529148 com.sec.android.app.twlauncher/.Launcher}}
+    mViewVisibility=0x0 mLastHidden=false mHaveFrame=true mObscured=false
+    Requested w=240 h=320 mLayoutSeq=2265
+    mGivenContentInsets=[0,0][0,0] mGivenVisibleInsets=[0,0][0,0]
+    mConfiguration={ scale=1.0 loc=en_GB touch=3 K-board=1/1/2 nav=1/1 orien=1 layout=17 uiMode=17 seq=10}
+    mShownFrame=[0,0][240,320] last=[0,0][240,320]
+    mFrame=[0,0][240,320] last=[0,0][240,320]
+    mContainingFrame=[0,0][240,320] mDisplayFrame=[0,0][240,320]
+    mContentFrame=[0,19][240,320] mVisibleFrame=[0,19][240,320]
+    mContentInsets=[0,19][0,0] last=[0,19][0,0] mVisibleInsets=[0,19][0,0] last=[0,19][0,0]
+    mDrawPending=false mCommitDrawPending=false mReadyToShow=false mHasDrawn=true
+    mWallpaperX=0.0 mWallpaperY=0.0
+    mWallpaperXStep=0.5 mWallpaperYStep=0.0
+  Window #1 Window{40a0f460 paused=false}:
+    mSession=Session{40a0f040 uid 10007} mClient=android.os.BinderProxy@40a0f258
+    mAttrs=WM.LayoutParams{(0,0)(fillxfill) sim=#20 ty=1 fl=#10100 fmt=-1 wanim=0x1030001}
+    mBaseLayer=21000 mSubLayer=0 mAnimLayer=21005+0=21005 mLastLayer=22005
+    mToken=AppWindowToken{408895e0 token=HistoryRecord{4095b750 com.android.contacts/com.sec.android.app.contacts.PhoneBookTopMenuActivity}}
+    mRootToken=AppWindowToken{408895e0 token=HistoryRecord{4095b750 com.android.contacts/com.sec.android.app.contacts.PhoneBookTopMenuActivity}}
+    mAppToken=AppWindowToken{408895e0 token=HistoryRecord{4095b750 com.android.contacts/com.sec.android.app.contacts.PhoneBookTopMenuActivity}}
+    mViewVisibility=0x8 mLastHidden=true mHaveFrame=true mObscured=true
+    Requested w=240 h=320 mLayoutSeq=1534
+    mGivenContentInsets=[0,0][0,0] mGivenVisibleInsets=[0,0][0,0]
+    mConfiguration={ scale=1.0 loc=en_GB touch=3 K-board=1/1/2 nav=1/1 orien=1 layout=17 uiMode=17 seq=6}
+    mShownFrame=[0,0][240,320] last=[0,0][240,320]
+    mFrame=[0,0][240,320] last=[0,0][240,320]
+    mContainingFrame=[0,0][240,320] mDisplayFrame=[0,0][240,320]
+    mContentFrame=[0,19][240,320] mVisibleFrame=[0,19][240,320]
+    mContentInsets=[0,19][0,0] last=[0,19][0,0] mVisibleInsets=[0,19][0,0] last=[0,19][0,0]
+    mShownAlpha=1.0 mAlpha=1.0 mLastAlpha=0.0
+    mDrawPending=false mCommitDrawPending=false mReadyToShow=false mHasDrawn=true
+  Window #0 Window{407a51d0 paused=false}:
+    mSession=Session{40897ed0 uid 1000} mClient=android.service.wallpaper.WallpaperService$Engine$4@408259d8
+    mAttrs=WM.LayoutParams{(0,0)(fillxfill) gr=#33 ty=2013 fl=#318 fmt=4 wanim=0x1030079}
+    mIsImWindow=false mIsWallpaper=true mIsFloatingLayer=true mWallpaperVisible=false
+    mBaseLayer=21000 mSubLayer=0 mAnimLayer=21000+0=21000 mLastLayer=0
+    mSurface=Surface(name=com.android.internal.service.wallpaper.ImageWallpaper, identity=5)
+    Surface: shown=false layer=21000 alpha=1.0 rect=(0,0) 240 x 320
+    mToken=WindowToken{40791dc0 token=android.os.Binder@407f1460}
+    mRootToken=WindowToken{40791dc0 token=android.os.Binder@407f1460}
+    mViewVisibility=0x0 mLastHidden=true mHaveFrame=true mObscured=true
+    Requested w=-1 h=-1 mLayoutSeq=7
+    mGivenContentInsets=[0,0][0,0] mGivenVisibleInsets=[0,0][0,0]
+    mConfiguration={ scale=1.0 loc=en_GB touch=3 K-board=1/1/2 nav=1/1 orien=1 layout=17 uiMode=17 seq=3}
+    mShownFrame=[0,0][240,320] last=[0,0][240,320]
+    mFrame=[0,0][240,320] last=[0,0][240,320]
+    mContainingFrame=[0,0][240,320] mDisplayFrame=[-10000,-10000][10000,10000]
+    mContentFrame=[0,0][240,320] mVisibleFrame=[0,0][240,320]
+    mContentInsets=[0,0][0,0] last=[0,0][0,0] mVisibleInsets=[0,0][0,0] last=[0,0][0,0]
+    mDrawPending=false mCommitDrawPending=false mReadyToShow=true mHasDrawn=false
+    mWallpaperX=0.5 mWallpaperY=0.5
+ 
+  All active sessions:
+  Session Session{4090aac0 uid 1001}:
+    mNumWindow=0 mClientDead=false mSurfaceSession=android.view.SurfaceSession@40536868
+  Session Session{40a0ec60 uid 1000}:
+    mNumWindow=0 mClientDead=false mSurfaceSession=android.view.SurfaceSession@40915d60
+  Session Session{408a1a60 uid 10064}:
+    mNumWindow=1 mClientDead=false mSurfaceSession=android.view.SurfaceSession@408f5038
+  Session Session{40746ae0 uid 10007}:
+    mNumWindow=1 mClientDead=false mSurfaceSession=android.view.SurfaceSession@40577038
+  Session Session{407b4548 uid 10002}:
+    mNumWindow=0 mClientDead=false mSurfaceSession=android.view.SurfaceSession@4055a340
+  Session Session{4083dfa0 uid 10010}:
+    mNumWindow=1 mClientDead=false mSurfaceSession=android.view.SurfaceSession@40723510
+  Session Session{40885f68 uid 1000}:
+    mNumWindow=3 mClientDead=false mSurfaceSession=android.view.SurfaceSession@4069bf28
+  Session Session{40a0f040 uid 10007}:
+    mNumWindow=1 mClientDead=false mSurfaceSession=android.view.SurfaceSession@40865d60
+  Session Session{40897ed0 uid 1000}:
+    mNumWindow=2 mClientDead=false mSurfaceSession=android.view.SurfaceSession@4082ee08
+ 
+  All tokens:
+  Token null:
+    token=null
+    windows=[Window{408bd820 paused=false}, Window{4087ed58 paused=false}, Window{407f8df0 paused=false}, Window{4071d628 paused=false}]
+    windowType=-1 hidden=false hasVisible=true
+  Token android.os.Binder@407f1460:
+    token=android.os.Binder@407f1460
+    windows=[Window{407a51d0 paused=false}]
+    windowType=2013 hidden=true hasVisible=false
+  Token HistoryRecord{40a08df8 com.noshufou.android.su/.SuRequestActivity}:
+    token=HistoryRecord{40a08df8 com.noshufou.android.su/.SuRequestActivity}
+    windows=[Window{4079e2e8 paused=false}]
+    windowType=2 hidden=true hasVisible=true
+    app=true
+    allAppWindows=[Window{4079e2e8 paused=false}]
+    groupId=72 appFullscreen=false requestedOrientation=-1
+    hiddenRequested=true clientHidden=true willBeHidden=false reportedVisible=false
+    numInterestingWindows=1 numDrawnWindows=1 inPendingTransaction=false allDrawn=true
+    startingData=null removed=false firstWindowDrawn=true
+  Token HistoryRecord{40529148 com.sec.android.app.twlauncher/.Launcher}:
+    token=HistoryRecord{40529148 com.sec.android.app.twlauncher/.Launcher}
+    windows=[Window{408ccec0 paused=false}]
+    windowType=2 hidden=false hasVisible=true
+    app=true
+    allAppWindows=[Window{408ccec0 paused=false}]
+    groupId=2 appFullscreen=true requestedOrientation=5
+    hiddenRequested=false clientHidden=false willBeHidden=false reportedVisible=true
+    numInterestingWindows=1 numDrawnWindows=1 inPendingTransaction=false allDrawn=true
+    startingData=null removed=false firstWindowDrawn=true
+  Token HistoryRecord{4095b750 com.android.contacts/com.sec.android.app.contacts.PhoneBookTopMenuActivity}:
+    token=HistoryRecord{4095b750 com.android.contacts/com.sec.android.app.contacts.PhoneBookTopMenuActivity}
+    windows=[Window{40a0f460 paused=false}]
+    windowType=2 hidden=true hasVisible=true
+    waitingToShow=false waitingToHide=false sendingToBottom=true sendingToTop=false
+    app=true
+    allAppWindows=[Window{40a0f460 paused=false}]
+    groupId=33 appFullscreen=true requestedOrientation=-1
+    hiddenRequested=true clientHidden=true willBeHidden=false reportedVisible=false
+    numInterestingWindows=1 numDrawnWindows=1 inPendingTransaction=false allDrawn=true
+    startingData=null removed=false firstWindowDrawn=true
+  Token android.os.Binder@40770740:
+    token=android.os.Binder@40770740
+    windows=[]
+    windowType=2011 hidden=false hasVisible=true
+ 
+  Window token list:
+  #0: WindowToken{408bd670 token=null}
+  #1: WindowToken{40791dc0 token=android.os.Binder@407f1460}
+  #2: WindowToken{40770758 token=android.os.Binder@40770740}
+  #3: AppWindowToken{407adca0 token=HistoryRecord{40529148 com.sec.android.app.twlauncher/.Launcher}}
+  #4: AppWindowToken{408895e0 token=HistoryRecord{4095b750 com.android.contacts/com.sec.android.app.contacts.PhoneBookTopMenuActivity}}
+  #5: AppWindowToken{40a090d8 token=HistoryRecord{40a08df8 com.noshufou.android.su/.SuRequestActivity}}
+ 
+  Wallpaper tokens:
+  Wallpaper #0 WindowToken{40791dc0 token=android.os.Binder@407f1460}:
+    token=android.os.Binder@407f1460
+    windows=[Window{407a51d0 paused=false}]
+    windowType=2013 hidden=true hasVisible=false
+ 
+  Application tokens in Z order:
+  App #2: AppWindowToken{40a090d8 token=HistoryRecord{40a08df8 com.noshufou.android.su/.SuRequestActivity}}
+  App #1: AppWindowToken{407adca0 token=HistoryRecord{40529148 com.sec.android.app.twlauncher/.Launcher}}
+  App #0: AppWindowToken{408895e0 token=HistoryRecord{4095b750 com.android.contacts/com.sec.android.app.contacts.PhoneBookTopMenuActivity}}
+ 
+  mCurrentFocus=Window{408ccec0 paused=false}
+  mLastFocus=Window{408ccec0 paused=false}
+  mFocusedApp=AppWindowToken{407adca0 token=HistoryRecord{40529148 com.sec.android.app.twlauncher/.Launcher}}
+  mInputMethodTarget=Window{407f74f8 paused=false}
+  mInputMethodWindow=null
+  mWallpaperTarget=null
+  mCurConfiguration={ scale=1.0 loc=en_GB touch=3 K-board=1/1/2 nav=1/1 orien=1 layout=17 uiMode=17 seq=10}
+  mInTouchMode=true mLayoutSeq=2265
+  mSystemBooted=true mDisplayEnabled=true
+  mLayoutNeeded=false mBlurShown=false
+  mDimShown=true current=0.0 target=0.0 delta=-0.004 lastAnimTime=0
+  mInputMethodAnimLayerAdjustment=0  mWallpaperAnimLayerAdjustment=0
+  mLastWallpaperX=-1.0 mLastWallpaperY=-1.0
+  mDisplayFrozen=false mWindowsFreezingScreen=false mAppsFreezingScreen=0 mWaitingForConfig=false
+  mRotation=0, mForcedAppOrientation=5, mRequestedRotation=0
+  mAnimationPending=false mWindowAnimationScale=1.0 mTransitionWindowAnimationScale=1.0
+  mNextAppTransition=0xffffffff, mAppTransitionReady=false, mAppTransitionRunning=false, mAppTransitionTimeout=false
+  mStartingIconInTransition=false, mSkipAppTransitionAnimation=false
+  DisplayWidth=240 DisplayHeight=320
+mostafa@MMostafa galaxy-y-totoro-lab % adb -s 172.20.10.2:5555 shell \
+  'su -c "dumpsys activity"'
+ 
+  Sticky broadcasts:
+  * Sticky action android.net.thrott.THROTTLE_ACTION:
+    Intent: act=android.net.thrott.THROTTLE_ACTION
+      Bundle[{level=-1}]
+  * Sticky action android.hardware.usb.action.USB_STATE:
+    Intent: act=android.hardware.usb.action.USB_STATE flg=0x20000000
+      Bundle[{obex=enabled, adb=enabled, acm=enabled, connected=false, configuration=0, usb_mass_storage=enabled, rndis=enabled}]
+  * Sticky action android.intent.action.NETWORK_SET_TIMEZONE:
+    Intent: act=android.intent.action.NETWORK_SET_TIMEZONE flg=0x20000000
+      Bundle[mParcelledData.dataSize=64]
+  * Sticky action android.provider.Telephony.SPN_STRINGS_UPDATED:
+    Intent: act=android.provider.Telephony.SPN_STRINGS_UPDATED flg=0x20000000
+      Bundle[mParcelledData.dataSize=156]
+  * Sticky action android.net.conn.CONNECTIVITY_CHANGE:
+    Intent: act=android.net.conn.CONNECTIVITY_CHANGE flg=0x10000000
+      Bundle[{networkInfo=NetworkInfo: type: WIFI[EDGE], state: CONNECTED/CONNECTED, reason: (unspecified), extra: (none), roaming: false, failover: false, isAvailable: true, inetCondition=0}]
+  * Sticky action android.net.wifi.supplicant.STATE_CHANGE:
+    Intent: act=android.net.wifi.supplicant.STATE_CHANGE flg=0x30000000
+      Bundle[{newState=COMPLETED}]
+  * Sticky action android.net.conn.TETHER_STATE_CHANGED:
+    Intent: act=android.net.conn.TETHER_STATE_CHANGED flg=0x20000000
+      Bundle[{erroredArray=[], availableArray=[], activeArray=[]}]
+  * Sticky action android.intent.action.BATTERY_CHANGED:
+    Intent: act=android.intent.action.BATTERY_CHANGED flg=0x60000000
+      Bundle[{icon-small=17302184, present=false, scale=100, level=67, technology=Li-ion, status=3, voltage=3, plugged=0, health=2, temperature=300}]
+  * Sticky action android.net.wifi.WIFI_STATE_CHANGED:
+    Intent: act=android.net.wifi.WIFI_STATE_CHANGED flg=0x10000000
+      Bundle[{previous_wifi_state=2, wifi_state=3}]
+  * Sticky action android.net.thrott.POLL_ACTION:
+    Intent: act=android.net.thrott.POLL_ACTION
+      Bundle[{cycleRead=14900, cycleStart=1790022600000, cycleEnd=1792614600000, cycleWrite=5534}]
+  * Sticky action android.intent.action.SIM_STATE_CHANGED:
+    Intent: act=android.intent.action.SIM_STATE_CHANGED flg=0x20000000
+      Bundle[mParcelledData.dataSize=116]
+  * Sticky action android.intent.action.SIG_STR:
+    Intent: act=android.intent.action.SIG_STR flg=0x20000000
+      Bundle[{EvdoSnr=-1, GsmSignalBar=0, CdmaDbm=-1, GsmBitErrorRate=255, CdmaEcio=-1, EvdoDbm=-1, GsmSignalStrength=24, EvdoEcio=-1, isGsm=true}]
+  * Sticky action android.intent.action.SERVICE_STATE:
+    Intent: act=android.intent.action.SERVICE_STATE flg=0x20000000
+      Bundle[{cdmaRoamingIndicator=-1, operator-numeric=43211, gprsState=0, networkId=-1, state=0, emergencyOnly=false, operator-alpha-short=RIGHTEL, radioTechnology=2, manual=true, cssIndicator=false, operator-alpha-long=RIGHTEL, systemId=-1, roaming=false, cdmaDefaultRoamingIndicator=-1}]
+  * Sticky action android.net.wifi.STATE_CHANGE:
+    Intent: act=android.net.wifi.STATE_CHANGE flg=0x30000000
+      Bundle[{networkInfo=NetworkInfo: type: WIFI[EDGE], state: CONNECTED/CONNECTED, reason: (unspecified), extra: (none), roaming: false, failover: false, isAvailable: true}]
+  * Sticky action android.intent.action.NETWORK_SET_TIME:
+    Intent: act=android.intent.action.NETWORK_SET_TIME flg=0x20000000
+      Bundle[mParcelledData.dataSize=36]
+  * Sticky action android.media.RINGER_MODE_CHANGED:
+    Intent: act=android.media.RINGER_MODE_CHANGED flg=0x70000000
+      Bundle[{android.media.EXTRA_RINGER_MODE=1}]
+ 
+  Restarting services:
+  * Restarting ServiceRecord{40789620 com.sec.android.app.sns/.SnsService}
+    intent={act=android.intent.action.BOOT_COMPLETED cmp=com.sec.android.app.sns/.SnsService}
+    packageName=com.sec.android.app.sns
+    processName=com.sec.android.app.sns
+    baseDir=/system/app/SnsProvider.apk
+resDir=/system/app/SnsProvider.apk
+    dataDir=/data/data/com.sec.android.app.sns
+    app=null
+    createTime=-5h43m33s496ms lastActivity=-3h31m44s71ms
+     executingStart=-3h31m44s69ms restartTime=-3h31m44s71ms
+    startRequested=true stopIfKilled=true callStart=true lastStartId=1
+    executeNesting=0 restartCount=1 restartDelay=-1h2m24s76ms nextRestartTime=+58m34s764ms crashCount=0
+    Pending Starts:
+    #0 id=1 dxc=2
+      intent=Intent { act=android.intent.action.BOOT_COMPLETED cmp=com.sec.android.app.sns/.SnsService }
+ 
+  Activity stack:
+  * TaskRecord{407f8d48 #73 I com.noshufou.android.su/.SuRequestActivity}
+    intent={flg=0x10800000 cmp=com.noshufou.android.su/.SuRequestActivity}
+    realActivity=com.noshufou.android.su/.SuRequestActivity
+    lastActiveTime=20658682 (inactive for 0s)
+    * Hist #2: HistoryRecord{40530d00 com.noshufou.android.su/.SuRequestActivity}
+        packageName=com.noshufou.android.su processName=com.noshufou.android.su
+        launchedFromUid=10064 app=ProcessRecord{4053e5c0 9485:com.noshufou.android.su/10064}
+        Intent { flg=0x10800000 cmp=com.noshufou.android.su/.SuRequestActivity (has extras) }
+        frontOfTask=true task=TaskRecord{407f8d48 #73 I com.noshufou.android.su/.SuRequestActivity}
+        taskAffinity=null
+        realActivity=com.noshufou.android.su/.SuRequestActivity
+        base=/system/app/Superuser.apk/system/app/Superuser.apk data=/data/data/com.noshufou.android.su
+        labelRes=0x7f070002 icon=0x7f02001e theme=0x7f0d000f
+        stateNotNeeded=false componentSpecified=true isHomeActivity=false
+        configuration={ scale=1.0 loc=en_GB touch=3 K-board=1/1/2 nav=1/1 orien=1 layout=17 uiMode=17 seq=10}
+        launchFailed=false haveState=true icicle=null
+        state=STOPPING stopped=false delayedResume=false finishing=true
+        keysPaused=false inHistory=true launchMode=0
+        fullscreen=false visible=true frozenBeforeDestroy=false thumbnailNeeded=false idle=true
+  * TaskRecord{408405e0 #2 A com.sec.android.app.twlauncher}
+    clearOnBackground=true numActivities=1 rootWasReset=false
+    affinity=com.sec.android.app.twlauncher
+    intent={act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000000 cmp=com.sec.android.app.twlauncher/.Launcher}
+    realActivity=com.sec.android.app.twlauncher/.Launcher
+    lastActiveTime=20658710 (inactive for 0s)
+    * Hist #1: HistoryRecord{40529148 com.sec.android.app.twlauncher/.Launcher}
+        packageName=com.sec.android.app.twlauncher processName=com.sec.android.app.twlauncher
+        launchedFromUid=0 app=ProcessRecord{40877fe8 1562:com.sec.android.app.twlauncher/10007}
+        Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000000 cmp=com.sec.android.app.twlauncher/.Launcher }
+        frontOfTask=true task=TaskRecord{408405e0 #2 A com.sec.android.app.twlauncher}
+        taskAffinity=com.sec.android.app.twlauncher
+        realActivity=com.sec.android.app.twlauncher/.Launcher
+        base=/system/app/TouchWiz30Launcher.apk/system/app/TouchWiz30Launcher.apk data=/data/data/com.sec.android.app.twlauncher
+        labelRes=0x7f0a0000 icon=0x7f020077 theme=0x103005f
+        stateNotNeeded=true componentSpecified=false isHomeActivity=true
+        configuration={ scale=1.0 loc=en_GB touch=3 K-board=1/1/2 nav=1/1 orien=1 layout=17 uiMode=17 seq=10}
+        launchFailed=false haveState=false icicle=null
+        state=RESUMED stopped=false delayedResume=false finishing=false
+        keysPaused=false inHistory=true launchMode=2
+        fullscreen=true visible=true frozenBeforeDestroy=false thumbnailNeeded=false idle=false
+        waitingVisible=false nowVisible=true
+  * TaskRecord{40889550 #33 A android.task.contacts}
+    clearOnBackground=true numActivities=1 rootWasReset=true
+    affinity=android.task.contacts
+    intent={act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10600000 cmp=com.android.contacts/com.sec.android.app.contacts.PhoneBookTopMenuActivity}
+    realActivity=com.android.contacts/com.sec.android.app.contacts.PhoneBookTopMenuActivity
+    lastActiveTime=11336613 (inactive for 9322s)
+    * Hist #0: HistoryRecord{4095b750 com.android.contacts/com.sec.android.app.contacts.PhoneBookTopMenuActivity}
+        packageName=com.android.contacts processName=android.process.acore
+        launchedFromUid=10007 app=ProcessRecord{408825b0 1634:android.process.acore/10007}
+        Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.android.contacts/com.sec.android.app.contacts.PhoneBookTopMenuActivity }
+        frontOfTask=true task=TaskRecord{40889550 #33 A android.task.contacts}
+        taskAffinity=android.task.contacts
+        realActivity=com.android.contacts/com.sec.android.app.contacts.PhoneBookTopMenuActivity
+        base=/system/app/Contacts.apk/system/app/Contacts.apk data=/data/data/com.android.contacts
+        labelRes=0x7f0a0048 icon=0x7f020182 theme=0x7f0e0000
+        stateNotNeeded=false componentSpecified=true isHomeActivity=false
+        configuration={ scale=1.0 loc=en_GB touch=3 K-board=1/1/2 nav=1/1 orien=1 layout=17 uiMode=17 seq=6}
+        launchFailed=false haveState=true icicle=Bundle[mParcelledData.dataSize=4176]
+        state=STOPPED stopped=true delayedResume=false finishing=false
+        keysPaused=false inHistory=true launchMode=2
+        fullscreen=true visible=false frozenBeforeDestroy=false thumbnailNeeded=false idle=true
+ 
+  Running activities (most recent first):
+    TaskRecord{408405e0 #2 A com.sec.android.app.twlauncher}
+      Run #2: HistoryRecord{40529148 com.sec.android.app.twlauncher/.Launcher}
+    TaskRecord{407f8d48 #73 I com.noshufou.android.su/.SuRequestActivity}
+      Run #1: HistoryRecord{40530d00 com.noshufou.android.su/.SuRequestActivity}
+    TaskRecord{40889550 #33 A android.task.contacts}
+      Run #0: HistoryRecord{4095b750 com.android.contacts/com.sec.android.app.contacts.PhoneBookTopMenuActivity}
+ 
+  Activities waiting to stop:
+    TaskRecord{407f8d48 #73 I com.noshufou.android.su/.SuRequestActivity}
+      Stop #0: HistoryRecord{40530d00 com.noshufou.android.su/.SuRequestActivity}
+ 
+  mPausingActivity: null
+  mResumedActivity: HistoryRecord{40529148 com.sec.android.app.twlauncher/.Launcher}
+  mFocusedActivity: HistoryRecord{40529148 com.sec.android.app.twlauncher/.Launcher}
+  mLastPausedActivity: HistoryRecord{40530d00 com.noshufou.android.su/.SuRequestActivity}
+ 
+  mCurTask: 73
+ 
+  Running processes (most recent first):
+    PERS # 0: adj=core /F 407c95d0 1556:com.android.phone/1001 (fixed)
+    Proc # 1: adj=vis  /F 407fc2d8 1591:com.google.process.gapps/10002 (service)
+              com.google.android.location/.NetworkLocationService<=Proc{40515948 1477:system/1000}
+    Proc # 2: adj=bak  /B 40804748 4158:com.samsung.sec.android.appwidget.programmonitorwidget/10007 (bg-empty)
+    Proc # 3: adj=bak  /B 407a2e58 5440:com.sec.android.app.controlpanel/1000 (bg-empty)
+    Proc # 4: adj=vis  /F 407ee420 1547:com.sec.android.inputmethod.axt9/10010 (service)
+              com.sec.android.inputmethod.axt9/.AxT9IME<=Proc{40515948 1477:system/1000}
+    PERS # 5: adj=sys  /F 40515948 1477:system/1000 (fixed)
+    Proc # 6: adj=fore /F 40877fe8 1562:com.sec.android.app.twlauncher/10007 (top-activity)
+    Proc # 7: adj=vis  /F 4053e5c0 9485:com.noshufou.android.su/10064 (visible)
+    Proc # 8: adj=bak+1/B 408d8c60 5451:com.sec.android.widgetapp.dualclock/10041 (bg-empty)
+    Proc # 9: adj=bak+1/B 40878ff8 1775:com.sec.android.widgetapp.clockweather.clockwidget/10053 (started-bg-services)
+    Proc #10: adj=bak+2/B 4091af88 4929:android.process.media/10050 (bg-empty)
+    Proc #11: adj=bak+2/B 409db0b8 6216:com.osp.app.signin/1001 (bg-empty)
+    Proc #12: adj=bak+3/B 409d82a0 6207:com.google.android.apps.uploader/10021 (bg-empty)
+    Proc #13: adj=bak+3/B 4080c078 8617:com.sec.android.providers.downloads/10018 (bg-empty)
+    Proc #14: adj=bak+4/B 40925b98 8608:com.google.android.gm/10006 (bg-empty)
+    Proc #15: adj=bak+4/B 4091d4c0 5980:com.sec.android.app.samsungapps.una2/10044 (bg-empty)
+    Proc #16: adj=svc  /B 40546240 14064:com.android.server.vpn:remote/1000 (started-services)
+    Proc #17: adj=bak+5/B 4091df60 14045:com.sec.android.provider.badge/10043 (bg-empty)
+    Proc #18: adj=svc  /B 4092a370 14036:com.android.email/10008 (started-services)
+    Proc #19: adj=svc  /B 40539df0 14004:com.smlds/10042 (started-services)
+    Proc #20: adj=bak+5/B 40921c90 9295:com.android.settings/1000 (bg-empty)
+    Proc #21: adj=svc  /B 4093fe78 13964:com.wssyncmldm/1001 (started-services)
+    Proc #22: adj=svc  /B 409047c0 13955:com.sec.android.providers.drm/1000 (started-services)
+    Proc #23: adj=bak+6/B 40577bd0 13930:com.google.android.apps.maps:FriendService/10039 (bg-empty)
+    Proc #24: adj=svc  /B 405431f0 13922:com.google.android.apps.maps:NetworkLocationService/10039 (started-services)
+    Proc #25: adj=bak+6/B 40900f80 9268:com.google.android.apps.maps/10039 (bg-empty)
+    Proc #26: adj=bak+7/B 408825b0 1634:android.process.acore/10007 (bg-activities)
+    PERS #27: adj=core /F 407f0ba0 1557:com.sec.pcw.device/10024 (fixed)
+    PERS #28: adj=core /F 407f1030 1560:com.broadcom.bt.app.system/1002 (fixed)
+    PERS #29: adj=core /F 407ef8a0 1538:com.android.systemui/1000 (fixed)
+ 
+  PID mappings:
+    PID #1477: ProcessRecord{40515948 1477:system/1000}
+    PID #1538: ProcessRecord{407ef8a0 1538:com.android.systemui/1000}
+    PID #1547: ProcessRecord{407ee420 1547:com.sec.android.inputmethod.axt9/10010}
+    PID #1556: ProcessRecord{407c95d0 1556:com.android.phone/1001}
+    PID #1557: ProcessRecord{407f0ba0 1557:com.sec.pcw.device/10024}
+    PID #1560: ProcessRecord{407f1030 1560:com.broadcom.bt.app.system/1002}
+    PID #1562: ProcessRecord{40877fe8 1562:com.sec.android.app.twlauncher/10007}
+    PID #1591: ProcessRecord{407fc2d8 1591:com.google.process.gapps/10002}
+    PID #1634: ProcessRecord{408825b0 1634:android.process.acore/10007}
+    PID #1775: ProcessRecord{40878ff8 1775:com.sec.android.widgetapp.clockweather.clockwidget/10053}
+    PID #4158: ProcessRecord{40804748 4158:com.samsung.sec.android.appwidget.programmonitorwidget/10007}
+    PID #4929: ProcessRecord{4091af88 4929:android.process.media/10050}
+    PID #5440: ProcessRecord{407a2e58 5440:com.sec.android.app.controlpanel/1000}
+    PID #5451: ProcessRecord{408d8c60 5451:com.sec.android.widgetapp.dualclock/10041}
+    PID #5980: ProcessRecord{4091d4c0 5980:com.sec.android.app.samsungapps.una2/10044}
+    PID #6207: ProcessRecord{409d82a0 6207:com.google.android.apps.uploader/10021}
+    PID #6216: ProcessRecord{409db0b8 6216:com.osp.app.signin/1001}
+    PID #8608: ProcessRecord{40925b98 8608:com.google.android.gm/10006}
+    PID #8617: ProcessRecord{4080c078 8617:com.sec.android.providers.downloads/10018}
+    PID #9268: ProcessRecord{40900f80 9268:com.google.android.apps.maps/10039}
+    PID #9295: ProcessRecord{40921c90 9295:com.android.settings/1000}
+    PID #9485: ProcessRecord{4053e5c0 9485:com.noshufou.android.su/10064}
+    PID #13922: ProcessRecord{405431f0 13922:com.google.android.apps.maps:NetworkLocationService/10039}
+    PID #13930: ProcessRecord{40577bd0 13930:com.google.android.apps.maps:FriendService/10039}
+    PID #13955: ProcessRecord{409047c0 13955:com.sec.android.providers.drm/1000}
+    PID #13964: ProcessRecord{4093fe78 13964:com.wssyncmldm/1001}
+    PID #14004: ProcessRecord{40539df0 14004:com.smlds/10042}
+    PID #14036: ProcessRecord{4092a370 14036:com.android.email/10008}
+    PID #14045: ProcessRecord{4091df60 14045:com.sec.android.provider.badge/10043}
+    PID #14064: ProcessRecord{40546240 14064:com.android.server.vpn:remote/1000}
+ 
+  Processes that are waiting to GC:
+    Process ProcessRecord{40877fe8 1562:com.sec.android.app.twlauncher/10007}
+      lowMem=false, last gced=1462071 ms ago, last lowMem=18131357 ms ago
+    Process ProcessRecord{407a2e58 5440:com.sec.android.app.controlpanel/1000}
+      lowMem=false, last gced=92569 ms ago, last lowMem=11776361 ms ago
+    Process ProcessRecord{408d8c60 5451:com.sec.android.widgetapp.dualclock/10041}
+      lowMem=false, last gced=87568 ms ago, last lowMem=11776054 ms ago
+    Process ProcessRecord{40804748 4158:com.samsung.sec.android.appwidget.programmonitorwidget/10007}
+      lowMem=false, last gced=82563 ms ago, last lowMem=13901384 ms ago
+    Process ProcessRecord{4053e5c0 9485:com.noshufou.android.su/10064}
+      lowMem=false, last gced=74147 ms ago, last lowMem=1351898 ms ago
+    Process ProcessRecord{40878ff8 1775:com.sec.android.widgetapp.clockweather.clockwidget/10053}
+      lowMem=false, last gced=69142 ms ago, last lowMem=18119403 ms ago
+ 
+  mHomeProcess: ProcessRecord{40877fe8 1562:com.sec.android.app.twlauncher/10007}
+  mConfiguration: { scale=1.0 loc=en_GB touch=3 K-board=1/1/2 nav=1/1 orien=1 layout=17 uiMode=17 seq=10}
+  mConfigWillChange: false
+  mSleeping=false mShuttingDown=false
 mostafa@MMostafa galaxy-y-totoro-lab % 
