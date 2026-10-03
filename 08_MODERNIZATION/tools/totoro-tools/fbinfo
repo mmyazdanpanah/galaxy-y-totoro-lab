@@ -1,0 +1,19 @@
+#!/system/bin/sh
+
+echo "=== Totoro Framebuffer Info ==="
+
+echo
+echo "--- framebuffer nodes ---"
+ls -la /dev/fb* 2>&1
+
+echo
+echo "--- framebuffer proc ---"
+cat /proc/fb 2>&1
+
+echo
+echo "--- graphics devices ---"
+ls -la /dev/graphics 2>&1
+
+echo
+echo "--- kernel framebuffer drivers ---"
+cat /proc/devices | grep -i fb

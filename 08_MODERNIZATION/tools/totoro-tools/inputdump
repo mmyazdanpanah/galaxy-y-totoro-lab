@@ -1,0 +1,11 @@
+#!/system/bin/sh
+
+echo "=== Totoro Input Devices ==="
+
+echo
+echo "--- devices ---"
+cat /proc/bus/input/devices
+
+echo
+echo "--- nodes ---"
+ls -la /dev/input 2>&1
