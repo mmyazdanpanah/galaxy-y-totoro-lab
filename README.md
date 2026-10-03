@@ -60,6 +60,14 @@ As of 2026-10-02, the project has crossed the important boundary from “Linux p
 
 This makes a pocket-PC direction technically meaningful rather than purely conceptual. The first UI should therefore be treated as the beginning of the product layer, while keeping the underlying Linux substrate minimal and evidence-driven.
 
+## Hybrid AI architecture direction
+
+The project now also documents an optional, reversible **Totoro + Mac hybrid AI** direction, with the iPhone SE (2020) as an optional mobile perception and relay node. Totoro remains an offline-capable physical interface and edge node; the Mac hosts larger inference, orchestration and durable knowledge services. The iPhone is not a required dependency.
+
+The architecture is a proposal, not a verified implementation. Communication and AI work must not displace the active physical-device UI/network-service gates or justify boot-critical changes. Start with protocol tests and a harmless ping/status exchange; add local inference only after the target runtime and resource budget are measured.
+
+See [Hybrid AI documentation](08_MODERNIZATION/hybrid-ai/README.md) for the architecture, Totoro Link protocol, transport analysis, iPhone bridge, edge-AI strategy and model pipeline.
+
 ## Documentation map
 
 - STATUS.md — current state, gates and immediate next action
@@ -71,6 +79,7 @@ This makes a pocket-PC direction technically meaningful rather than purely conce
 - 08_MODERNIZATION/plan.md — main strategy and milestones
 - 08_MODERNIZATION/android-chroot-linux.md — active userspace procedure and evidence
 - 08_MODERNIZATION/integrated-external-review-2026-09-30.md — integrated analysis of the five external reviews
+- 08_MODERNIZATION/hybrid-ai/ — proposed distributed AI architecture and implementation specifications
 - 09_EXPERIMENTS/ — experiment records
 - 10_RESEARCH/ — historical and technical research
 - 99_SANDBOX/ — raw external reviews and exploratory material
